@@ -1,7 +1,7 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: ''
+name: Issue 템플릿
+about: 컨벤션에 맞춰 생성해주세요.
+title: "[feat] <:설명>"
 labels: ''
 assignees: ''
 
