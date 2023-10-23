@@ -1,17 +1,11 @@
-## 개발사항
+## Work Description ✏️
 
-- example1
-- example2
+- 작업 내용
 
-## 세부사항
-
-- 세부 설명
-- 세부 설명
-
-## 공유
+## Share 🤔
 
 - 고민과 질문
 
-### 이슈
+## Related issue 🛠
 
-Closes #
+- Closes #
