@@ -24,7 +24,5 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
             "}")
     Page<Theme> searchByKeyword(String keyword, Pageable pageable);
 
-    Page<Theme> findByCategory(String keyword, Pageable pageable);
-
-    Optional<Theme> findThemeByPromptUuid(String ThemeId);
+    Optional<Theme> findThemeByThemeId(String ThemeId);
 }

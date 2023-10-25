@@ -27,12 +27,12 @@ public class SearchServiceImpl {
         Page<Theme> pageTheme = themeRepository.searchByKeyword(keyword, PageRequest.of(page, size));
 
 //        List<ThemeSimpleResponseDto> themeList = );
-//        final Page<EsThemes> pagedEsThemes = search(keyword, page, size);
-//        final long totalThemessCnt = pagedEsThemes.getTotalElements();
-//        final int totalPageCnt = pagedEsThemes.getTotalPages();
+//        final Page<Theme> pagedTheme = search(keyword, page, size);
+//        final long totalThemessCnt = pagedTheme.getTotalElements();
+//        final int totalPageCnt = pagedTheme.getTotalPages();
 //
 //        final List<SearchThemes> searchThemes = new ArrayList<>();
-//        for (EsThemes themeCreateRequestDto : pagedEsThemes) {
+//        for (Theme themeCreateRequestDto : pagedTheme) {
 //            // prompt 서버에서 필요한 정보 조회
 //            final UUID promptUuid = UUID.fromString(themeCreateRequestDto.getThemesUuid());
 //            final SearchFromThemesResponse fromThemes = circuitBreaker
@@ -64,47 +64,37 @@ public class SearchServiceImpl {
     }
 
 //    public void updateDocument(String themeId, ThemeCreateRequestDto themeCreateRequestDto) {
-//        final EsThemes oldEsThemes = themeRepository
-//                .findEsThemesByThemesUuid(promptUuid)
-//                .orElseThrow(EsThemesNotFoundException::new);
-//        themeRepository.delete(oldEsThemes);
-//        final EsThemes newEsThemes = EsThemes.of(themeCreateRequestDto);
-//        themeRepository.save(newEsThemes);
+//        final Theme oldTheme = themeRepository
+//                .findThemeByThemesUuid(promptUuid)
+//                .orElseThrow(ThemeNotFoundException::new);
+//        themeRepository.delete(oldTheme);
+//        final Theme newTheme = Theme.of(themeCreateRequestDto);
+//        themeRepository.save(newTheme);
 //    }
 
     public void deleteDocument(String themeId) {
-        final Theme themeCreateRequestDto = themeRepository
-                .findEsThemesByThemesUuid(promptUuid)
-                .orElseThrow(EsThemesNotFoundException::new);
-        themeRepository.delete(themeCreateRequestDto);
+        final Theme theme = themeRepository
+                .findThemeByThemeId(themeId).get();
+//                .orElseThrow(ThemeNotFoundException::new);
+        themeRepository.delete(theme);
     }
 
-    private Page<EsThemes> search(
+    private Page<Theme> search(
             String keyword,
-            String category,
             Pageable pageable
     ) {
-        Page<EsThemes> pagedEsThemes = null;
+        Page<Theme> pagedTheme = null;
         keyword = (keyword.equals("")) ? null : keyword;
-        category = (category.equals("ALL")) ? null : category;
 
-        if (null != keyword & null != category) {
-            pagedEsThemes = themeRepository
-                    .findByKeywordAndCategory(keyword, category, pageable);
+        if (null != keyword) {
+            pagedTheme = themeRepository
+                    .searchByKeyword(keyword, pageable);
 
-        } else if (null == keyword & null != category) {
-            pagedEsThemes = themeRepository
-                    .findByCategory(category, pageable);
-
-        } else if (null != keyword & null == category) {
-            pagedEsThemes = themeRepository
-                    .findByKeywordOnly(keyword, pageable);
-
-        } else if (null == keyword & null == category) {
-            pagedEsThemes = themeRepository
+        } else if (null == keyword) {
+            pagedTheme = themeRepository
                     .findAll(pageable);
         }
 
-        return pagedEsThemes;
+        return pagedTheme;
     }
 }

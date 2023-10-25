@@ -13,7 +13,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Getter
 @Document(indexName = "theme")
 public class Theme {
-
     @Id
     private String id;
 
