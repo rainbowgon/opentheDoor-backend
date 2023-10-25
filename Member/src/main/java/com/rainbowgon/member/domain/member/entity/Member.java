@@ -2,14 +2,14 @@ package com.rainbowgon.member.domain.member.entity;
 
 import com.rainbowgon.member.global.entity.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -17,6 +17,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE member SET is_valid = 'DELETED' WHERE member_id = ?")
+@Where(clause = "is_valid = 'VALID'")
 public class Member extends BaseEntity {
 
     @Id
@@ -34,4 +36,15 @@ public class Member extends BaseEntity {
     private String phoneNumber;
 
     private LocalDate birthDate;
+
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
+
+    @Builder
+    public Member(String name, String phoneNumber, LocalDate birthDate, Authority authority) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.authority = authority;
+    }
 }

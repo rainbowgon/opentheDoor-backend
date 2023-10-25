@@ -1,4 +1,5 @@
 spring:
+
   h2:
     console:
       enabled: true
@@ -21,3 +22,6 @@ logging:
   level:
     org.hibernate.sql: debug
     org.hibernate.type: trace
+
+jwt:
+  secret: dGhpc2lzb3BlbnRoZURvb3Jqd3RzZWNyZXRrZXk= # thisisopentheDoorjwtsecretkey BASE64 인코딩
