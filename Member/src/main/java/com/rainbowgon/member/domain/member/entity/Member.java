@@ -9,7 +9,10 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -37,14 +40,16 @@ public class Member extends BaseEntity {
 
     private LocalDate birthDate;
 
-    @Enumerated(EnumType.STRING)
-    private Authority authority;
+    @Builder
+    public Member(String name, String phoneNumber) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
 
     @Builder
-    public Member(String name, String phoneNumber, LocalDate birthDate, Authority authority) {
+    public Member(String name, String phoneNumber, LocalDate birthDate) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
-        this.authority = authority;
     }
 }

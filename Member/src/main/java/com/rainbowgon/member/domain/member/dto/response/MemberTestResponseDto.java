@@ -6,16 +6,15 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class MemberTestResponseDto {
 
     private String memberId;
     private String name;
     private String phoneNumber;
     private LocalDate birthDate;
-    private String authority;
 
     public static MemberTestResponseDto from(Member member) {
         return MemberTestResponseDto.builder()
@@ -23,7 +22,6 @@ public class MemberTestResponseDto {
                 .name(member.getName())
                 .phoneNumber(member.getPhoneNumber())
                 .birthDate(member.getBirthDate())
-                .authority(member.getAuthority().toString())
                 .build();
     }
 }
