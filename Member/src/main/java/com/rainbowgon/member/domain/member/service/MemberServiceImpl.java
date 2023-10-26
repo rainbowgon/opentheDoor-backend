@@ -3,6 +3,7 @@ package com.rainbowgon.member.domain.member.service;
 
 import com.rainbowgon.member.domain.member.dto.response.MemberTestResponseDto;
 import com.rainbowgon.member.domain.member.repository.MemberRepository;
+import com.rainbowgon.member.global.error.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberTestResponseDto selectMemberById(UUID memberId) {
         return memberRepository.findById(memberId)
                 .map(MemberTestResponseDto::from)
-                .orElseThrow(() -> new RuntimeException("해당 아이디의 유저가 없습니다."));
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
