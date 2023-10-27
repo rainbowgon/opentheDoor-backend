@@ -1,8 +1,10 @@
 package com.rainbowgon.member.global.security;
 
-import com.rainbowgon.member.domain.member.dto.response.MemberTestResponseDto;
-import com.rainbowgon.member.domain.member.service.MemberService;
+import com.rainbowgon.member.domain.member.entity.Member;
+import com.rainbowgon.member.domain.member.repository.MemberRepository;
+import com.rainbowgon.member.global.error.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,19 +12,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
 
-        MemberTestResponseDto memberTestResponseDto = memberService.selectMemberById(UUID.fromString(memberId));
+        log.debug("[CustomUserDetailsService] loadUserByUsername 로직 start");
+        
+        Member member = memberRepository.findById(UUID.fromString(memberId)).orElseThrow(MemberNotFoundException::new);
 
         return CustomUserDetails.builder()
-                .memberId(memberTestResponseDto.getMemberId())
+                .memberId(member.getId().toString())
                 .build();
     }
 }
