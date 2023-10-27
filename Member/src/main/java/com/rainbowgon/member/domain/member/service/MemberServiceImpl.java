@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberTestResponseDto selectMemberByPhoneNumber(String phoneNumber) {
         return memberRepository.findByPhoneNumber(phoneNumber)
                 .map(MemberTestResponseDto::from)
-                .orElseThrow(() -> new RuntimeException("해당 전화번호를 가진 유저가 없습니다."));
+                .orElseThrow(MemberNotFoundException::new);
     }
-    
+
 }
