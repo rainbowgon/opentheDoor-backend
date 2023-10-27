@@ -34,7 +34,7 @@ public class SecurityConfigure {
                 .and()
 
                 .authorizeRequests()
-                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/members/signup/**").permitAll()
                 .anyRequest().authenticated();
 
         httpSecurity
