@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SearchServiceImpl {
+public class SearchServiceImpl implements SearchService {
 
     private final ThemeRepository themeRepository;
 
@@ -24,7 +24,9 @@ public class SearchServiceImpl {
             Integer page,
             Integer size
     ) {
-        Page<Theme> pageTheme = themeRepository.searchByKeyword(keyword, PageRequest.of(page, size));
+
+//        Page<Theme> pageTheme = themeRepository.searchByKeyword(keyword, PageRequest.of(page, size));
+        Page<Theme> pageTheme = search(keyword, PageRequest.of(page, size));
 
 //        List<ThemeSimpleResponseDto> themeList = );
 //        final Page<Theme> pagedTheme = search(keyword, page, size);
@@ -79,7 +81,7 @@ public class SearchServiceImpl {
         themeRepository.delete(theme);
     }
 
-    private Page<Theme> search(
+    public Page<Theme> search(
             String keyword,
             Pageable pageable
     ) {

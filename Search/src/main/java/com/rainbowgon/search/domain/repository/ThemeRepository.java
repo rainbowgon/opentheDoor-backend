@@ -16,7 +16,13 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
             "            {" +
             "                \"multi_match\": {" +
             "                    \"query\": \"?0\"," +
-            "                    \"fields\": [\"venue\", \"explanation\", \"title\", \"genre\"]" +
+            "                    \"fields\": [\"venue.nori\", \"explanation.nori\", \"title.nori\", \"genre.nori\"]" +
+            "                }" +
+            "            }," +
+            "            {" +
+            "                \"multi_match\": {" +
+            "                    \"query\": \"?0\"," +
+            "                    \"fields\": [\"venue.ngram\", \"explanation.ngram\", \"title.ngram\", \"genre.ngram\"]" +
             "                }" +
             "            }" +
             "        ]" +

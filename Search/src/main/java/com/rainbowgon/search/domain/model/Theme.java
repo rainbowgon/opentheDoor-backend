@@ -11,8 +11,9 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Document(indexName = "theme")
+@Document(indexName = "themes")
 public class Theme {
+
     @Id
     private String id;
 

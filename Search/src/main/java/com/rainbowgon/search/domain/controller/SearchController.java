@@ -23,7 +23,7 @@ public class SearchController {
 
     @GetMapping("/themes")
     public ResponseEntity<ResponseWrapper<List<ThemeSimpleResponseDto>>> searchThemes(
-            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {

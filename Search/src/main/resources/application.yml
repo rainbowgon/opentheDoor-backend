@@ -1,4 +1,4 @@
 elasticsearch:
   host: localhost
-  port: 5601
+  port: 9200
 
