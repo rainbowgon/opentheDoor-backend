@@ -18,6 +18,7 @@ public enum GlobalErrorCode implements BaseErrorCode {
 
     /* Member */
     MEMBER_NOT_FOUND(NOT_FOUND, "MEMBER-404-1", "해당 회원을 찾을 수 없습니다."),
+    MEMBER_PHONE_NUMBER_DUPLICATION(CONFLICT, "MEMBER-409-1", "이미 존재하는 회원(전화번호)입니다."),
 
     /* Auth */
     AUTH_NO_AUTHORIZATION(FORBIDDEN, "AUTH-403-1", "Request header에 Authorization이 존재하지 않습니다."),
