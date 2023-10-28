@@ -65,7 +65,7 @@ public class JwtTokenProvider {
     public Boolean validateToken(String token) {
 
         Date expiration = extractAllClaims(token).getExpiration();
-        log.debug("[JwtTokenProvider] Token Expiration = " + expiration);
+        log.info("[JwtTokenProvider] Token Expiration = " + expiration);
 
         return expiration.before(new Date());
     }

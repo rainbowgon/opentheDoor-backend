@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
 
-        log.debug("[CustomUserDetailsService] loadUserByUsername 로직 start");
+        log.info("[CustomUserDetailsService] loadUserByUsername 로직 start");
         
         Member member = memberRepository.findById(UUID.fromString(memberId)).orElseThrow(MemberNotFoundException::new);
 

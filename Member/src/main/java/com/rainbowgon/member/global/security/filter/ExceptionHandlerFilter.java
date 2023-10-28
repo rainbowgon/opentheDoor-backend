@@ -1,4 +1,4 @@
-package com.rainbowgon.member.global.security;
+package com.rainbowgon.member.global.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -7,6 +7,7 @@ import com.rainbowgon.member.global.error.dto.ErrorReason;
 import com.rainbowgon.member.global.error.dto.ErrorResponse;
 import com.rainbowgon.member.global.error.errorCode.BaseErrorCode;
 import com.rainbowgon.member.global.error.exception.CustomException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,11 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+            log.info("[ExceptionHandlerFilter] doFilterInteral 로직 start");
             filterChain.doFilter(request, response);
         } catch (CustomException e) {
             setErrorResponse(e, request.getRequestURL().toString(), response);
@@ -28,6 +31,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     }
 
     private void setErrorResponse(CustomException customException, String requestUrl, HttpServletResponse response) {
+
+        log.info("[ExceptionHandlerFilter] setErrorResponse 로직 start");
 
         BaseErrorCode code = customException.getErrorCode();
         ErrorReason errorReason = code.getErrorReason();

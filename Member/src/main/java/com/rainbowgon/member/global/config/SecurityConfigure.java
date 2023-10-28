@@ -1,8 +1,8 @@
 package com.rainbowgon.member.global.config;
 
 import com.rainbowgon.member.global.security.CustomUserDetailsService;
-import com.rainbowgon.member.global.security.ExceptionHandlerFilter;
-import com.rainbowgon.member.global.security.JwtFilter;
+import com.rainbowgon.member.global.security.filter.ExceptionHandlerFilter;
+import com.rainbowgon.member.global.security.filter.JwtFilter;
 import com.rainbowgon.member.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
