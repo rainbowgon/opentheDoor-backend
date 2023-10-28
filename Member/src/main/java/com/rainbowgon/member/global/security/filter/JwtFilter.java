@@ -1,6 +1,8 @@
-package com.rainbowgon.member.global.security;
+package com.rainbowgon.member.global.security.filter;
 
 import com.rainbowgon.member.global.error.exception.AuthTokenExpiredException;
+import com.rainbowgon.member.global.security.CustomUserDetailsService;
+import com.rainbowgon.member.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,22 +31,20 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String accessToken = getToken(request);
-        log.debug("[JwtFilter] Request Header Access Token = " + accessToken);
+        log.info("[JwtFilter] Request Header Access Token = " + accessToken);
 
         if (accessToken != null) {
             String memberId = tokenProvider.getMemberId(accessToken); // 토큰에 담긴 회원 id 정보
             UserDetails authentication = customUserDetailsService.loadUserByUsername(memberId); // 토큰에 담긴 정보로 불러온 회원 정보
 
             if (tokenProvider.validateToken(accessToken)) { // 유효한 토큰인지(만료 여부) 확인
-                log.debug("[JwtFilter] 만료되지 않은 토큰 확인");
-                UsernamePasswordAuthenticationToken auth
-                        = new UsernamePasswordAuthenticationToken(authentication.getUsername(), null, null);
-
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            } else {
-                log.debug("[JwtFilter] 만료된 토큰");
+                log.info("[JwtFilter] 만료된 토큰");
                 throw AuthTokenExpiredException.EXCEPTION;
             }
+            UsernamePasswordAuthenticationToken auth
+                    = new UsernamePasswordAuthenticationToken(authentication.getUsername(), null, null);
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
         filterChain.doFilter(request, response);
     }
