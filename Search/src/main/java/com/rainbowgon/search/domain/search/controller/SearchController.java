@@ -1,7 +1,7 @@
-package com.rainbowgon.search.domain.controller;
+package com.rainbowgon.search.domain.search.controller;
 
-import com.rainbowgon.search.domain.dto.response.ThemeSimpleResponseDto;
-import com.rainbowgon.search.domain.service.SearchService;
+import com.rainbowgon.search.domain.search.dto.response.ThemeSimpleResponseDto;
+import com.rainbowgon.search.domain.search.service.SearchService;
 import com.rainbowgon.search.global.response.JsonResponse;
 import com.rainbowgon.search.global.response.PageInfo;
 import com.rainbowgon.search.global.response.ResponseWrapper;

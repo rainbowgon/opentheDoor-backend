@@ -1,6 +1,6 @@
-package com.rainbowgon.search.domain.model;
+package com.rainbowgon.search.domain.search.model;
 
-import com.rainbowgon.search.domain.dto.request.ThemeCreateRequestDto;
+import com.rainbowgon.search.domain.search.dto.request.ThemeCreateRequestDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

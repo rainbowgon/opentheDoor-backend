@@ -1,4 +1,4 @@
-package com.rainbowgon.search.domain.dto.request;
+package com.rainbowgon.search.domain.search.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;

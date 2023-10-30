@@ -1,9 +1,9 @@
-package com.rainbowgon.search.domain.service;
+package com.rainbowgon.search.domain.search.service;
 
-import com.rainbowgon.search.domain.dto.request.ThemeCreateRequestDto;
-import com.rainbowgon.search.domain.dto.response.ThemeSimpleResponseDto;
-import com.rainbowgon.search.domain.model.Theme;
-import com.rainbowgon.search.domain.repository.ThemeRepository;
+import com.rainbowgon.search.domain.search.dto.request.ThemeCreateRequestDto;
+import com.rainbowgon.search.domain.search.dto.response.ThemeSimpleResponseDto;
+import com.rainbowgon.search.domain.search.model.Theme;
+import com.rainbowgon.search.domain.search.repository.ThemeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
