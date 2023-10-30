@@ -1,4 +1,4 @@
-package com.rainbowgon.notification.domain.notification.response;
+package com.rainbowgon.notification.global.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
