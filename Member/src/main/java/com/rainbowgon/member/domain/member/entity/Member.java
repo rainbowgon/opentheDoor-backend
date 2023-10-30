@@ -9,10 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -40,16 +37,22 @@ public class Member extends BaseEntity {
 
     private LocalDate birthDate;
 
-    @Builder
-    public Member(String name, String phoneNumber) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-    }
+    @Column(columnDefinition = "VARCHAR(10)")
+    @Enumerated(EnumType.STRING)
+//    @NotNull
+    private Provider provider;
+
+    //    @NotNull
+    private String providerId;
+
 
     @Builder
-    public Member(String name, String phoneNumber, LocalDate birthDate) {
+    public Member(String name, String phoneNumber, Provider provider, String providerId, LocalDate birthDate) {
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.provider = provider;
+        this.providerId = providerId;
         this.birthDate = birthDate;
     }
+
 }

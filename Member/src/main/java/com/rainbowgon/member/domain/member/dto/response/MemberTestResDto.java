@@ -9,15 +9,15 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class MemberTestResponseDto {
+public class MemberTestResDto {
 
     private String memberId;
     private String name;
     private String phoneNumber;
     private LocalDate birthDate;
 
-    public static MemberTestResponseDto from(Member member) {
-        return MemberTestResponseDto.builder()
+    public static MemberTestResDto from(Member member) {
+        return MemberTestResDto.builder()
                 .memberId(member.getId().toString())
                 .name(member.getName())
                 .phoneNumber(member.getPhoneNumber())

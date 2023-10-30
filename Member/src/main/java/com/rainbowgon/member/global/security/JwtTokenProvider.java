@@ -11,31 +11,30 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Component
 public class JwtTokenProvider {
 
-    private static final String AUTHORITIES_KEY = "Authorization";
-    private static final String BEARER_TYPE = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
     @Value("${jwt.secret}")
     private String JWT_SECRET_KEY;
 
-    public String generateAccessToken(String memberId) {
+    public String generateAccessToken(UUID memberId) {
         return generateToken(memberId, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
-    public String generateRefreshToken(String memberId) {
+    public String generateRefreshToken(UUID memberId) {
         return generateToken(memberId, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
-    private String generateToken(String memberId, long expireTime) {
+    private String generateToken(UUID memberId, long expireTime) {
 
         Claims claims = Jwts.claims();
-        claims.put("memberId", memberId);
+        claims.put("memberId", memberId.toString());
 
         return Jwts.builder()
                 .setClaims(claims)

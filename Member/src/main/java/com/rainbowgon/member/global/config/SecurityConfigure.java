@@ -1,9 +1,9 @@
 package com.rainbowgon.member.global.config;
 
 import com.rainbowgon.member.global.security.CustomUserDetailsService;
+import com.rainbowgon.member.global.security.JwtTokenProvider;
 import com.rainbowgon.member.global.security.filter.ExceptionHandlerFilter;
 import com.rainbowgon.member.global.security.filter.JwtFilter;
-import com.rainbowgon.member.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +35,7 @@ public class SecurityConfigure {
 
                 .authorizeRequests()
                 .antMatchers("/members/signup/**").permitAll()
+                .antMatchers("/members/login/**").permitAll()
                 .anyRequest().authenticated();
 
         httpSecurity
