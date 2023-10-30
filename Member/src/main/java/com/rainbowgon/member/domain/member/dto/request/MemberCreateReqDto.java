@@ -16,7 +16,6 @@ public class MemberCreateReqDto {
     private String phoneNumber;
     private Provider provider;
     private String providerId;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 

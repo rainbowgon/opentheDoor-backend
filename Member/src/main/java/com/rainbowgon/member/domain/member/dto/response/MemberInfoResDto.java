@@ -1,7 +1,7 @@
 package com.rainbowgon.member.domain.member.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rainbowgon.member.domain.profile.entity.Profile;
+import com.rainbowgon.member.domain.member.entity.Member;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -21,14 +21,14 @@ public class MemberInfoResDto { // 개인정보 수정 화면에 뿌려줄 데�
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
-    public static MemberInfoResDto from(Profile profile) {
+    public static MemberInfoResDto from(Member member) {
         return MemberInfoResDto.builder()
-                .profileId(profile.getId())
-                .profileImage(profile.getProfileImage())
-                .name(profile.getMember().getName())
-                .phoneNumber(profile.getMember().getPhoneNumber())
-                .nickname(profile.getNickname())
-                .birthDate(profile.getMember().getBirthDate())
+                .profileId(member.getProfile().getId())
+                .profileImage(member.getProfile().getProfileImage())
+                .name(member.getName())
+                .phoneNumber(member.getPhoneNumber())
+                .nickname(member.getProfile().getNickname())
+                .birthDate(member.getBirthDate())
                 .build();
     }
 }

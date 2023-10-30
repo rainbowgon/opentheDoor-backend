@@ -1,5 +1,6 @@
 package com.rainbowgon.member.domain.member.entity;
 
+import com.rainbowgon.member.domain.profile.entity.Profile;
 import com.rainbowgon.member.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -44,6 +45,9 @@ public class Member extends BaseEntity {
 
     //    @NotNull
     private String providerId;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
+    private Profile profile;
 
     @Builder
     public Member(String name, String phoneNumber, Provider provider, String providerId, LocalDate birthDate) {

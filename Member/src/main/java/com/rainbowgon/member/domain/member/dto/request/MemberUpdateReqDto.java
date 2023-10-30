@@ -14,11 +14,7 @@ public class MemberUpdateReqDto {
     private Long profileId;
     private String name;
     private String phoneNumber;
-
+    private String nickname;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
-
-    private String nickname;
-//    private String profileImage;
-    
 }

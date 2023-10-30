@@ -3,14 +3,12 @@ package com.rainbowgon.member.domain.member.service;
 
 import com.rainbowgon.member.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.member.domain.member.dto.request.MemberUpdateReqDto;
-import com.rainbowgon.member.domain.member.dto.response.MemberCreateResDto;
 import com.rainbowgon.member.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.member.domain.member.entity.Member;
 import com.rainbowgon.member.domain.member.repository.MemberRepository;
-import com.rainbowgon.member.domain.profile.dto.response.ProfileCreateResDto;
 import com.rainbowgon.member.domain.profile.entity.Profile;
 import com.rainbowgon.member.domain.profile.service.ProfileService;
-import com.rainbowgon.member.global.error.exception.ProfileNotFoundException;
+import com.rainbowgon.member.global.error.exception.MemberNotFoundException;
 import com.rainbowgon.member.global.error.exception.ProfileUnauthorizedException;
 import com.rainbowgon.member.global.security.JwtTokenProvider;
 import com.rainbowgon.member.global.security.dto.JwtTokenDto;
@@ -33,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
     private final ProfileService profileService;
 
     @Override
-    public MemberCreateResDto createMember(MemberCreateReqDto createReqDto) {
+    public JwtTokenDto createMember(MemberCreateReqDto createReqDto) {
 
         // 전화번호 중복 체크
         checkPhoneNumber(createReqDto.getPhoneNumber());
@@ -49,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
                         .build());
 
         // 생성한 멤버 객체로 프로필 객체 생성
-        ProfileCreateResDto profile = profileService.createProfile(member, createReqDto.getNickname(), createReqDto.getProfileImage());
+        profileService.createProfile(member, createReqDto.getNickname(), createReqDto.getProfileImage());
 
         // accessToken과 refreshToken 생성
         JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
@@ -59,54 +57,52 @@ public class MemberServiceImpl implements MemberService {
 
         // TODO redis에 refreshToken 저장
 
-        return MemberCreateResDto.builder()
-                .memberInfo(MemberInfoResDto.of(member, profile))
-                .tokens(jwtTokenDto)
-                .build();
+        return jwtTokenDto;
     }
 
     @Override
     public MemberInfoResDto selectMemberInfo(UUID memberId) {
 
-        // 요청 회원의 프로필 조회
-        Profile profile = profileService.selectProfileByMember(memberId).orElseThrow(ProfileNotFoundException::new);
+        // 요청 회원의 멤버 객체 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        // 조회한 프로필의 회원과 요청 회원이 같은지 확인
-        if (!profile.getMember().getId().equals(memberId)) {
-            throw ProfileUnauthorizedException.EXCEPTION;
-        }
-
-        return MemberInfoResDto.from(profile);
+        return MemberInfoResDto.from(member);
     }
 
     @Override
     public Boolean updateMemberInfo(UUID memberId, MemberUpdateReqDto memberUpdateReqDto, MultipartFile profileImage) {
 
-        // 유효한 프로필인지 확인
-        Profile profile = getOneProfile(profileUpdateReqDto.getProfileId());
+        // 요청 회원의 멤버 객체 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        log.info("[MemberServiceImpl] 회원 정보 수정 요청 회원 아이디 = " + member.getId());
 
-        // 유효한 접근인지 확인
-        if (!profile.getMember().getId().equals(memberId)) {
+        // 요청 회원의 프로필 객체
+        Profile profile = member.getProfile();
+        log.info("[MemberServiceImpl] 회원 정보 수정 요청 회원 닉네임 = " + member.getProfile().getNickname());
+
+
+        // 유효한 접근인지 확인 (요청 회원의 profileId와 reqDto의 profileId 비교)
+        if (!profile.getId().equals(memberUpdateReqDto.getProfileId())) {
             throw ProfileUnauthorizedException.EXCEPTION;
         }
 
         // 닉네임, 이름, 생일 수정
-        profile.setNickname(profileUpdateReqDto.getNickname());
-        profile.getMember().setName(profileUpdateReqDto.getName());
-        profile.getMember().setBirthDate(profileUpdateReqDto.getBirthDate());
+        profile.setNickname(memberUpdateReqDto.getNickname());
+        member.setName(memberUpdateReqDto.getName());
+        member.setBirthDate(memberUpdateReqDto.getBirthDate());
 
         // 프로필 사진 변경됐다면 수정
         if (profileImage != null) {
             // TODO 수정한 프로필 이미지 s3 업로드
             String profileImageUrl = null;
-
+            profile.setProfileImage(profileImageUrl);
         }
 
         // 멤버 전화번호 변경됐다면 수정
-        if (profileUpdateReqDto.getPhoneNumber() != null) {
-            String phoneNumber = profileUpdateReqDto.getPhoneNumber();
-            memberService.checkPhoneNumber(phoneNumber); // 이미 존재하는 전화번호인지 확인
-            profile.getMember().setPhoneNumber(phoneNumber);
+        if (memberUpdateReqDto.getPhoneNumber() != null) {
+            String phoneNumber = memberUpdateReqDto.getPhoneNumber();
+            checkPhoneNumber(phoneNumber); // 이미 존재하는 전화번호인지 확인
+            member.setPhoneNumber(phoneNumber);
         }
 
         return true; // try-catch로 변경하기
