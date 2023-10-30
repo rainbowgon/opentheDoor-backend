@@ -3,6 +3,7 @@ package com.rainbowgon.member.domain.profile.entity;
 import com.rainbowgon.member.domain.member.entity.Member;
 import com.rainbowgon.member.global.entity.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,15 @@ public class Profile extends BaseEntity {
     @NotNull
     private String nickname;
 
-    @NotNull
+    //    @NotNull
     private String profileImage;
+
+
+    @Builder
+    public Profile(Member member, String nickname, String profileImage) {
+        this.member = member;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+    }
+
 }
