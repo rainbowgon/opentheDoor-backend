@@ -7,7 +7,7 @@ import com.rainbowgon.member.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.member.domain.member.dto.response.MemberTestResDto;
 import com.rainbowgon.member.domain.member.entity.Member;
 import com.rainbowgon.member.domain.member.repository.MemberRepository;
-import com.rainbowgon.member.domain.profile.entity.Profile;
+import com.rainbowgon.member.domain.profile.dto.response.ProfileCreateResDto;
 import com.rainbowgon.member.domain.profile.service.ProfileService;
 import com.rainbowgon.member.global.error.exception.MemberNotFoundException;
 import com.rainbowgon.member.global.error.exception.MemberPhoneNumberDuplicationException;
@@ -48,7 +48,7 @@ public class MemberServiceImpl implements MemberService {
                         .build());
 
         // 생성한 멤버 객체로 프로필 객체 생성
-        Profile profile = profileService.createProfile(member, createReqDto.getNickname(), createReqDto.getProfileImage());
+        ProfileCreateResDto profile = profileService.createProfile(member, createReqDto.getNickname(), createReqDto.getProfileImage());
 
         // accessToken과 refreshToken 생성
         JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
