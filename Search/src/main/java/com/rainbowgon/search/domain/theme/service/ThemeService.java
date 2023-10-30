@@ -16,4 +16,9 @@ public interface ThemeService {
 
     ThemeDetailResDto selectOneThemeById(String themeId);
 
+    public void reviewCnt(String themeId);
+
+    public void bookmarkCnt(String themeId);
+
+
 }
