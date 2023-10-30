@@ -2,6 +2,7 @@ package com.rainbowgon.notification.domain.notification.entity;
 
 import com.rainbowgon.notification.global.entity.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -31,4 +32,13 @@ public class Notification extends BaseEntity {
     @ColumnDefault("'NOT_VIEWED'")
     private ViewStatus isViewed;
 
+    @Builder
+    public Notification(Long profileId, Long themeId, String title, String content, Type type, ViewStatus isViewed) {
+        this.profileId = profileId;
+        this.themeId = themeId;
+        this.title = title;
+        this.content = content;
+        this.type = type;
+        this.isViewed = isViewed;
+    }
 }
