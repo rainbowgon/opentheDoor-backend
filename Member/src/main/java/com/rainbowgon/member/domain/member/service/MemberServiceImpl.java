@@ -59,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
         // TODO redis에 refreshToken 저장
 
         return MemberCreateResDto.builder()
-                .memberInfo(MemberInfoResDto.from(member, profile))
+                .memberInfo(MemberInfoResDto.of(member, profile))
                 .tokens(jwtTokenDto)
                 .build();
     }

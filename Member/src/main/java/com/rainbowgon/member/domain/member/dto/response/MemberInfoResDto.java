@@ -16,7 +16,7 @@ public class MemberInfoResDto { // 회원 정보가 담긴 응답 객체
     private String nickname;
     private String profileImage;
 
-    public static MemberInfoResDto from(Member member, Profile profile) {
+    public static MemberInfoResDto of(Member member, Profile profile) {
         return MemberInfoResDto.builder()
                 .memberId(member.getId())
                 .nickname(profile.getNickname())

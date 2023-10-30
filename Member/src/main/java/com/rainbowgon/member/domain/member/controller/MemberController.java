@@ -5,7 +5,6 @@ import com.rainbowgon.member.domain.member.dto.response.KakaoProfileResDto;
 import com.rainbowgon.member.domain.member.dto.response.MemberCreateResDto;
 import com.rainbowgon.member.domain.member.dto.response.MemberTestResDto;
 import com.rainbowgon.member.domain.member.dto.response.OAuthProfileResDto;
-import com.rainbowgon.member.domain.member.entity.Provider;
 import com.rainbowgon.member.domain.member.service.KakaoLoginService;
 import com.rainbowgon.member.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +32,7 @@ public class MemberController {
         String kakaoAccessToken = kakaoLoginService.getToken(code);
         KakaoProfileResDto kakaoProfileResDto = kakaoLoginService.getProfile(kakaoAccessToken);
 
-        OAuthProfileResDto oAuthProfileResDto = OAuthProfileResDto.builder()
-                .provider(Provider.KAKAO)
-                .providerId(kakaoProfileResDto.getId())
-                .nickname(kakaoProfileResDto.getProperties().getNickname())
-                .profileImage(kakaoProfileResDto.getProperties().getProfileImage())
-                .build();
-
-        return ResponseEntity.ok(oAuthProfileResDto);
+        return ResponseEntity.ok(OAuthProfileResDto.fromKakao(kakaoProfileResDto));
     }
 
     /**
