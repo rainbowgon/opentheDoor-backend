@@ -1,15 +1,18 @@
 package com.rainbowgon.member.domain.member.controller;
 
-import com.rainbowgon.member.domain.member.dto.response.MemberTestResponseDto;
-import com.rainbowgon.member.domain.member.entity.Member;
+import com.rainbowgon.member.domain.member.dto.request.MemberCreateReqDto;
+import com.rainbowgon.member.domain.member.dto.response.KakaoProfileResDto;
+import com.rainbowgon.member.domain.member.dto.response.MemberCreateResDto;
+import com.rainbowgon.member.domain.member.dto.response.MemberTestResDto;
+import com.rainbowgon.member.domain.member.dto.response.OAuthProfileResDto;
+import com.rainbowgon.member.domain.member.service.KakaoLoginService;
 import com.rainbowgon.member.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,20 +20,47 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final KakaoLoginService kakaoLoginService;
+
+
+    /**
+     * 카카오로 로그인
+     */
+    @GetMapping("/login/kakao")
+    public ResponseEntity<OAuthProfileResDto> kakaoLogin(@RequestParam("code") String code) throws Exception {
+
+        String kakaoAccessToken = kakaoLoginService.getToken(code);
+        KakaoProfileResDto kakaoProfileResDto = kakaoLoginService.getProfile(kakaoAccessToken);
+
+        return ResponseEntity.ok(OAuthProfileResDto.fromKakao(kakaoProfileResDto));
+    }
+
+    /**
+     * 회원가입
+     */
+    @PostMapping("/signup")
+    public ResponseEntity<MemberCreateResDto> createMember(@RequestBody MemberCreateReqDto createReqDto) {
+
+        MemberCreateResDto memberCreateResDto = memberService.createMember(createReqDto);
+
+        return ResponseEntity.ok(memberCreateResDto);
+    }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberTestResponseDto> selectMemberById(@AuthenticationPrincipal Member member) {
+    public ResponseEntity<MemberTestResDto> selectMemberById(@AuthenticationPrincipal String memberId) {
 
-        MemberTestResponseDto selectedMember = memberService.selectMemberById(member.getId());
+        MemberTestResDto selectedMember = memberService.selectMemberById(UUID.fromString(memberId));
 
         return ResponseEntity.ok(selectedMember);
     }
 
     @GetMapping("/{phone-number}")
-    public ResponseEntity<MemberTestResponseDto> selectMemberByPhoneNumber(@PathVariable("phone-number") String phoneNumber) {
+    public ResponseEntity<MemberTestResDto> selectMemberByPhoneNumber(@PathVariable("phone-number") String phoneNumber) {
 
-        MemberTestResponseDto selectedMember = memberService.selectMemberByPhoneNumber(phoneNumber);
+        MemberTestResDto selectedMember = memberService.selectMemberByPhoneNumber(phoneNumber);
 
         return ResponseEntity.ok(selectedMember);
     }
+
+
 }
