@@ -19,11 +19,7 @@ public class SearchServiceImpl implements SearchService {
 
     private final ThemeRepository themeRepository;
 
-    public List<ThemeSimpleResponseDto> searchThemes(
-            String keyword,
-            Integer page,
-            Integer size
-    ) {
+    public List<ThemeSimpleResponseDto> searchThemes(String keyword, Integer page, Integer size) {
 
 //        Page<Theme> pageTheme = themeRepository.searchByKeyword(keyword, PageRequest.of(page, size));
         Page<Theme> pageTheme = search(keyword, PageRequest.of(page, size));
@@ -81,10 +77,7 @@ public class SearchServiceImpl implements SearchService {
         themeRepository.delete(theme);
     }
 
-    public Page<Theme> search(
-            String keyword,
-            Pageable pageable
-    ) {
+    public Page<Theme> search(String keyword, Pageable pageable) {
         Page<Theme> pagedTheme = null;
         keyword = (keyword.equals("")) ? null : keyword;
 

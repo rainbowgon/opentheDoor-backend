@@ -34,6 +34,6 @@ public class SearchController {
 
         return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList, pageInfo);
     }
-
+ 
 
 }

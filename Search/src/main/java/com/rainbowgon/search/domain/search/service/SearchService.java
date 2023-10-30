@@ -12,10 +12,7 @@ public interface SearchService {
 
 //    void saveAllDocuments();
 
-    public List<ThemeSimpleResponseDto> searchThemes(
-            String keyword,
-            Integer page,
-            Integer size);
+    public List<ThemeSimpleResponseDto> searchThemes(String keyword, Integer page, Integer size);
 
     public void insertDocument(ThemeCreateRequestDto themeCreateRequestDto);
 
@@ -24,6 +21,5 @@ public interface SearchService {
 //
     public void deleteDocument(String themeId);
 
-    public Page<Theme> search(String keyword,
-                              Pageable pageable);
+    public Page<Theme> search(String keyword, Pageable pageable);
 }
