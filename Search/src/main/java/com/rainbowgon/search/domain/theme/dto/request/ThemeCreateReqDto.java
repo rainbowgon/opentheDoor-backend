@@ -1,4 +1,4 @@
-package com.rainbowgon.search.domain.search.dto.request;
+package com.rainbowgon.search.domain.theme.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ThemeCreateRequestDto {
+public class ThemeCreateReqDto {
 
     private String venue; // 지점명
     private String title; // 타이틀

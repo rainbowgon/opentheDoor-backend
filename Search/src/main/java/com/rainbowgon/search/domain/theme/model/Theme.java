@@ -1,6 +1,6 @@
-package com.rainbowgon.search.domain.search.model;
+package com.rainbowgon.search.domain.theme.model;
 
-import com.rainbowgon.search.domain.search.dto.request.ThemeCreateRequestDto;
+import com.rainbowgon.search.domain.theme.dto.request.ThemeCreateReqDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -44,7 +44,7 @@ public class Theme {
     @Field(type = FieldType.Integer, name = "maxHeadcount")
     private Integer maxHeadcount;
 
-    public static Theme of(ThemeCreateRequestDto syncTheme) {
+    public static Theme of(ThemeCreateReqDto syncTheme) {
         return Theme.builder()
                 .venue(syncTheme.getVenue())
                 .title(syncTheme.getTitle())

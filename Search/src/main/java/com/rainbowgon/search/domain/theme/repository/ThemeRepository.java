@@ -1,6 +1,6 @@
-package com.rainbowgon.search.domain.search.repository;
+package com.rainbowgon.search.domain.theme.repository;
 
-import com.rainbowgon.search.domain.search.model.Theme;
+import com.rainbowgon.search.domain.theme.model.Theme;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
