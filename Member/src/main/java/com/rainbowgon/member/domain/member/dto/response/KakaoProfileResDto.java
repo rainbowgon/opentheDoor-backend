@@ -2,7 +2,6 @@ package com.rainbowgon.member.domain.member.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Data;
 import lombok.Getter;
 
 @Getter
@@ -14,7 +13,7 @@ public class KakaoProfileResDto {
     private Properties properties;
     private KakaoAccount kakaoAccount;
 
-    @Data
+    @Getter
     public static class Properties {
 
         private String nickname;
@@ -22,14 +21,14 @@ public class KakaoProfileResDto {
         private String thumbnailImage;
     }
 
-    @Data
+    @Getter
     public static class KakaoAccount {
 
         private Boolean profileNicknameNeedsAgreement;
         private Boolean profileImageNeedsAgreement;
         private Profile profile;
 
-        @Data
+        @Getter
         public static class Profile {
 
             private String nickname;
