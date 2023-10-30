@@ -1,4 +1,4 @@
-package com.rainbowgon.notification.domain.notification.response;
+package com.rainbowgon.notification.global.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
