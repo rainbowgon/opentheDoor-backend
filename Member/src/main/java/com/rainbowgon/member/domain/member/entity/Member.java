@@ -39,12 +39,11 @@ public class Member extends BaseEntity {
 
     @Column(columnDefinition = "VARCHAR(10)")
     @Enumerated(EnumType.STRING)
-//    @NotNull
+    //    @NotNull
     private Provider provider;
 
     //    @NotNull
     private String providerId;
-
 
     @Builder
     public Member(String name, String phoneNumber, Provider provider, String providerId, LocalDate birthDate) {
@@ -52,6 +51,18 @@ public class Member extends BaseEntity {
         this.phoneNumber = phoneNumber;
         this.provider = provider;
         this.providerId = providerId;
+        this.birthDate = birthDate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 

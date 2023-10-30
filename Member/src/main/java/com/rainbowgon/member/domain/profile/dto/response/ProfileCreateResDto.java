@@ -15,7 +15,7 @@ public class ProfileCreateResDto {
     public static ProfileCreateResDto from(Profile profile) {
         return ProfileCreateResDto.builder()
                 .nickname(profile.getNickname())
-                .profileImage(builder().profileImage)
+                .profileImage(profile.getProfileImage())
                 .build();
     }
 

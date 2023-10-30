@@ -25,16 +25,23 @@ public class Profile extends BaseEntity {
 
     @Column(columnDefinition = "VARCHAR(10)")
     @NotNull
-    private String nickname;
+    private String nickname; // 중복 허용
 
     //    @NotNull
     private String profileImage;
-
 
     @Builder
     public Profile(Member member, String nickname, String profileImage) {
         this.member = member;
         this.nickname = nickname;
+        this.profileImage = profileImage;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
 

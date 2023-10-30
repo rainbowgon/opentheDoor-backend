@@ -12,5 +12,4 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-
 }

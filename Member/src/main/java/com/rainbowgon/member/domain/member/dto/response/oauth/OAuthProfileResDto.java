@@ -1,4 +1,4 @@
-package com.rainbowgon.member.domain.member.dto.response;
+package com.rainbowgon.member.domain.member.dto.response.oauth;
 
 import com.rainbowgon.member.domain.member.entity.Provider;
 import lombok.*;

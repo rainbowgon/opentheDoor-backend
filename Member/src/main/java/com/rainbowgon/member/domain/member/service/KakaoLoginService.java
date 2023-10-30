@@ -1,8 +1,8 @@
 package com.rainbowgon.member.domain.member.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rainbowgon.member.domain.member.dto.response.KakaoProfileResDto;
-import com.rainbowgon.member.domain.member.dto.response.KakaoTokenResDto;
+import com.rainbowgon.member.domain.member.dto.response.oauth.KakaoProfileResDto;
+import com.rainbowgon.member.domain.member.dto.response.oauth.KakaoTokenResDto;
 import com.rainbowgon.member.domain.member.repository.MemberRepository;
 import com.rainbowgon.member.global.error.exception.AuthKakaoProfileFailureException;
 import com.rainbowgon.member.global.error.exception.AuthKakaoTokenFailureException;
