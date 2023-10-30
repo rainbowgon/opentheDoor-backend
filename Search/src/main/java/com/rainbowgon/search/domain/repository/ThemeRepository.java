@@ -10,19 +10,53 @@ import java.util.Optional;
 
 public interface ThemeRepository extends ElasticsearchRepository<Theme, String> {
 
+    //    @Query("{" +
+//            "    \"bool\": {" +
+//            "        \"must\": [" +
+//            "            {" +
+//            "                \"multi_match\": {" +
+//            "                    \"query\": \"?0\"," +
+//            "                    \"fields\": [\"venue.nori\", \"explanation.nori\", \"title.nori\", \"genre.nori\"]" +
+//            "                }" +
+//            "            }," +
+//            "            {" +
+//            "                \"multi_match\": {" +
+//            "                    \"query\": \"?0\"," +
+//            "                    \"fields\": [\"venue.ngram\", \"explanation.ngram\", \"title.ngram\", \"genre.ngram\"]" +
+//            "                }" +
+//            "            }" +
+//            "        ]" +
+//            "    }" +
+//            "}")
     @Query("{" +
             "    \"bool\": {" +
             "        \"should\": [" +
             "            {" +
-            "                \"multi_match\": {" +
-            "                    \"query\": \"?0\"," +
-            "                    \"fields\": [\"venue.nori\", \"explanation.nori\", \"title.nori\", \"genre.nori\"]" +
+            "                \"wildcard\": {" +
+            "                    \"venue\": {" +
+            "                        \"value\": \"*?0*\"" +
+            "                    }" +
             "                }" +
             "            }," +
             "            {" +
-            "                \"multi_match\": {" +
-            "                    \"query\": \"?0\"," +
-            "                    \"fields\": [\"venue.ngram\", \"explanation.ngram\", \"title.ngram\", \"genre.ngram\"]" +
+            "                \"wildcard\": {" +
+            "                    \"explanation\": {" +
+            "                        \"value\": \"*?0*\"" +
+            "                    }" +
+            "                }" +
+            "            }," +
+            "            {" +
+            "                \"wildcard\": {" +
+            "                    \"title\": {" +
+            "                        \"value\": \"*?0*\"" +
+            "                    }" +
+            "                }" +
+            "            }," +
+            "            {" +
+            "                \"wildcard\": {" +
+            "                    \"genre\": {" +
+            "                        \"value\": \"*?0*\"" +
+            "                    }" +
             "                }" +
             "            }" +
             "        ]" +
