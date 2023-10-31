@@ -15,10 +15,10 @@ on:
       - Reservation
 
 env:
-  S3_BUCKET_NAME: S3 버킷 이름
+  S3_BUCKET_NAME: ssafy-otd-depoly
   AWS_REGION: ap-northeast-2
-  CODEDEPLOY_NAME: CodeDeploy 이름
-  CODEDEPLOY_GROUP: CodeDeploy 배포 그룹 이름
+  CODEDEPLOY_NAME: ssafy-otd-codedeploy
+  CODEDEPLOY_GROUP: ssafy-otd-reservation-service-group
   TARGET_PROJECT: Reservation
 
 jobs:
