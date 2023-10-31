@@ -2,21 +2,21 @@ package com.rainbowgon.member.domain.member.service;
 
 
 import com.rainbowgon.member.domain.member.dto.request.MemberCreateReqDto;
-import com.rainbowgon.member.domain.member.dto.response.MemberCreateResDto;
+import com.rainbowgon.member.domain.member.dto.request.MemberUpdateReqDto;
 import com.rainbowgon.member.domain.member.dto.response.MemberInfoResDto;
-import com.rainbowgon.member.domain.member.dto.response.MemberTestResDto;
 import com.rainbowgon.member.domain.member.entity.Member;
 import com.rainbowgon.member.domain.member.repository.MemberRepository;
-import com.rainbowgon.member.domain.profile.dto.response.ProfileCreateResDto;
+import com.rainbowgon.member.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.member.domain.profile.service.ProfileService;
 import com.rainbowgon.member.global.error.exception.MemberNotFoundException;
-import com.rainbowgon.member.global.error.exception.MemberPhoneNumberDuplicationException;
 import com.rainbowgon.member.global.security.JwtTokenProvider;
 import com.rainbowgon.member.global.security.dto.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Slf4j
@@ -25,17 +25,15 @@ import java.util.UUID;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-
     private final JwtTokenProvider jwtTokenProvider;
     private final ProfileService profileService;
 
+    @Transactional
     @Override
-    public MemberCreateResDto createMember(MemberCreateReqDto createReqDto) {
+    public JwtTokenDto createMember(MemberCreateReqDto createReqDto) {
 
-        // 중복 체크
-        if (checkExistPhoneNumber(createReqDto.getPhoneNumber())) {
-            throw MemberPhoneNumberDuplicationException.EXCEPTION;
-        }
+        // 전화번호 중복 체크
+        checkPhoneNumber(createReqDto.getPhoneNumber());
 
         // 클라이언트한테 받은 정보로 멤버 객체 생성 후 DB에 저장
         Member member = memberRepository.save(
@@ -48,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
                         .build());
 
         // 생성한 멤버 객체로 프로필 객체 생성
-        ProfileCreateResDto profile = profileService.createProfile(member, createReqDto.getNickname(), createReqDto.getProfileImage());
+        profileService.createProfile(member, createReqDto.getNickname(), createReqDto.getProfileImage());
 
         // accessToken과 refreshToken 생성
         JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
@@ -58,32 +56,79 @@ public class MemberServiceImpl implements MemberService {
 
         // TODO redis에 refreshToken 저장
 
-        return MemberCreateResDto.builder()
-                .memberInfo(MemberInfoResDto.of(member, profile))
-                .tokens(jwtTokenDto)
-                .build();
+        return jwtTokenDto;
+    }
+
+    @Override
+    public MemberInfoResDto selectMemberInfo(UUID memberId) {
+
+        // 요청 회원의 멤버 객체 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        // 프로필 정보 가져오기
+        ProfileSimpleResDto profileSimpleResDto = profileService.selectProfileByMember(member.getId());
+
+        return MemberInfoResDto.of(member, profileSimpleResDto);
+    }
+
+    @Transactional
+    @Override
+    public Boolean updateMemberInfo(UUID memberId, MemberUpdateReqDto memberUpdateReqDto, MultipartFile profileImage) {
+
+        // 요청 회원의 멤버 객체 조회
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        // 프로필 서비스로 수정 요청 보내기
+        if (memberUpdateReqDto.getNickname() != null || profileImage != null) {
+            profileService.updateProfile(member.getId(),
+                                         memberUpdateReqDto.getProfileId(),
+                                         memberUpdateReqDto.getNickname(),
+                                         profileImage);
+        }
+
+        // 이름, 생일 수정
+        member.updateName(memberUpdateReqDto.getName());
+        member.updateBirthDate(memberUpdateReqDto.getBirthDate());
+
+        // 멤버 전화번호 변경됐다면 수정
+        if (memberUpdateReqDto.getPhoneNumber() != null) {
+            String phoneNumber = memberUpdateReqDto.getPhoneNumber();
+            checkPhoneNumber(phoneNumber); // 이미 존재하는 전화번호인지 확인
+            member.updatePhoneNumber(phoneNumber);
+        }
+
+        return true; // try-catch로 변경하기
+    }
+
+    @Transactional
+    @Override
+    public void deleteMember(UUID memberId) {
+
+        // 프로필 서비스로 삭제 요청 보내기
+        profileService.delectProfile(memberId);
+
+        // 회원 삭제
+        memberRepository.deleteById(memberId);
     }
 
     /**
-     * 이미 존재하는 회원인지 확인 (전화번호 중복 체크)
+     * 전화번호 중복 체크
+     * 중복값 있으면, 기존 회원의 전화번호 변경 로직 수행
      */
-    private boolean checkExistPhoneNumber(String phoneNumber) {
-        return memberRepository.existsByPhoneNumber(phoneNumber);
+    private void checkPhoneNumber(String phoneNumber) {
+
+        memberRepository.findByPhoneNumber(phoneNumber).ifPresent(this::overwritePhoneNumber);
     }
 
-    @Override
-    public MemberTestResDto selectMemberById(UUID memberId) {
-        log.debug("[MemberServiceImpl] selectMemberById 로직 start");
-        return memberRepository.findById(memberId)
-                .map(MemberTestResDto::from)
-                .orElseThrow(MemberNotFoundException::new);
-    }
+    /**
+     * 전화번호 중복 시,
+     * 기존 전화번호의 앞자리를 999로 변경
+     */
+    private void overwritePhoneNumber(Member member) {
 
-    @Override
-    public MemberTestResDto selectMemberByPhoneNumber(String phoneNumber) {
-        return memberRepository.findByPhoneNumber(phoneNumber)
-                .map(MemberTestResDto::from)
-                .orElseThrow(MemberNotFoundException::new);
+        String originPhoneNumber = member.getPhoneNumber();
+        String newPhoneNumber = "999" + originPhoneNumber.substring(3);
+        member.updatePhoneNumber(newPhoneNumber);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.rainbowgon.member.domain.member.dto.response;
+package com.rainbowgon.member.domain.member.dto.response.oauth;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

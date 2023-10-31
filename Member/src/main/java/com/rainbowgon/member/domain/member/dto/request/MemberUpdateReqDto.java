@@ -1,6 +1,5 @@
 package com.rainbowgon.member.domain.member.dto.request;
 
-import com.rainbowgon.member.domain.member.entity.Provider;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,17 +9,12 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberCreateReqDto {
+public class MemberUpdateReqDto {
 
+    private Long profileId;
     private String name;
     private String phoneNumber;
-    private Provider provider;
-    private String providerId;
+    private String nickname;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
-
-    // Profile에 저장되는 정보
-    private String nickname;
-    private String profileImage;
-
 }

@@ -1,19 +1,26 @@
 package com.rainbowgon.member.domain.member.controller;
 
 import com.rainbowgon.member.domain.member.dto.request.MemberCreateReqDto;
-import com.rainbowgon.member.domain.member.dto.response.KakaoProfileResDto;
-import com.rainbowgon.member.domain.member.dto.response.MemberCreateResDto;
-import com.rainbowgon.member.domain.member.dto.response.MemberTestResDto;
-import com.rainbowgon.member.domain.member.dto.response.OAuthProfileResDto;
+import com.rainbowgon.member.domain.member.dto.request.MemberUpdateReqDto;
+import com.rainbowgon.member.domain.member.dto.response.MemberInfoResDto;
+import com.rainbowgon.member.domain.member.dto.response.oauth.KakaoProfileResDto;
+import com.rainbowgon.member.domain.member.dto.response.oauth.OAuthProfileResDto;
 import com.rainbowgon.member.domain.member.service.KakaoLoginService;
 import com.rainbowgon.member.domain.member.service.MemberService;
+import com.rainbowgon.member.global.response.JsonResponse;
+import com.rainbowgon.member.global.response.ResponseWrapper;
+import com.rainbowgon.member.global.security.dto.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -22,9 +29,8 @@ public class MemberController {
     private final MemberService memberService;
     private final KakaoLoginService kakaoLoginService;
 
-
     /**
-     * 카카오로 로그인
+     * 카카오 로그인
      */
     @GetMapping("/login/kakao")
     public ResponseEntity<OAuthProfileResDto> kakaoLogin(@RequestParam("code") String code) throws Exception {
@@ -39,28 +45,49 @@ public class MemberController {
      * 회원가입
      */
     @PostMapping("/signup")
-    public ResponseEntity<MemberCreateResDto> createMember(@RequestBody MemberCreateReqDto createReqDto) {
+    public ResponseEntity<ResponseWrapper<JwtTokenDto>> createMember(@RequestBody MemberCreateReqDto createReqDto) {
 
-        MemberCreateResDto memberCreateResDto = memberService.createMember(createReqDto);
+        JwtTokenDto jwtTokenDto = memberService.createMember(createReqDto);
 
-        return ResponseEntity.ok(memberCreateResDto);
+        return JsonResponse.ok("회원가입에 성공하였습니다.", jwtTokenDto);
     }
 
+    /**
+     * 회원 정보 조회
+     * 회원 정보 수정 요청 시 보내줄 데이터
+     */
     @GetMapping("/me")
-    public ResponseEntity<MemberTestResDto> selectMemberById(@AuthenticationPrincipal String memberId) {
+    public ResponseEntity<ResponseWrapper<MemberInfoResDto>> selectMemberInfo(@AuthenticationPrincipal String memberId) {
 
-        MemberTestResDto selectedMember = memberService.selectMemberById(UUID.fromString(memberId));
+        MemberInfoResDto memberInfoResDto = memberService.selectMemberInfo(UUID.fromString(memberId));
 
-        return ResponseEntity.ok(selectedMember);
+        return JsonResponse.ok("회원 정보가 성공적으로 조회되었습니다.", memberInfoResDto);
     }
 
-    @GetMapping("/{phone-number}")
-    public ResponseEntity<MemberTestResDto> selectMemberByPhoneNumber(@PathVariable("phone-number") String phoneNumber) {
+    /**
+     * 회원 정보 수정
+     * 이름, 닉네임, 전화번호, 생년월일, 프로필사진
+     */
+    @PatchMapping
+    public ResponseEntity<ResponseWrapper<Nullable>> updateMemberInfo(
+            @AuthenticationPrincipal String memberId,
+            @RequestPart(value = "info") MemberUpdateReqDto memberUpdateReqDto,
+            @RequestPart(value = "file", required = false) MultipartFile profileImage) {
 
-        MemberTestResDto selectedMember = memberService.selectMemberByPhoneNumber(phoneNumber);
+        memberService.updateMemberInfo(UUID.fromString(memberId), memberUpdateReqDto, profileImage);
 
-        return ResponseEntity.ok(selectedMember);
+        return JsonResponse.ok("회원 정보가 성공적으로 수정되었습니다.");
     }
 
+    /**
+     * 회원 탈퇴
+     */
+    @DeleteMapping
+    public ResponseEntity<ResponseWrapper<Nullable>> deleteMember(@AuthenticationPrincipal String memberId) {
+
+        memberService.deleteMember(UUID.fromString(memberId));
+
+        return JsonResponse.ok("회원이 성공적으로 삭제되었습니다.");
+    }
 
 }
