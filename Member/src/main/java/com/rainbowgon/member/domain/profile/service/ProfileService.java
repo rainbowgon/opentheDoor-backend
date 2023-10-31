@@ -17,6 +17,8 @@ public interface ProfileService {
 
     NotificationStatus updateNotificationStatus(UUID memberId);
 
+    NotificationStatus updateBookmarkNotificationStatus(UUID memberId);
+
     void delectProfile(UUID memberId);
 
 }
