@@ -57,13 +57,13 @@ public class ProfileServiceImpl implements ProfileService {
         checkValidAccess(profile.getMember().getId(), memberId);
 
         // 닉네임 수정
-        profile.setNickname(nickname);
+        profile.updateNickname(nickname);
 
         // 프로필 사진 변경됐다면 수정
         if (profileImage != null) {
             // TODO 수정한 프로필 이미지 s3 업로드
             String profileImageUrl = null;
-            profile.setProfileImage(profileImageUrl);
+            profile.updateProfileImage(profileImageUrl);
         }
 
         return true;
@@ -81,7 +81,7 @@ public class ProfileServiceImpl implements ProfileService {
         log.info("[ProfileServiceImpl] 현재 알림 세팅값 = " + status);
 
         // 현재 상태와 반대 상태로 변경하기
-        profile.setNotificationStatus(status.equals(NotificationStatus.ON) ? NotificationStatus.OFF : NotificationStatus.ON);
+        profile.updateNotificationStatus(status.equals(NotificationStatus.ON) ? NotificationStatus.OFF : NotificationStatus.ON);
 
         return profile.getNotificationStatus();
     }

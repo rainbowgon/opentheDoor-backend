@@ -88,14 +88,14 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // 이름, 생일 수정
-        member.setName(memberUpdateReqDto.getName());
-        member.setBirthDate(memberUpdateReqDto.getBirthDate());
+        member.updateName(memberUpdateReqDto.getName());
+        member.updateBirthDate(memberUpdateReqDto.getBirthDate());
 
         // 멤버 전화번호 변경됐다면 수정
         if (memberUpdateReqDto.getPhoneNumber() != null) {
             String phoneNumber = memberUpdateReqDto.getPhoneNumber();
             checkPhoneNumber(phoneNumber); // 이미 존재하는 전화번호인지 확인
-            member.setPhoneNumber(phoneNumber);
+            member.updatePhoneNumber(phoneNumber);
         }
 
         return true; // try-catch로 변경하기
@@ -132,7 +132,7 @@ public class MemberServiceImpl implements MemberService {
 
         String originPhoneNumber = member.getPhoneNumber();
         String newPhoneNumber = "999" + originPhoneNumber.substring(3);
-        member.setPhoneNumber(newPhoneNumber);
+        member.updatePhoneNumber(newPhoneNumber);
     }
 
 }

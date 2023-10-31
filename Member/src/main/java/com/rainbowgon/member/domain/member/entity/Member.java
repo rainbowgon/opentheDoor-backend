@@ -54,15 +54,15 @@ public class Member extends BaseEntity {
         this.birthDate = birthDate;
     }
 
-    public void setName(String name) {
+    public void updateName(String name) {
         this.name = name;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void updatePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    public void updateBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
