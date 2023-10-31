@@ -4,6 +4,7 @@ import com.rainbowgon.search.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.search.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.search.domain.theme.model.Theme;
 import com.rainbowgon.search.domain.theme.repository.ThemeRepository;
+import com.rainbowgon.search.global.error.exception.ThemeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ public class ThemeServiceImpl implements ThemeService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<ThemeSimpleResDto> searchThemes(String keyword, Integer page, Integer size) {
 
         Page<Theme> pageTheme = search(keyword, PageRequest.of(page, size));
@@ -62,6 +65,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Theme> search(String keyword, Pageable pageable) {
         Page<Theme> pagedTheme = null;
         keyword = (keyword.equals("")) ? null : keyword;
@@ -77,8 +81,9 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ThemeDetailResDto selectOneThemeById(String themeId) {
-        Theme theme = themeRepository.findById(themeId).get();
+        Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
 
         return ThemeDetailResDto.from(theme);
     }
@@ -97,10 +102,7 @@ public class ThemeServiceImpl implements ThemeService {
             // If the member does not exist, add it to the ZSET with a score of 1
             zSetOperations.add("BOOKMARK", themeId, 1);
         }
-//
-//        for (String tmpId:zSetOperations.reverseRangeByScore("BOOKMARK", 0, 10)) {
-//
-//        };
+
     }
 
     public void reviewCnt(String themeId) {
