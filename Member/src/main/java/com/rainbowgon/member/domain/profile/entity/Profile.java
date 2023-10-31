@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,6 +15,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE Profile SET is_valid = 'DELETED' WHERE profile_id = ?")
+@Where(clause = "is_valid = 'VALID'")
 public class Profile extends BaseEntity {
 
     @Id
@@ -21,6 +25,7 @@ public class Profile extends BaseEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Column(columnDefinition = "VARCHAR(10)")
@@ -29,6 +34,10 @@ public class Profile extends BaseEntity {
 
     //    @NotNull
     private String profileImage;
+
+    @Column(columnDefinition = "VARCHAR(5) DEFAULT 'ON'")
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus notificationStatus = NotificationStatus.ON; // 앱 내 전체 알림 on(true)/off(false)
 
     @Builder
     public Profile(Member member, String nickname, String profileImage) {
@@ -43,6 +52,10 @@ public class Profile extends BaseEntity {
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public void setNotificationStatus(NotificationStatus status) {
+        this.notificationStatus = status;
     }
 
 }

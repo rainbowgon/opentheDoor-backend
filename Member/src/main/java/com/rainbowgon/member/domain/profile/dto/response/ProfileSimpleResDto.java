@@ -7,13 +7,15 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class ProfileCreateResDto {
+public class ProfileSimpleResDto {
 
+    private Long profileId;
     private String nickname;
     private String profileImage;
 
-    public static ProfileCreateResDto from(Profile profile) {
-        return ProfileCreateResDto.builder()
+    public static ProfileSimpleResDto from(Profile profile) {
+        return ProfileSimpleResDto.builder()
+                .profileId(profile.getId())
                 .nickname(profile.getNickname())
                 .profileImage(profile.getProfileImage())
                 .build();
