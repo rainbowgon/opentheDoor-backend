@@ -1,26 +1,35 @@
 package com.rainbowgon.member.domain.member.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rainbowgon.member.domain.member.entity.Member;
-import com.rainbowgon.member.domain.profile.dto.response.ProfileCreateResDto;
+import com.rainbowgon.member.domain.profile.dto.response.ProfileSimpleResDto;
 import lombok.*;
 
-import java.util.UUID;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class MemberInfoResDto { // 회원 정보가 담긴 응답 객체
+public class MemberInfoResDto { // 개인정보 수정 화면에 뿌려줄 데이터
 
-    private UUID memberId;
-    private String nickname;
+    private Long profileId;
     private String profileImage;
+    private String name;
+    private String phoneNumber;
+    private String nickname;
 
-    public static MemberInfoResDto of(Member member, ProfileCreateResDto profile) {
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
+
+    public static MemberInfoResDto of(Member member, ProfileSimpleResDto profile) {
         return MemberInfoResDto.builder()
-                .memberId(member.getId())
-                .nickname(profile.getNickname())
+                .profileId(profile.getProfileId())
                 .profileImage(profile.getProfileImage())
+                .name(member.getName())
+                .phoneNumber(member.getPhoneNumber())
+                .nickname(profile.getNickname())
+                .birthDate(member.getBirthDate())
                 .build();
     }
 }

@@ -17,7 +17,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE member SET is_valid = 'DELETED' WHERE member_id = ?")
+@SQLDelete(sql = "UPDATE Member SET is_valid = 'DELETED', phone_number = '00000000000' WHERE member_id = ?")
 @Where(clause = "is_valid = 'VALID'")
 public class Member extends BaseEntity {
 
@@ -39,12 +39,11 @@ public class Member extends BaseEntity {
 
     @Column(columnDefinition = "VARCHAR(10)")
     @Enumerated(EnumType.STRING)
-//    @NotNull
+    //    @NotNull
     private Provider provider;
 
     //    @NotNull
     private String providerId;
-
 
     @Builder
     public Member(String name, String phoneNumber, Provider provider, String providerId, LocalDate birthDate) {
@@ -52,6 +51,18 @@ public class Member extends BaseEntity {
         this.phoneNumber = phoneNumber;
         this.provider = provider;
         this.providerId = providerId;
+        this.birthDate = birthDate;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void updateBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
