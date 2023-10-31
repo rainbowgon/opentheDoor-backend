@@ -23,7 +23,7 @@ public class ProfileController {
     /**
      * 앱 내 모든 알림 on/off
      */
-    @PatchMapping("/notification")
+    @PatchMapping("/notifications")
     public ResponseEntity<ResponseWrapper<NotificationStatus>> updateNotificationStatus(
             @AuthenticationPrincipal String memberId) {
 
