@@ -54,9 +54,7 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = profileRepository.findById(profileId).orElseThrow(ProfileNotFoundException::new);
 
         // 유효한 요청인지 확인
-        if (!profile.getMember().getId().equals(memberId)) {
-            throw ProfileUnauthorizedException.EXCEPTION;
-        }
+        checkValidAccess(profile.getMember().getId(), memberId);
 
         // 닉네임 수정
         profile.setNickname(nickname);
@@ -92,6 +90,15 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public void delectProfile(UUID memberId) {
         profileRepository.deleteByMemberId(memberId);
+    }
+
+    /**
+     * 요청 유저의 ID와 접근하려는 유저(타겟) ID가 같은지 확인
+     */
+    private void checkValidAccess(UUID accessId, UUID targetId) {
+        if (!accessId.equals(targetId)) {
+            throw ProfileUnauthorizedException.EXCEPTION;
+        }
     }
 
 }
