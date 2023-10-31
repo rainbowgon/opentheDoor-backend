@@ -1,6 +1,5 @@
 package com.rainbowgon.member.domain.member.entity;
 
-import com.rainbowgon.member.domain.profile.entity.Profile;
 import com.rainbowgon.member.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,7 +17,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE member SET is_valid = 'DELETED' WHERE member_id = ?")
+@SQLDelete(sql = "UPDATE Member SET is_valid = 'DELETED', phone_number = '00000000000' WHERE member_id = ?")
 @Where(clause = "is_valid = 'VALID'")
 public class Member extends BaseEntity {
 
@@ -45,9 +44,6 @@ public class Member extends BaseEntity {
 
     //    @NotNull
     private String providerId;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
-    private Profile profile;
 
     @Builder
     public Member(String name, String phoneNumber, Provider provider, String providerId, LocalDate birthDate) {
