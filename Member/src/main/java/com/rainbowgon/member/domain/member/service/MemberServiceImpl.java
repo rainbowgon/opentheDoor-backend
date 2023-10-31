@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class MemberServiceImpl implements MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final ProfileService profileService;
 
+    @Transactional
     @Override
     public JwtTokenDto createMember(MemberCreateReqDto createReqDto) {
 
@@ -69,6 +71,7 @@ public class MemberServiceImpl implements MemberService {
         return MemberInfoResDto.from(member);
     }
 
+    @Transactional
     @Override
     public Boolean updateMemberInfo(UUID memberId, MemberUpdateReqDto memberUpdateReqDto, MultipartFile profileImage) {
 
