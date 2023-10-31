@@ -32,7 +32,7 @@ public class Member extends BaseEntity {
     @NotNull
     private String name;
 
-    @Column(columnDefinition = "CHAR(11)")
+    @Column(columnDefinition = "CHAR(11)", unique = true)
     @NotNull
     private String phoneNumber;
 
