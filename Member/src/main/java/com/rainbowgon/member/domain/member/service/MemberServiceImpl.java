@@ -114,18 +114,25 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 전화번호 중복 체크
-     * 이미 존재하는 전화번호이면, 기존 회원 전화번호 앞자리 999로 변경
      */
     private void checkPhoneNumber(String phoneNumber) {
 
+        // 전화번호로 회원 찾기
         Optional<Member> member = memberRepository.findByPhoneNumber(phoneNumber);
 
-        if (member.isPresent()) {
-            Member targetMember = member.get();
-            String originPhoneNumber = targetMember.getPhoneNumber();
-            String newPhoneNumber = "999" + originPhoneNumber.substring(3);
-            targetMember.setPhoneNumber(newPhoneNumber);
-        }
+        // 회원 있으면, 기존 회원의 전화번호 변경 로직 수행
+        member.ifPresent(this::overwritePhoneNumber);
+    }
+
+    /**
+     * 전화번호 중복 시,
+     * 기존 전화번호의 앞자리를 999로 변경
+     */
+    private void overwritePhoneNumber(Member member) {
+
+        String originPhoneNumber = member.getPhoneNumber();
+        String newPhoneNumber = "999" + originPhoneNumber.substring(3);
+        member.setPhoneNumber(newPhoneNumber);
     }
 
 }
