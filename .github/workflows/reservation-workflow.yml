@@ -15,7 +15,7 @@ on:
       - Reservation
 
 env:
-  S3_BUCKET_NAME: ssafy-otd-depoly
+  S3_BUCKET_NAME: ssafy-otd-deploy
   AWS_REGION: ap-northeast-2
   CODEDEPLOY_NAME: ssafy-otd-codedeploy
   CODEDEPLOY_GROUP: ssafy-otd-reservation-service-group
