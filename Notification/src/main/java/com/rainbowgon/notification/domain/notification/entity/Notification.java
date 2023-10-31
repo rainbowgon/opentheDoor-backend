@@ -2,7 +2,10 @@ package com.rainbowgon.notification.domain.notification.entity;
 
 import com.rainbowgon.notification.global.entity.BaseEntity;
 import lombok.AccessLevel;
+<<<<<<< HEAD
+=======
 import lombok.Builder;
+>>>>>>> b04608eb73cdeac34ecae88332f346c7729d615b
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
