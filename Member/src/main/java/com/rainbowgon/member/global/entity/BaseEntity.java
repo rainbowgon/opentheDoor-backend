@@ -19,7 +19,6 @@ public abstract class BaseEntity {
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'VALID'")
-    @Column(columnDefinition = "VARCHAR(10)")
+    @Column(columnDefinition = "VARCHAR(10) DEFAULT 'VALID'")
     private ValidStatus isValid = ValidStatus.VALID;
 }
