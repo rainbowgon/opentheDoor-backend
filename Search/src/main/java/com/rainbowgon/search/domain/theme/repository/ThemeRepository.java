@@ -6,8 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import java.util.Optional;
-
 public interface ThemeRepository extends ElasticsearchRepository<Theme, String> {
 
     //    @Query("{" +
@@ -63,6 +61,5 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
             "    }" +
             "}")
     Page<Theme> searchByKeyword(String keyword, Pageable pageable);
-
-    Optional<Theme> findThemeByThemeId(String ThemeId);
+    
 }
