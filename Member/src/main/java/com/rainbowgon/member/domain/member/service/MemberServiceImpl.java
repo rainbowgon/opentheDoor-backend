@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -114,14 +113,11 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 전화번호 중복 체크
+     * 중복값 있으면, 기존 회원의 전화번호 변경 로직 수행
      */
     private void checkPhoneNumber(String phoneNumber) {
 
-        // 전화번호로 회원 찾기
-        Optional<Member> member = memberRepository.findByPhoneNumber(phoneNumber);
-
-        // 회원 있으면, 기존 회원의 전화번호 변경 로직 수행
-        member.ifPresent(this::overwritePhoneNumber);
+        memberRepository.findByPhoneNumber(phoneNumber).ifPresent(this::overwritePhoneNumber);
     }
 
     /**
