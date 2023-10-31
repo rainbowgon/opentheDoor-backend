@@ -29,7 +29,6 @@ public class MemberController {
     private final MemberService memberService;
     private final KakaoLoginService kakaoLoginService;
 
-
     /**
      * 카카오 로그인
      */
@@ -75,10 +74,20 @@ public class MemberController {
             @RequestPart(value = "info") MemberUpdateReqDto memberUpdateReqDto,
             @RequestPart(value = "file", required = false) MultipartFile profileImage) {
 
-        log.info("[MemberController] 회원 정보 수정 로직 start");
         memberService.updateMemberInfo(UUID.fromString(memberId), memberUpdateReqDto, profileImage);
 
         return JsonResponse.ok("회원 정보가 성공적으로 수정되었습니다.");
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    @DeleteMapping
+    public ResponseEntity<ResponseWrapper<Nullable>> deleteMember(@AuthenticationPrincipal String memberId) {
+
+        memberService.deleteMember(UUID.fromString(memberId));
+
+        return JsonResponse.ok("회원이 성공적으로 삭제되었습니다.");
     }
 
 }

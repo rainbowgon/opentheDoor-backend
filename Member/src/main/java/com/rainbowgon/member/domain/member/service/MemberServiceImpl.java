@@ -6,10 +6,9 @@ import com.rainbowgon.member.domain.member.dto.request.MemberUpdateReqDto;
 import com.rainbowgon.member.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.member.domain.member.entity.Member;
 import com.rainbowgon.member.domain.member.repository.MemberRepository;
-import com.rainbowgon.member.domain.profile.entity.Profile;
+import com.rainbowgon.member.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.member.domain.profile.service.ProfileService;
 import com.rainbowgon.member.global.error.exception.MemberNotFoundException;
-import com.rainbowgon.member.global.error.exception.ProfileUnauthorizedException;
 import com.rainbowgon.member.global.security.JwtTokenProvider;
 import com.rainbowgon.member.global.security.dto.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import java.util.UUID;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-
     private final JwtTokenProvider jwtTokenProvider;
     private final ProfileService profileService;
 
@@ -68,7 +66,10 @@ public class MemberServiceImpl implements MemberService {
         // 요청 회원의 멤버 객체 조회
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        return MemberInfoResDto.from(member);
+        // 프로필 정보 가져오기
+        ProfileSimpleResDto profileSimpleResDto = profileService.selectProfileByMember(member.getId());
+
+        return MemberInfoResDto.of(member, profileSimpleResDto);
     }
 
     @Transactional
@@ -77,29 +78,18 @@ public class MemberServiceImpl implements MemberService {
 
         // 요청 회원의 멤버 객체 조회
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        log.info("[MemberServiceImpl] 회원 정보 수정 요청 회원 아이디 = " + member.getId());
 
-        // 요청 회원의 프로필 객체
-        Profile profile = member.getProfile();
-        log.info("[MemberServiceImpl] 회원 정보 수정 요청 회원 닉네임 = " + member.getProfile().getNickname());
-
-
-        // 유효한 접근인지 확인 (요청 회원의 profileId와 reqDto의 profileId 비교)
-        if (!profile.getId().equals(memberUpdateReqDto.getProfileId())) {
-            throw ProfileUnauthorizedException.EXCEPTION;
+        // 프로필 서비스로 수정 요청 보내기
+        if (memberUpdateReqDto.getNickname() != null || profileImage != null) {
+            profileService.updateProfile(member.getId(),
+                                         memberUpdateReqDto.getProfileId(),
+                                         memberUpdateReqDto.getNickname(),
+                                         profileImage);
         }
 
-        // 닉네임, 이름, 생일 수정
-        profile.setNickname(memberUpdateReqDto.getNickname());
+        // 이름, 생일 수정
         member.setName(memberUpdateReqDto.getName());
         member.setBirthDate(memberUpdateReqDto.getBirthDate());
-
-        // 프로필 사진 변경됐다면 수정
-        if (profileImage != null) {
-            // TODO 수정한 프로필 이미지 s3 업로드
-            String profileImageUrl = null;
-            profile.setProfileImage(profileImageUrl);
-        }
 
         // 멤버 전화번호 변경됐다면 수정
         if (memberUpdateReqDto.getPhoneNumber() != null) {
@@ -109,6 +99,17 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return true; // try-catch로 변경하기
+    }
+
+    @Transactional
+    @Override
+    public void deleteMember(UUID memberId) {
+
+        // 프로필 서비스로 삭제 요청 보내기
+        profileService.delectProfile(memberId);
+
+        // 회원 삭제
+        memberRepository.deleteById(memberId);
     }
 
     /**

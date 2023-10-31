@@ -16,4 +16,6 @@ public interface MemberService {
 
     Boolean updateMemberInfo(UUID memberId, MemberUpdateReqDto memberUpdateReqDto, MultipartFile profileImage);
 
+    void deleteMember(UUID memberId);
+
 }
