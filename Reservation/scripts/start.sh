@@ -7,5 +7,5 @@ JAR="$ROOT_PATH/app.jar"
 CONTAINER="app_container"
 IMAGE="app_image"
 
-docker build -t "$IMAGE" .
-docker run -dp 8080:8080 --name "$CONTAINER" "$IMAGE"
+sudo docker build -t "$IMAGE" .
+sudo docker run -dp 8080:8080 --name "$CONTAINER" "$IMAGE"
