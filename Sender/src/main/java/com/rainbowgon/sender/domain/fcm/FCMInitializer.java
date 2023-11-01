@@ -1,4 +1,4 @@
-package com.rainbowgon.sender.domain.service;
+package com.rainbowgon.sender.domain.fcm;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

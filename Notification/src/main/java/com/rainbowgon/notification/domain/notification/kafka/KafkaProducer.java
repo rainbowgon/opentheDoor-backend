@@ -27,4 +27,4 @@ public class KafkaProducer {
 
         kafkaTemplate.send(topic,jsonInString);
     }
-}~
+}

@@ -1,7 +1,7 @@
 package com.rainbowgon.sender.domain.controller;
 
-import com.rainbowgon.sender.domain.service.FCMInitializer;
-import com.rainbowgon.sender.domain.service.FCMService;
+import com.rainbowgon.sender.domain.fcm.FCMInitializer;
+import com.rainbowgon.sender.domain.fcm.FCMService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
