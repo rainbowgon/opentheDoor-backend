@@ -6,7 +6,5 @@ spring:
       auto-offset-reset: earliest
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    alert-topic-name: an-alert
-    accept-topic-name: an-accept
 server:
   port: 8080
