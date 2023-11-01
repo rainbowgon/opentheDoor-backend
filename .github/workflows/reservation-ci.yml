@@ -49,10 +49,9 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./${{ env.TARGET_PROJECT }}
+        working-directory: /${{ env.TARGET_PROJECT }}
 
     steps:
-      - uses: actions/checkout@v3
       - run: pwd
       - run: ls -al
 
