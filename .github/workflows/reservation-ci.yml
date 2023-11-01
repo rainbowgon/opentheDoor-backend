@@ -42,7 +42,7 @@ jobs:
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
 
-      - name: AWS credential 설정
+      - name: Configure AWS credential
         uses: aws-actions/configure-aws-credentials@v1
         with:
           AWS_REGION: ${{ env.AWS_REGION }}
