@@ -38,7 +38,12 @@ public class Profile extends BaseEntity {
 
     @Column(columnDefinition = "VARCHAR(5) DEFAULT 'ON'")
     @Enumerated(EnumType.STRING)
-    private NotificationStatus notificationStatus = NotificationStatus.ON; // 앱 내 전체 알림 on(true)/off(false)
+    private NotificationStatus notificationStatus = NotificationStatus.ON; // 앱 내 전체 알림
+
+    @Column(columnDefinition = "VARCHAR(5) DEFAULT 'ON'")
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus bookmarkNotificationStatus = NotificationStatus.ON; // 북마크 시 자동 알림 on/off
+
 
     @Builder
     public Profile(Member member, String nickname, String profileImage) {
@@ -57,6 +62,10 @@ public class Profile extends BaseEntity {
 
     public void updateNotificationStatus(NotificationStatus status) {
         this.notificationStatus = status;
+    }
+
+    public void updateBookmarkNotificationStatus(NotificationStatus status) {
+        this.bookmarkNotificationStatus = status;
     }
 
 }

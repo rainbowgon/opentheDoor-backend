@@ -29,7 +29,19 @@ public class ProfileController {
 
         NotificationStatus status = profileService.updateNotificationStatus(UUID.fromString(memberId));
 
-        return JsonResponse.ok("알림 설정이 변경되었습니다.", status);
+        return JsonResponse.ok("전체 알림 설정이 변경되었습니다.", status);
+    }
+
+    /**
+     * 북마크 시, 자동으로 예약 오픈 알림 on/off
+     */
+    @PatchMapping("/notifications/bookmarks")
+    public ResponseEntity<ResponseWrapper<NotificationStatus>> updateBookmarkNotificationStatus(
+            @AuthenticationPrincipal String memberId) {
+
+        NotificationStatus status = profileService.updateBookmarkNotificationStatus(UUID.fromString(memberId));
+
+        return JsonResponse.ok("북마크 알림 설정이 변경되었습니다.", status);
     }
 
 }

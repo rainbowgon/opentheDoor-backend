@@ -39,11 +39,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileSimpleResDto selectProfileByMember(UUID memberId) {
-
-        // 프로필 객체 가져오기
-        Profile profile = profileRepository.findByMemberId(memberId).orElseThrow(ProfileNotFoundException::new);
-
-        return ProfileSimpleResDto.from(profile);
+        return ProfileSimpleResDto.from(getProfileByMemberId(memberId));
     }
 
     @Transactional
@@ -74,16 +70,35 @@ public class ProfileServiceImpl implements ProfileService {
     public NotificationStatus updateNotificationStatus(UUID memberId) {
 
         // 프로필 객체 가져오기
-        Profile profile = profileRepository.findByMemberId(memberId).orElseThrow(ProfileNotFoundException::new);
+        Profile profile = getProfileByMemberId(memberId);
 
-        // 현재 알림 설정 상태 가져오기
+        // 현재 전체 알림 설정 상태 가져오기
         NotificationStatus status = profile.getNotificationStatus();
-        log.info("[ProfileServiceImpl] 현재 알림 세팅값 = " + status);
+        log.info("[ProfileServiceImpl] 현재 전체 알림 세팅값 = " + status);
 
         // 현재 상태와 반대 상태로 변경하기
-        profile.updateNotificationStatus(status.equals(NotificationStatus.ON) ? NotificationStatus.OFF : NotificationStatus.ON);
+        profile.updateNotificationStatus(
+                status.equals(NotificationStatus.ON) ? NotificationStatus.OFF : NotificationStatus.ON);
 
         return profile.getNotificationStatus();
+    }
+
+    @Transactional
+    @Override
+    public NotificationStatus updateBookmarkNotificationStatus(UUID memberId) {
+
+        // 프로필 객체 가져오기
+        Profile profile = getProfileByMemberId(memberId);
+
+        // 현재 북마크 알림 설정 상태 가져오기
+        NotificationStatus status = profile.getBookmarkNotificationStatus();
+        log.info("[ProfileServiceImpl] 현재 북마크 알림 세팅값 = " + status);
+
+        // 현재 상태와 반대 상태로 변경하기
+        profile.updateBookmarkNotificationStatus(
+                status.equals(NotificationStatus.ON) ? NotificationStatus.OFF : NotificationStatus.ON);
+
+        return profile.getBookmarkNotificationStatus();
     }
 
     @Transactional
@@ -99,6 +114,13 @@ public class ProfileServiceImpl implements ProfileService {
         if (!accessId.equals(targetId)) {
             throw ProfileUnauthorizedException.EXCEPTION;
         }
+    }
+
+    /**
+     * 유저 ID로 프로필 조회
+     */
+    private Profile getProfileByMemberId(UUID memberId) {
+        return profileRepository.findByMemberId(memberId).orElseThrow(ProfileNotFoundException::new);
     }
 
 }
