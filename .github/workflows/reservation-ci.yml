@@ -42,6 +42,13 @@ jobs:
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
 
+  upload-aws:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./${{ env.TARGET_PROJECT }}
+
+    steps:
       - name: Configure AWS credential
         uses: aws-actions/configure-aws-credentials@v1
         with:
