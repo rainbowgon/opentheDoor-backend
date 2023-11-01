@@ -21,4 +21,8 @@ public abstract class BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10) DEFAULT 'VALID'")
     private ValidStatus isValid = ValidStatus.VALID;
+
+    public void updateIsValid(ValidStatus status) {
+        this.isValid = status;
+    }
 }
