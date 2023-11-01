@@ -24,8 +24,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: pwd
-      - run: ls -al
 
       - name: Grant Permission for gradlew
         run: chmod +x ./gradlew
