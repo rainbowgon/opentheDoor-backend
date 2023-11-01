@@ -31,8 +31,6 @@ jobs:
         working-directory: ./${{ env.TARGET_PROJECT }}
 
     steps:
-      - run: pwd
-      - run: ls -al
       - uses: actions/checkout@v3
       - run: pwd
       - run: ls -al
@@ -54,8 +52,6 @@ jobs:
         working-directory: ./${{ env.TARGET_PROJECT }}
 
     steps:
-      - run: pwd
-      - run: ls -al
       - uses: actions/checkout@v3
       - run: pwd
       - run: ls -al
