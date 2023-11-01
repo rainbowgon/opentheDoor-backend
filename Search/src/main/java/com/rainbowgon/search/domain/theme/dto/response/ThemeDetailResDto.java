@@ -13,7 +13,7 @@ public class ThemeDetailResDto {
     private String venue; // 지점명
     private String title; // 타이틀
     private String explanation; // 설명
-    private String img; // 포스터
+    private String poster; // 포스터
     private String[] genre; // 장르
     private Integer level; // 난이도
     private Integer minHeadcount; // 최소 인원 수
@@ -28,7 +28,7 @@ public class ThemeDetailResDto {
                 .venue(theme.getVenue())
                 .title(theme.getTitle())
                 .explanation(theme.getExplanation())
-                .img(theme.getImg())
+                .poster(theme.getPoster())
                 .genre(theme.getGenre())
                 .level(theme.getLevel())
                 .minHeadcount(theme.getMinHeadcount())

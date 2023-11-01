@@ -26,11 +26,23 @@ public class ThemeController {
             @RequestParam(required = false, defaultValue = "10") int size) {
         List<ThemeSimpleResDto> searchList = themeService.searchThemes(keyword, page, size);
 
+
         Integer totalElements = searchList.size();
         PageInfo pageInfo = new PageInfo(page, size, totalElements, totalElements / size);
 
         return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList, pageInfo);
     }
+
+//    @GetMapping("/searches/{sort-by}")
+//    public ResponseEntity<ResponseWrapper<List<ThemeSimpleResDto>>> sortThemes(
+//            @PathVariable("sort-by") String sortBy) {
+//        List<ThemeSimpleResDto> searchList = themeService.sort(sortBy, page, size);
+//
+//        Integer totalElements = searchList.size();
+//        PageInfo pageInfo = new PageInfo(page, size, totalElements, totalElements / size);
+//
+//        return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList, pageInfo);
+//    }
 
     @GetMapping("/{theme-id}")
     public ResponseEntity<ResponseWrapper<ThemeDetailResDto>> searchThemes(

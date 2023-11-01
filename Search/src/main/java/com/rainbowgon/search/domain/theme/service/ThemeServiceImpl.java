@@ -6,16 +6,15 @@ import com.rainbowgon.search.domain.theme.model.Theme;
 import com.rainbowgon.search.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.search.global.error.exception.ThemeNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -23,61 +22,63 @@ public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
     private final RedisTemplate<String, String> redisTemplate;
-//    private final RedisTemplate<String, Integer> redisTemplate;
+    private final RedisTemplate<String, Theme> themeRedisTemplate;
 
+
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<ThemeSimpleResDto> searchThemes(String keyword, Integer page, Integer size) {
+//
+//        Page<Theme> pageTheme = search(keyword, PageRequest.of(page, size));
+//
+//        return pageTheme.stream()
+//                .map(ThemeSimpleResDto::from)
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     @Transactional(readOnly = true)
     public List<ThemeSimpleResDto> searchThemes(String keyword, Integer page, Integer size) {
+        List<Theme> themeList = search(keyword);
+        System.out.println("themeList = " + themeList);
+        // 레디스에 저장할 키를 생성
+        String redisKey = keyword + ":bookmark";
+        System.out.println("redisKey = " + redisKey);
+        // themeList의 themeId와 BOOKMARK에 저장된 score를 가져와서 zset에 저장
+        for (Theme theme : themeList) {
+            System.out.println("theme.getId() = " + theme.getId());
+            System.out.println("theme.getThemeId() = " + theme.getThemeId());
+            Double score = redisTemplate.opsForZSet().score("BOOKMARK", theme.getThemeId());
+            System.out.println("score = " + score);
+            if (score != null) {
+                themeRedisTemplate.opsForZSet().add(redisKey, theme, score);
+            }
+        }
 
-        Page<Theme> pageTheme = search(keyword, PageRequest.of(page, size));
+        // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
+        Set<Theme> sortedThemeIds = themeRedisTemplate.opsForZSet().reverseRange(redisKey, page * 10, page * 10 + size);
 
-//        List<ThemeSimpleResponseDto> themeList = );
-//        final Page<Theme> pagedTheme = search(keyword, page, size);
-//        final long totalThemessCnt = pagedTheme.getTotalElements();
-//        final int totalPageCnt = pagedTheme.getTotalPages();
-//
-//        final List<SearchThemes> searchThemes = new ArrayList<>();
-//        for (Theme themeCreateRequestDto : pagedTheme) {
-//            // prompt 서버에서 필요한 정보 조회
-//            final UUID promptUuid = UUID.fromString(themeCreateRequestDto.getThemesUuid());
-//            final SearchFromThemesResponse fromThemes = circuitBreaker
-//                    .run(() -> promptClient.searchFromThemes(promptUuid, crntMemberUuid));
-//
-//            // 사용자 조회
-//            final MemberResponse member = circuitBreaker
-//                    .run(() -> memberClient
-//                            .getMemberInfo(UUID.fromString(themeCreateRequestDto.getUserId()))
-//                            .orElseThrow(MemberNotFoundException::new));
-//            final WriterResponse writer = member.toWriterResponse();
-//
-//            // dto로 변환하기
-//            searchThemess.add(SearchThemes.of(
-//                    themeCreateRequestDto,
-//                    fromThemes,
-//                    writer
-//            ));
-//
-//        }
-        return pageTheme.stream()
+        return sortedThemeIds.stream()
                 .map(ThemeSimpleResDto::from)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Theme> search(String keyword, Pageable pageable) {
-        Page<Theme> pagedTheme = null;
+    public List<Theme> search(String keyword) {
+        List<Theme> themeList = null;
         keyword = (keyword.equals("")) ? null : keyword;
 
         if (null != keyword) {
-            pagedTheme = themeRepository.searchByKeyword(keyword, pageable);
+            themeList = themeRepository.searchByKeyword(keyword);
 
         } else if (null == keyword) {
-            pagedTheme = themeRepository.findAll(pageable);
+            Iterable<Theme> themes = themeRepository.findAll();
+            themeList = StreamSupport.stream(themes.spliterator(), false) // ElasticsearchRepository는 findAll이 List가 아닌 Iterable가 나와서 변환 필요
+                    .collect(Collectors.toList());
         }
 
-        return pagedTheme;
+        return themeList;
     }
 
     @Override
@@ -87,6 +88,24 @@ public class ThemeServiceImpl implements ThemeService {
 
         return ThemeDetailResDto.from(theme);
     }
+
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Page<Theme> sort(List<Theme> pagedTheme, String sortBy) {
+//        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+//
+//        List<Theme> sortedContent = pagedTheme.getContent().stream()
+//                .sorted((theme1, theme2) -> {
+//                    Double score1 = zSetOperations.score(sortBy, theme1.getId());
+//                    Double score2 = zSetOperations.score(sortBy, theme2.getId());
+//                    return score2.compareTo(score1);  // Descending order
+//                })
+//                .collect(Collectors.toList());
+//
+//        Page<Theme> sortedPage = new PageImpl<>(sortedContent, pagedTheme.getPageable(), pagedTheme.getTotalElements());
+//
+//        return sortedPage;
+//    }
 
 
     public void bookmarkCnt(String themeId) {
