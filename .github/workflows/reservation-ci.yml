@@ -54,4 +54,4 @@ jobs:
             --application-name $CODEDEPLOY_NAME \
             --deployment-config-name CodeDeployDefault.AllAtOnce \
             --deployment-group-name $CODEDEPLOY_GROUP \
-            --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip,prefix=$TARGET_PROJECT
+            --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
