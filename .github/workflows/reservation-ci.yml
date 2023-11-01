@@ -33,9 +33,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Clear Current Directory
-        run: rm -rf .
-
       - name: Grant Permission for gradlew
         run: chmod +x ./gradlew
 
