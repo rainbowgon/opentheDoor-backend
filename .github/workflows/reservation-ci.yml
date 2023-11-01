@@ -1,4 +1,4 @@
-name: Reservation CI
+name: Reservation Service CI
 
 on:
   push:
