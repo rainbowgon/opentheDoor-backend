@@ -40,16 +40,11 @@ public class ThemeServiceImpl implements ThemeService {
     @Transactional(readOnly = true)
     public List<ThemeSimpleResDto> searchThemes(String keyword, Integer page, Integer size) {
         List<Theme> themeList = search(keyword);
-        System.out.println("themeList = " + themeList);
         // 레디스에 저장할 키를 생성
         String redisKey = keyword + ":bookmark";
-        System.out.println("redisKey = " + redisKey);
         // themeList의 themeId와 BOOKMARK에 저장된 score를 가져와서 zset에 저장
         for (Theme theme : themeList) {
-            System.out.println("theme.getId() = " + theme.getId());
-            System.out.println("theme.getThemeId() = " + theme.getThemeId());
-            Double score = redisTemplate.opsForZSet().score("BOOKMARK", theme.getThemeId());
-            System.out.println("score = " + score);
+            Double score = redisTemplate.opsForZSet().score("BOOKMARK", theme.getId());
             if (score != null) {
                 themeRedisTemplate.opsForZSet().add(redisKey, theme, score);
             }
