@@ -6,13 +6,15 @@ on:
       - main
       - develop
     paths:
-      - Reservation
+      - "Reservation/**"
+      - ".github/**" # 테스트용
   pull_request:
     branches:
       - main
       - develop
     paths:
-      - Reservation
+      - "Reservation/**"
+      - ".github/**"
 
 env:
   S3_BUCKET_NAME: ssafy-otd-deploy
