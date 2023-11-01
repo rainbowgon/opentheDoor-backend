@@ -49,6 +49,8 @@ jobs:
         working-directory: ./${{ env.TARGET_PROJECT }}
 
     steps:
+      - uses: actions/checkout@v3
+
       - name: Configure AWS credential
         uses: aws-actions/configure-aws-credentials@v1
         with:
