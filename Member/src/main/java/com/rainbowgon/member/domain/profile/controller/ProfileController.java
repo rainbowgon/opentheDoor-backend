@@ -1,7 +1,7 @@
 package com.rainbowgon.member.domain.profile.controller;
 
-import com.rainbowgon.member.domain.profile.entity.NotificationStatus;
 import com.rainbowgon.member.domain.profile.service.ProfileService;
+import com.rainbowgon.member.global.entity.NotificationStatus;
 import com.rainbowgon.member.global.response.JsonResponse;
 import com.rainbowgon.member.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;

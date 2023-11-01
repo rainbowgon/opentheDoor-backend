@@ -2,6 +2,7 @@ package com.rainbowgon.member.domain.profile.entity;
 
 import com.rainbowgon.member.domain.member.entity.Member;
 import com.rainbowgon.member.global.entity.BaseEntity;
+import com.rainbowgon.member.global.entity.NotificationStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

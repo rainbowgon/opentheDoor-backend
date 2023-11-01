@@ -2,9 +2,9 @@ package com.rainbowgon.member.domain.profile.service;
 
 import com.rainbowgon.member.domain.member.entity.Member;
 import com.rainbowgon.member.domain.profile.dto.response.ProfileSimpleResDto;
-import com.rainbowgon.member.domain.profile.entity.NotificationStatus;
 import com.rainbowgon.member.domain.profile.entity.Profile;
 import com.rainbowgon.member.domain.profile.repository.ProfileRepository;
+import com.rainbowgon.member.global.entity.NotificationStatus;
 import com.rainbowgon.member.global.error.exception.ProfileNotFoundException;
 import com.rainbowgon.member.global.error.exception.ProfileUnauthorizedException;
 import lombok.RequiredArgsConstructor;
