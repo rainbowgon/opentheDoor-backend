@@ -61,11 +61,7 @@ public class ReviewController {
 
         ReviewDetailResDto review = reviewService.selectThemeReview(themeId);
 
-        if (review == null) {
-            return JsonResponse.ok("등록된 리뷰가 없습니다.", null);
-        }
-
-        return JsonResponse.ok("테마의 리뷰 1건이 성공적으로 조회되었습니다.", review);
+        return JsonResponse.ok("테마의 리뷰가 성공적으로 조회되었습니다.", review);
     }
 
     /**
@@ -89,11 +85,7 @@ public class ReviewController {
             @RequestParam("themeId") Long themeId) {
 
         MyReviewDetailResDto myReview = reviewService.selectMyThemeReview(UUID.fromString(memberId), themeId);
-
-        if (myReview == null) {
-            return JsonResponse.ok("작성한 리뷰가 없습니다.", null);
-        }
-
+        
         return JsonResponse.ok("테마의 내가 쓴 리뷰가 성공적으로 조회되었습니다.", myReview);
     }
 
