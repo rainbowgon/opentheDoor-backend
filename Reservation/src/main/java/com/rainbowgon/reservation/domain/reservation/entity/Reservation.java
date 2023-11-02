@@ -27,7 +27,7 @@ public class Reservation extends BaseEntity {
     private LocalTime targetTime;
 
     @Column(columnDefinition = "INT UNSIGNED")
-    private Long headCount;
+    private Long headcount;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(12)")
