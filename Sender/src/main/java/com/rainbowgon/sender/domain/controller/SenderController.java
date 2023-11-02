@@ -1,7 +1,7 @@
 package com.rainbowgon.sender.domain.controller;
 
-import com.rainbowgon.sender.domain.service.FCMInitializer;
-import com.rainbowgon.sender.domain.service.FCMService;
+import com.rainbowgon.sender.domain.fcm.FCMInitializer;
+import com.rainbowgon.sender.domain.fcm.FCMService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ public class SenderController {
     @GetMapping
     public String v1() {
         fcmInitializer.initialize();
-        fcmService.sendMessage("고세훈 S10토큰");
+        fcmService.sendMessage("모바일 토큰");
 
         return "test";
     }

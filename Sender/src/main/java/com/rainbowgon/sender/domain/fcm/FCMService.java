@@ -1,4 +1,4 @@
-package com.rainbowgon.sender.domain.service;
+package com.rainbowgon.sender.domain.fcm;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
