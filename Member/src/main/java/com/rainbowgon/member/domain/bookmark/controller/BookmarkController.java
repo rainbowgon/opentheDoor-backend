@@ -38,7 +38,8 @@ public class BookmarkController {
 
     /**
      * 홈 화면에서 보여지는 북마크 목록을 조회.
-     * 테마 ID, 테마 포스터, 제목, 지점명, 평균 별점, 리뷰 수 반환
+     * 회원의 전체 북마크 중 최신순 20개 반환
+     * -> 테마 ID, 테마 포스터, 제목, 지점명, 평균 별점, 리뷰 수
      */
     @GetMapping
     public ResponseEntity<ResponseWrapper<BookmarkSimpleResDto>> selectSimpleBookmarkList(
@@ -51,7 +52,8 @@ public class BookmarkController {
 
     /**
      * 마이페이지의 북마크 내역에서 보여지는 북마크 목록을 조회.
-     * 테마와 관련된 모든 정보 반환
+     * 회원의 전체 북마크 반환.
+     * -> 테마와 관련된 모든 데이터
      */
     @GetMapping("/detail")
     public ResponseEntity<ResponseWrapper<BookmarkDetailResDto>> selectDetailBookmarkList(
