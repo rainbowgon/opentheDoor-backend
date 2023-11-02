@@ -99,7 +99,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         // TODO pageInfo, 무한스크롤
 
-        return null;
+        return reviewList.stream().map(ReviewDetailResDto::from).collect(Collectors.toList());
     }
 
     @Override

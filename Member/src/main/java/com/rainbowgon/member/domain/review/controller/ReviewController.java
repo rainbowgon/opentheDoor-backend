@@ -90,6 +90,10 @@ public class ReviewController {
 
         MyReviewDetailResDto myReview = reviewService.selectMyThemeReview(UUID.fromString(memberId), themeId);
 
+        if (myReview == null) {
+            return JsonResponse.ok("작성한 리뷰가 없습니다.", null);
+        }
+
         return JsonResponse.ok("테마의 내가 쓴 리뷰가 성공적으로 조회되었습니다.", myReview);
     }
 
