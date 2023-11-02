@@ -20,7 +20,7 @@ public class Reservation extends BaseEntity {
     private Long id;
 
     @Column(columnDefinition = "INT UNSIGNED")
-    private Long reservationNumber;
+    private Long reservationNumber; // 예약 번호
 
     private LocalDate targetDate;
 
@@ -40,8 +40,8 @@ public class Reservation extends BaseEntity {
     private String bookerPhoneNumber;
 
     @Column(columnDefinition = "INT UNSIGNED")
-    private Long themeId;
+    private Long themeId; // 테마 ID
 
     @Column(columnDefinition = "INT UNSIGNED")
-    private Long bookerId;
+    private Long bookerId; // 프로필 ID
 }
