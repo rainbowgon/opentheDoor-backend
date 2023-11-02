@@ -18,7 +18,7 @@ public class SenderController {
     @GetMapping
     public String v1() {
         fcmInitializer.initialize();
-        fcmService.sendMessage("eUx1lfVlRD-sbq0gsH7VVI:APA91bGTPBMRli6tFf5AherbKLqj7G4TMqia6OsXUy-Al9S48haWnIbDnvSCzAE7K9ZjG0xg2tW0mZvnRHoDNl4Lklg5LJ0R9FXoGrDkHA-Qw6z28JqxM2KGDm_OaPGZ-d6cKiCQkvH3");
+        fcmService.sendMessage("모바일 토큰");
 
         return "test";
     }
