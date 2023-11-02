@@ -31,6 +31,10 @@ public enum GlobalErrorCode implements BaseErrorCode {
     PROFILE_NICKNAME_DUPLICATION(CONFLICT, "PROFILE-409-1", "이미 존재하는 닉네임입니다."),
     PROFILE_UNAUTHORIZED(UNAUTHORIZED, "PROFILE-401-1", "해당 프로필에 접근 권한이 없습니다."),
 
+    /* Bookmark */
+    BOOKMARK_NOT_FOUND(NOT_FOUND, "BOOKMARK-404-1", "해당 북마크를 찾을 수 없습니다."),
+    BOOKMARK_UNAUTHORIZED(UNAUTHORIZED, "BOOKMARK-401-1", "해당 북마크에 접근 권한이 없습니다."),
+
     CUSTOM_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL-500-1", "서버 오류. 관리자에게 문의 부탁드립니다.");
 
     private HttpStatus status;

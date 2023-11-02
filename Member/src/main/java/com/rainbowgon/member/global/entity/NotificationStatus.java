@@ -1,4 +1,4 @@
-package com.rainbowgon.member.domain.profile.entity;
+package com.rainbowgon.member.global.entity;
 
 public enum NotificationStatus {
     ON,

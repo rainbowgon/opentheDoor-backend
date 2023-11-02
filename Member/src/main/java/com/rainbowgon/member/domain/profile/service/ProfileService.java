@@ -2,7 +2,7 @@ package com.rainbowgon.member.domain.profile.service;
 
 import com.rainbowgon.member.domain.member.entity.Member;
 import com.rainbowgon.member.domain.profile.dto.response.ProfileSimpleResDto;
-import com.rainbowgon.member.domain.profile.entity.NotificationStatus;
+import com.rainbowgon.member.global.entity.NotificationStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
