@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:sender-server/src/main/java/com/rainbowgon/senderserver/global/error/dto/ErrorResponse.java
 package com.rainbowgon.senderserver.global.error.dto;
-========
-package com.rainbowgon.memberservice.global.error.dto;
->>>>>>>> f8213dc00867a97502b3f55955962a8328cb899b:member-service/src/main/java/com/rainbowgon/memberservice/global/error/dto/ErrorResponse.java
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
