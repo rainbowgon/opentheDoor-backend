@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ResponseWrapper<T> {
 
-    private com.rainbowgon.searchservice.global.response.PageInfo pageInfo;
+    private PageInfo pageInfo;
     private String message;
     private T data;
 }

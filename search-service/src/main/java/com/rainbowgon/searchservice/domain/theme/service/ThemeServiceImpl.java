@@ -24,7 +24,7 @@ import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
-public class ThemeServiceImpl implements com.rainbowgon.searchservice.domain.theme.service.ThemeService {
+public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
     private final RedisTemplate<String, String> redisTemplate;
