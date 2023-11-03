@@ -1,10 +1,10 @@
-package com.rainbowgon.apigateway;
+package com.rainbowgon.apigatewayserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApiGatewayApplicationTests {
+class ApigatewayServerApplicationTests {
 
     @Test
     void contextLoads() {
