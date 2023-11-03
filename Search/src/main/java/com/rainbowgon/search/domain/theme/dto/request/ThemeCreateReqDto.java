@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ThemeCreateReqDto {
 
+    private String themeId; // 테마아이디
     private String venue; // 지점명
     private String title; // 타이틀
     private String explanation; // 설명
-    private String img; // 포스터
+    private String poster; // 포스터
     private String[] genre; // 장르
     private Integer level; // 난이도
     private Integer minHeadcount; // 최소 인원 수

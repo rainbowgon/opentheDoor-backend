@@ -11,6 +11,6 @@ public class PageInfo {
 
     private int page;
     private int size;
-    private int totalElements;
+    private long totalElements;
     private int totalPages;
 }
