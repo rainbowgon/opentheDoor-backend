@@ -7,8 +7,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.Arrays;
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -56,18 +54,4 @@ public class Theme {
                 .build();
     }
 
-    @Override
-    public String toString() {
-        return "Theme{" +
-                "id='" + id + '\'' +
-                ", venue='" + venue + '\'' +
-                ", title='" + title + '\'' +
-                ", explanation='" + explanation + '\'' +
-                ", poster='" + poster + '\'' +
-                ", genre=" + Arrays.toString(genre) +
-                ", level=" + level +
-                ", minHeadcount=" + minHeadcount +
-                ", maxHeadcount=" + maxHeadcount +
-                '}';
-    }
 }
