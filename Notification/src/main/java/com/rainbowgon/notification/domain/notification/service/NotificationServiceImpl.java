@@ -1,4 +1,9 @@
 package com.rainbowgon.notification.domain.notification.service;
 
-public interface NotificationServiceImpl {
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class NotificationServiceImpl implements NotificationService {
 }
