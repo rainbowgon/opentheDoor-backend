@@ -26,12 +26,12 @@ public class JsonResponse {
 
     public static <T> ResponseEntity<ResponseWrapper<List<T>>> ok(String message, Page<T> page) {
         // Page 정보를 추출합니다.
-        PageInfo pageInfo = new PageInfo(
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
+        PageInfo pageInfo = PageInfo.builder()
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .build();
 
         // content를 List로 변환합니다.
         List<T> content = page.getContent();
