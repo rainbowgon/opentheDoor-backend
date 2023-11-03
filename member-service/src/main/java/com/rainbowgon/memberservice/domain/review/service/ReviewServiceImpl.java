@@ -67,8 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
     public MyReviewDetailResDto updateReview(UUID memberId, ReviewUpdateReqDto reviewUpdateReqDto) {
 
         // 리뷰 객체 가져오기
-        Review review =
-                reviewRepository.findById(reviewUpdateReqDto.getReviewId()).orElseThrow(ReviewNotFoundException::new);
+        Review review = reviewRepository.findById(reviewUpdateReqDto.getReviewId()).orElseThrow(ReviewNotFoundException::new);
 
         // 유효한 요청인지 확인
         checkValidAccess(getProfileId(memberId), review.getProfileId());

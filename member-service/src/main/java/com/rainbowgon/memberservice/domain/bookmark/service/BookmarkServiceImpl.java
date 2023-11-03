@@ -13,6 +13,8 @@ import com.rainbowgon.memberservice.global.error.exception.BookmarkNotFoundExcep
 import com.rainbowgon.memberservice.global.error.exception.BookmarkUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,10 +24,11 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BookmarkServiceImpl implements com.rainbowgon.memberservice.domain.bookmark.service.BookmarkService {
+public class BookmarkServiceImpl implements BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
     private final ProfileService profileService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
     @Override
@@ -34,8 +37,10 @@ public class BookmarkServiceImpl implements com.rainbowgon.memberservice.domain.
         // 요청 회원의 프로필 ID 가져오기
         Long profileId = getProfileId(memberId);
 
-        for (Long themeId : bookmarkUpdateReqDto.getBookmarkThemeIdList()) {
+        // redis에서 북마크 정보 가져오기
+        ZSetOperations<String, Object> zSetOperations = redisTemplate.opsForZSet();
 
+        for (Long themeId : bookmarkUpdateReqDto.getBookmarkThemeIdList()) {
             // 프로필 ID와 테마 ID로 북마크 찾기
             bookmarkRepository.findByProfileIdAndThemeId(profileId, themeId).ifPresentOrElse(
                     // 이미 존재하는 북마크라면, valid 상태 변경
@@ -50,6 +55,18 @@ public class BookmarkServiceImpl implements com.rainbowgon.memberservice.domain.
         }
 
         // TODO redis에 북마크 수 업데이트
+    }
+
+    /**
+     * 북마크 등록
+     */
+    private void createBookmark() {
+    }
+
+    /**
+     * 북마크 해제
+     */
+    private void deleteBookmark() {
     }
 
     @Override
