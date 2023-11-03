@@ -102,12 +102,10 @@ public class ThemeServiceImpl implements ThemeService {
     @Transactional(readOnly = true)
     public List<ThemeDetailResDto> selectThemeById(ThemeCheckReqDtoList themeIdList) {
         List<ThemeDetailResDto> themeDetailResDtoList = new ArrayList<>();
-        System.out.println(themeIdList.getThemeList());
         for (String themeId : themeIdList.getThemeList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
             themeDetailResDtoList.add(ThemeDetailResDto.from(theme));
         }
-        System.out.println(themeDetailResDtoList.size());
         return themeDetailResDtoList;
     }
 
