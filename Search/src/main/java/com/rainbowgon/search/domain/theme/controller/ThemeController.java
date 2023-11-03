@@ -1,12 +1,13 @@
 package com.rainbowgon.search.domain.theme.controller;
 
+import com.rainbowgon.search.domain.theme.dto.request.ThemeCheckReqDtoList;
 import com.rainbowgon.search.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.search.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.search.domain.theme.service.ThemeService;
 import com.rainbowgon.search.global.response.JsonResponse;
-import com.rainbowgon.search.global.response.PageInfo;
 import com.rainbowgon.search.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,32 +25,38 @@ public class ThemeController {
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
-        List<ThemeSimpleResDto> searchList = themeService.searchThemes(keyword, page, size);
+        Page<ThemeSimpleResDto> searchList = themeService.searchThemes(keyword, page, size);
 
-
-        Integer totalElements = searchList.size();
-        PageInfo pageInfo = new PageInfo(page, size, totalElements, totalElements / size);
-
-        return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList, pageInfo);
+        return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList);
     }
 
-//    @GetMapping("/searches/{sort-by}")
-//    public ResponseEntity<ResponseWrapper<List<ThemeSimpleResDto>>> sortThemes(
-//            @PathVariable("sort-by") String sortBy) {
-//        List<ThemeSimpleResDto> searchList = themeService.sort(sortBy, page, size);
-//
-//        Integer totalElements = searchList.size();
-//        PageInfo pageInfo = new PageInfo(page, size, totalElements, totalElements / size);
-//
-//        return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList, pageInfo);
-//    }
+    @GetMapping("/sorts")
+    public ResponseEntity<ResponseWrapper<List<ThemeSimpleResDto>>> sortThemes(
+            @RequestParam(required = false, defaultValue = "") String keyword,
+            @RequestParam(required = false, defaultValue = "BOOKMARK") String sortBy,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size) {
+        Page<ThemeSimpleResDto> searchList = themeService.sort(keyword, sortBy, page, size);
+
+
+        return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList);
+    }
 
     @GetMapping("/{theme-id}")
-    public ResponseEntity<ResponseWrapper<ThemeDetailResDto>> searchThemes(
+    public ResponseEntity<ResponseWrapper<ThemeDetailResDto>> selectTheme(
             @PathVariable("theme-id") String themeId) {
         ThemeDetailResDto searchTheme = themeService.selectOneThemeById(themeId);
 
-        return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchTheme);
+        return JsonResponse.ok("성공적으로 조회가 완료되었습니다.", searchTheme);
+    }
+
+    @GetMapping("/lists")
+    public ResponseEntity<ResponseWrapper<List<ThemeDetailResDto>>> selectThemes(
+            @RequestBody ThemeCheckReqDtoList themeCheckReqDtoList) {
+        List<ThemeDetailResDto> themeDetailResDtoList = themeService.selectThemeById(themeCheckReqDtoList);
+        System.out.println(themeCheckReqDtoList);
+
+        return JsonResponse.ok("성공적으로 조회(리스트)가 완료되었습니다.", themeDetailResDtoList);
     }
 
     @GetMapping("/review/{theme-id}")

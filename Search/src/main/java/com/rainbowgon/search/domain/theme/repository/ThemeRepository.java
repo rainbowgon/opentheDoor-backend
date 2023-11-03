@@ -13,28 +13,28 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
             "        \"should\": [" +
             "            {" +
             "                \"wildcard\": {" +
-            "                    \"venue.nori\": {" +
+            "                    \"venue\": {" +
             "                        \"value\": \"*?0*\"" +
             "                    }" +
             "                }" +
             "            }," +
             "            {" +
             "                \"wildcard\": {" +
-            "                    \"explanation.nori\": {" +
+            "                    \"explanation\": {" +
             "                        \"value\": \"*?0*\"" +
             "                    }" +
             "                }" +
             "            }," +
             "            {" +
             "                \"wildcard\": {" +
-            "                    \"title.nori\": {" +
+            "                    \"title\": {" +
             "                        \"value\": \"*?0*\"" +
             "                    }" +
             "                }" +
             "            }," +
             "            {" +
             "                \"wildcard\": {" +
-            "                    \"genre.nori\": {" +
+            "                    \"genre\": {" +
             "                        \"value\": \"*?0*\"" +
             "                    }" +
             "                }" +
@@ -43,42 +43,6 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
             "    }" +
             "}")
     List<Theme> searchByKeyword(String keyword);
-
-//    @Query("{" +
-//            "    \"bool\": {" +
-//            "        \"should\": [" +
-//            "            {" +
-//            "                \"wildcard\": {" +
-//            "                    \"venue.nori\": {" +
-//            "                        \"value\": \"*?0*\"" +
-//            "                    }" +
-//            "                }" +
-//            "            }," +
-//            "            {" +
-//            "                \"wildcard\": {" +
-//            "                    \"explanation.nori\": {" +
-//            "                        \"value\": \"*?0*\"" +
-//            "                    }" +
-//            "                }" +
-//            "            }," +
-//            "            {" +
-//            "                \"wildcard\": {" +
-//            "                    \"title.nori\": {" +
-//            "                        \"value\": \"*?0*\"" +
-//            "                    }" +
-//            "                }" +
-//            "            }," +
-//            "            {" +
-//            "                \"wildcard\": {" +
-//            "                    \"genre.nori\": {" +
-//            "                        \"value\": \"*?0*\"" +
-//            "                    }" +
-//            "                }" +
-//            "            }" +
-//            "        ]" +
-//            "    }" +
-//            "}")
-//    Page<Theme> searchByKeyword(String keyword, Pageable pageable);
 
 
 }

@@ -19,9 +19,6 @@ public class Theme {
     @Id
     private String id;
 
-//    @Field(type = FieldType.Text, name = "themeId")
-//    private String themeId;
-
     @Field(type = FieldType.Text, name = "venue")
     private String venue;
 
@@ -48,7 +45,6 @@ public class Theme {
 
     public static Theme of(ThemeCreateReqDto syncTheme) {
         return Theme.builder()
-//                .themeId(syncTheme.getThemeId())
                 .venue(syncTheme.getVenue())
                 .title(syncTheme.getTitle())
                 .explanation(syncTheme.getExplanation())
@@ -64,7 +60,6 @@ public class Theme {
     public String toString() {
         return "Theme{" +
                 "id='" + id + '\'' +
-//                ", themeId='" + _id + '\'' +
                 ", venue='" + venue + '\'' +
                 ", title='" + title + '\'' +
                 ", explanation='" + explanation + '\'' +
