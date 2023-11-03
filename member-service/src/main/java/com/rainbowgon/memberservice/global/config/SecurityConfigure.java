@@ -32,7 +32,6 @@ public class SecurityConfigure {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-
                 .authorizeRequests()
                 .antMatchers("/members/signup/**").permitAll()
                 .antMatchers("/members/login/**").permitAll()

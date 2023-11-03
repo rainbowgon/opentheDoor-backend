@@ -44,6 +44,5 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
                     "    }" +
                     "}")
     List<Theme> searchByKeyword(String keyword);
-
-
+    
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ProfileServiceImpl implements com.rainbowgon.memberservice.domain.profile.service.ProfileService {
+public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
 

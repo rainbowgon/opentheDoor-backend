@@ -22,7 +22,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BookmarkServiceImpl implements com.rainbowgon.memberservice.domain.bookmark.service.BookmarkService {
+public class BookmarkServiceImpl implements BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
     private final ProfileService profileService;
