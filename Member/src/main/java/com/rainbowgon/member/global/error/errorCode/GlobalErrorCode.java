@@ -35,6 +35,10 @@ public enum GlobalErrorCode implements BaseErrorCode {
     BOOKMARK_NOT_FOUND(NOT_FOUND, "BOOKMARK-404-1", "해당 북마크를 찾을 수 없습니다."),
     BOOKMARK_UNAUTHORIZED(UNAUTHORIZED, "BOOKMARK-401-1", "해당 북마크에 접근 권한이 없습니다."),
 
+    /* Review */
+    REVIEW_NOT_FOUND(NOT_FOUND, "REVIEW-404-1", "해당 리뷰를 찾을 수 없습니다."),
+    REVIEW_UNAUTHORIZED(UNAUTHORIZED, "REVIEW-401-1", "해당 리뷰에 접근 권한이 없습니다."),
+
     CUSTOM_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL-500-1", "서버 오류. 관리자에게 문의 부탁드립니다.");
 
     private HttpStatus status;

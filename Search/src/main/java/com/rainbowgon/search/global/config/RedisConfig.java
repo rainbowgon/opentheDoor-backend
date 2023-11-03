@@ -1,5 +1,6 @@
 package com.rainbowgon.search.global.config;
 
+import com.rainbowgon.search.domain.theme.model.Theme;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,6 +66,16 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Float.class));
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, Theme> objectRedisTemplate(
+            RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Theme> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Theme.class));
         return redisTemplate;
     }
 

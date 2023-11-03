@@ -48,6 +48,8 @@ public class BookmarkServiceImpl implements BookmarkService {
                                                           .build())
             );
         }
+
+        // TODO redis에 북마크 수 업데이트
     }
 
     @Override
@@ -57,6 +59,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         Long profileId = getProfileId(memberId);
 
         // 요청 회원의 북마크 테마 목록 가져오기
+        // TODO 최신순으로 20개까지 자르기
         List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfileId(profileId);
 
         // TODO 북마크 목록에서 테마 ID를 통해 각각의 테마 정보(아이디, 포스터, 테마명, 지점명) 가져오기 -> search-service
@@ -64,6 +67,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         // TODO 북마크 목록에서 테마 ID를 통해 각각의 리뷰 정보(평균 별점, 리뷰 수) 가져오기 -> redis
 
 
+        // TODO pageInfo 추가
         return null;
     }
 
@@ -83,6 +87,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         // TODO 북마크 목록에서 테마 ID를 통해 각각의 북마크 정보(북마크 수) 가져오기 -> redis
 
 
+        // TODO 무한스크롤
         return null;
     }
 

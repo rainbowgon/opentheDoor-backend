@@ -17,9 +17,6 @@ public class Theme {
     @Id
     private String id;
 
-    @Field(type = FieldType.Text, name = "themeId")
-    private String themeId;
-
     @Field(type = FieldType.Text, name = "venue")
     private String venue;
 
@@ -29,8 +26,8 @@ public class Theme {
     @Field(type = FieldType.Text, name = "explanation")
     private String explanation;
 
-    @Field(type = FieldType.Keyword, name = "img")
-    private String img;
+    @Field(type = FieldType.Keyword, name = "poster")
+    private String poster;
 
     @Field(type = FieldType.Keyword, name = "genre", index = false)
     private String[] genre;
@@ -49,11 +46,12 @@ public class Theme {
                 .venue(syncTheme.getVenue())
                 .title(syncTheme.getTitle())
                 .explanation(syncTheme.getExplanation())
-                .img(syncTheme.getImg())
+                .poster(syncTheme.getPoster())
                 .genre(syncTheme.getGenre())
                 .level(syncTheme.getLevel())
                 .minHeadcount(syncTheme.getMinHeadcount())
                 .maxHeadcount(syncTheme.getMaxHeadcount())
                 .build();
     }
+
 }

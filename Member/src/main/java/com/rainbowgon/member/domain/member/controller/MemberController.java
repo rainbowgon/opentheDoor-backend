@@ -53,20 +53,21 @@ public class MemberController {
     }
 
     /**
-     * 회원 정보 조회
-     * 회원 정보 수정 요청 시 보내줄 데이터
+     * 개인 정보 조회
+     * 개인 정보 수정 요청 시 보내줄 데이터
      */
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapper<MemberInfoResDto>> selectMemberInfo(@AuthenticationPrincipal String memberId) {
 
         MemberInfoResDto memberInfoResDto = memberService.selectMemberInfo(UUID.fromString(memberId));
 
-        return JsonResponse.ok("회원 정보가 성공적으로 조회되었습니다.", memberInfoResDto);
+        return JsonResponse.ok("개인 정보가 성공적으로 조회되었습니다.", memberInfoResDto);
     }
 
     /**
-     * 회원 정보 수정
-     * 이름, 닉네임, 전화번호, 생년월일, 프로필사진
+     * 개인 정보 수정
+     * 수정 가능한 데이터 -> 이름, 닉네임, 전화번호, 생년월일, 프로필사진
+     * 이름은 수정 사항 없어도 기존값 그대로, 나머지는 수정 사항 없으면 null
      */
     @PatchMapping
     public ResponseEntity<ResponseWrapper<Nullable>> updateMemberInfo(
@@ -76,7 +77,7 @@ public class MemberController {
 
         memberService.updateMemberInfo(UUID.fromString(memberId), memberUpdateReqDto, profileImage);
 
-        return JsonResponse.ok("회원 정보가 성공적으로 수정되었습니다.");
+        return JsonResponse.ok("개인 정보가 성공적으로 수정되었습니다.");
     }
 
     /**
