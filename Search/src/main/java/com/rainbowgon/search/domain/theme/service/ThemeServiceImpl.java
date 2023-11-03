@@ -78,10 +78,10 @@ public class ThemeServiceImpl implements ThemeService {
         List<Theme> themeList = null;
         keyword = (keyword.equals("")) ? null : keyword;
 
-        if (null != keyword) {
+        if (keyword != null) {
             themeList = themeRepository.searchByKeyword(keyword);
 
-        } else if (null == keyword) {
+        } else if (keyword == null) {
             Iterable<Theme> themes = themeRepository.findAll();
             themeList = StreamSupport.stream(themes.spliterator(), false) // ElasticsearchRepository는 findAll이 List가 아닌 Iterable가 나와서 변환 필요
                     .collect(Collectors.toList());
@@ -139,7 +139,6 @@ public class ThemeServiceImpl implements ThemeService {
         if (themeExists) {
             // If the member exists, increment its score by 1
             zSetOperations.incrementScore("BOOKMARK", themeId, 1);
-            System.out.println("BOOKMARK = " + zSetOperations.score("BOOKMARK", themeId));
 
         } else {
             // If the member does not exist, add it to the ZSET with a score of 1
@@ -155,7 +154,6 @@ public class ThemeServiceImpl implements ThemeService {
         if (themeExists) {
             // If the member exists, increment its score by 1
             zSetOperations.incrementScore("REVIEW", themeId, 1);
-            System.out.println("REVIEW = " + zSetOperations.score("REVIEW", themeId));
         } else {
             // If the member does not exist, add it to the ZSET with a score of 1
             zSetOperations.add("REVIEW", themeId, 1);
@@ -169,7 +167,6 @@ public class ThemeServiceImpl implements ThemeService {
         if (themeExists) {
             // If the member exists, increment its score by 1
             zSetOperations.incrementScore("RECOMMEND", themeId, 1);
-            System.out.println("RECOMMEND = " + zSetOperations.score("RECOMMEND", themeId));
         } else {
             // If the member does not exist, add it to the ZSET with a score of 1
             zSetOperations.add("RECOMMEND", themeId, 1);
