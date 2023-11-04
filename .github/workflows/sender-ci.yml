@@ -1,4 +1,4 @@
-name: Sender CI
+name: Sender Server CI
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
       - develop
     paths:
-      - "Sender/**"
+      - "sender-server/**"
 
 env:
   S3_BUCKET_NAME: ssafy-otd-codedeploy
   AWS_REGION: ap-northeast-2
   CODEDEPLOY_NAME: ssafy-otd-codedeploy
-  CODEDEPLOY_GROUP: ssafy-otd-sender-group
-  TARGET_PROJECT: Sender
+  CODEDEPLOY_GROUP: ssafy-otd-sender-server-group
+  TARGET_PROJECT: sender-server
 
 jobs:
   build:

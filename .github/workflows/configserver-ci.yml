@@ -1,4 +1,4 @@
-name: ConfigServer CI
+name: Config Server CI
 
 on:
   push:
