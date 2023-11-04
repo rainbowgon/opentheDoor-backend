@@ -1,4 +1,4 @@
-name: ConfigServer CI
+name: Notification Service CI
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
       - develop
     paths:
-      - "ConfigServer/**"
+      - "notification-service/**"
 
 env:
   S3_BUCKET_NAME: ssafy-otd-codedeploy
   AWS_REGION: ap-northeast-2
   CODEDEPLOY_NAME: ssafy-otd-codedeploy
-  CODEDEPLOY_GROUP: ssafy-otd-config-server-group
-  TARGET_PROJECT: ConfigServer
+  CODEDEPLOY_GROUP: ssafy-otd-notification-service-group
+  TARGET_PROJECT: notification-service
 
 jobs:
   build:

@@ -1,4 +1,4 @@
-name: ApiGateway CI
+name: Config Server CI
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
       - develop
     paths:
-      - "ApiGateway/**"
+      - "config-server/**"
 
 env:
   S3_BUCKET_NAME: ssafy-otd-codedeploy
   AWS_REGION: ap-northeast-2
   CODEDEPLOY_NAME: ssafy-otd-codedeploy
-  CODEDEPLOY_GROUP: ssafy-otd-apigateway-group
-  TARGET_PROJECT: ApiGateway
+  CODEDEPLOY_GROUP: ssafy-otd-config-server-group
+  TARGET_PROJECT: config-server
 
 jobs:
   build:
