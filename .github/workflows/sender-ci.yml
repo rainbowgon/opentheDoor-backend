@@ -7,6 +7,12 @@ on:
       - develop
     paths:
       - "sender-server/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - "sender-server/**"
 
 env:
   S3_BUCKET_NAME: ssafy-otd-codedeploy
