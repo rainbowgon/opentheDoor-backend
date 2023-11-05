@@ -30,6 +30,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - run: ls -al
+
       - name: Create application.yml file
         run: touch ./src/main/resources/application.yml
 
