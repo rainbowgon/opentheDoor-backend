@@ -33,10 +33,10 @@ jobs:
       - run: ls -al
 
       - name: Create application.yml file
-        run: touch src/main/resources/application.yml
+        run: touch /src/main/resources/application.yml
 
       - name: Copy config contents
-        run: echo "${{ secrets.CONFIG_SERVER_YML }}" > src/main/resources/application.yml
+        run: echo "${{ secrets.CONFIG_SERVER_YML }}" > /src/main/resources/application.yml
 
       - name: Grant Permission for gradlew
         run: chmod +x ./gradlew
