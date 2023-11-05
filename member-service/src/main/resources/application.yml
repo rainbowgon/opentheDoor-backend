@@ -4,7 +4,7 @@ server:
 
 spring:
   profiles:
-    include: oauth
+    include: secret
 
   h2:
     console:
@@ -23,6 +23,10 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+
+  redis:
+    host: localhost
+    port: 6379
 
 logging:
   level:

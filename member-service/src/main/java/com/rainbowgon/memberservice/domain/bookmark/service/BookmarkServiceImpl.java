@@ -4,6 +4,8 @@ import com.rainbowgon.memberservice.domain.bookmark.dto.request.BookmarkUpdateRe
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkDetailResDto;
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkSimpleResDto;
 import com.rainbowgon.memberservice.domain.bookmark.entity.Bookmark;
+import com.rainbowgon.memberservice.domain.bookmark.entity.BookmarkNotification;
+import com.rainbowgon.memberservice.domain.bookmark.repository.BookmarkRedisRepository;
 import com.rainbowgon.memberservice.domain.bookmark.repository.BookmarkRepository;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
@@ -25,6 +27,7 @@ import java.util.UUID;
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
+    private final BookmarkRedisRepository bookmarkRedisRepository;
     private final ProfileService profileService;
 
     @Transactional
@@ -34,22 +37,59 @@ public class BookmarkServiceImpl implements BookmarkService {
         // 요청 회원의 프로필 ID 가져오기
         Long profileId = getProfileId(memberId);
 
-        for (Long themeId : bookmarkUpdateReqDto.getBookmarkThemeIdList()) {
-
+        for (String themeId : bookmarkUpdateReqDto.getBookmarkThemeIdList()) {
             // 프로필 ID와 테마 ID로 북마크 찾기
             bookmarkRepository.findByProfileIdAndThemeId(profileId, themeId).ifPresentOrElse(
-                    // 이미 존재하는 북마크라면, valid 상태 변경
-                    bookmark -> bookmark.updateIsValid(bookmark.getIsValid().equals(ValidStatus.VALID)
-                                                               ? ValidStatus.DELETED : ValidStatus.VALID),
-                    // 존재하지 않는 북마크라면, 새로 생성
-                    () -> bookmarkRepository.save(Bookmark.builder()
-                                                          .profileId(profileId)
-                                                          .themeId(themeId)
-                                                          .build())
-            );
+                    this::updateBookmark, // 이미 존재하는 북마크라면, valid 상태 변경
+                    () -> createBookmark(profileId, themeId)); // 존재하지 않는 북마크라면, 새로 생성
         }
 
         // TODO redis에 북마크 수 업데이트
+    }
+
+    /**
+     * 이미 존재하는 북마크일 경우
+     */
+    private void updateBookmark(Bookmark bookmark) {
+
+        if (bookmark.getIsValid().equals(ValidStatus.VALID)) { // status == valid
+            bookmark.updateIsValid(ValidStatus.DELETED);
+            bookmarkRedisRepository.deleteByBookmarkId(bookmark.getId());
+        } else { // status == deleted
+            bookmark.updateIsValid(ValidStatus.VALID);
+            createBookmarkInRedis(bookmark);
+        }
+    }
+
+    /**
+     * 존재하지 않는 북마크일 경우
+     * RDB, Redis insert
+     */
+    private void createBookmark(Long profileId, String themeId) {
+
+        // rdb
+        Bookmark bookmark = bookmarkRepository.save(
+                Bookmark.builder()
+                        .profileId(profileId)
+                        .themeId(themeId)
+                        .build());
+
+        // redis
+        createBookmarkInRedis(bookmark);
+    }
+
+    /**
+     * 북마크 생성 (Redis)
+     */
+    private void createBookmarkInRedis(Bookmark bookmark) {
+
+        bookmarkRedisRepository.save(
+                BookmarkNotification.builder()
+                        .openTime("2400") // TODO 실제 예약 오픈 시간으로 수정
+                        .bookmarkId(bookmark.getId())
+                        .themeId(bookmark.getThemeId())
+                        .profileId(bookmark.getProfileId())
+                        .build());
     }
 
     @Override
