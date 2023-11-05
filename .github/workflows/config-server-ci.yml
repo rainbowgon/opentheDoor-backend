@@ -7,11 +7,6 @@ on:
       - develop
     paths:
       - "config-server/**"
-  pull_request:
-    branches:
-      - develop
-    paths:
-      - ".github/**"
 
 env:
   S3_BUCKET_NAME: ssafy-otd-codedeploy
