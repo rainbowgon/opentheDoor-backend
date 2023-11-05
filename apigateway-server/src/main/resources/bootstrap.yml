@@ -3,5 +3,8 @@ spring:
     config:
       uri: http://10.0.2.98:80
       name: apigateway-server
-  profiles:
-    active: prod
+  config:
+    activate:
+      on-profile: prod
+#  profiles:
+#    active: prod
