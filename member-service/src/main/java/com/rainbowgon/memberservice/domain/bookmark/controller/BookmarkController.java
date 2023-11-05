@@ -74,8 +74,7 @@ public class BookmarkController {
             @AuthenticationPrincipal String memberId,
             @PathVariable("bookmark-id") Long bookmarkId) {
 
-        NotificationStatus status = bookmarkService.updateNotificationStatus(UUID.fromString(memberId),
-                                                                             bookmarkId);
+        NotificationStatus status = bookmarkService.updateNotificationStatus(UUID.fromString(memberId), bookmarkId);
 
         return JsonResponse.ok("오픈 알림 설정이 변경되었습니다.", status);
     }

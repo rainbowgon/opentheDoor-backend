@@ -9,7 +9,7 @@ import lombok.*;
 public class BookmarkDetailResDto { // 마이페이지에서 보여지는 북마크 리스트 객체
 
     /* 테마 정보 */
-    private Long themeId; // 테마 ID
+    private String themeId; // 테마 ID
     private String poster; // 테마 포스터
     private String title; // 테마명
     private String venue; // 지점명

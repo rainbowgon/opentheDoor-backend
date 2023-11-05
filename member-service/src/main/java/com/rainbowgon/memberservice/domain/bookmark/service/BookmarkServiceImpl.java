@@ -5,7 +5,6 @@ import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkDetailR
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkSimpleResDto;
 import com.rainbowgon.memberservice.domain.bookmark.entity.Bookmark;
 import com.rainbowgon.memberservice.domain.bookmark.entity.BookmarkNotification;
-import com.rainbowgon.memberservice.domain.bookmark.repository.BookmarkRedisRepository;
 import com.rainbowgon.memberservice.domain.bookmark.repository.BookmarkRepository;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
@@ -15,6 +14,7 @@ import com.rainbowgon.memberservice.global.error.exception.BookmarkNotFoundExcep
 import com.rainbowgon.memberservice.global.error.exception.BookmarkUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,8 +27,11 @@ import java.util.UUID;
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
-    private final BookmarkRedisRepository bookmarkRedisRepository;
     private final ProfileService profileService;
+
+    // key: 오픈 시간 (4자리 숫자) ex. 1030(오전 10시 반), 2400(밤 12시), 1850(저녁 6시 50분)
+//    private final RedisTemplate<String, BookmarkNotification> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
     @Override
@@ -40,7 +43,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         for (String themeId : bookmarkUpdateReqDto.getBookmarkThemeIdList()) {
             // 프로필 ID와 테마 ID로 북마크 찾기
             bookmarkRepository.findByProfileIdAndThemeId(profileId, themeId).ifPresentOrElse(
-                    this::updateBookmark, // 이미 존재하는 북마크라면, valid 상태 변경
+                    bookmark -> updateBookmark(bookmark, "2400"), // 이미 존재하는 북마크라면, valid 상태 변경
                     () -> createBookmark(profileId, themeId)); // 존재하지 않는 북마크라면, 새로 생성
         }
 
@@ -50,11 +53,12 @@ public class BookmarkServiceImpl implements BookmarkService {
     /**
      * 이미 존재하는 북마크일 경우
      */
-    private void updateBookmark(Bookmark bookmark) {
+    private void updateBookmark(Bookmark bookmark, String openTime) {
 
         if (bookmark.getIsValid().equals(ValidStatus.VALID)) { // status == valid
             bookmark.updateIsValid(ValidStatus.DELETED);
-            bookmarkRedisRepository.deleteByBookmarkId(bookmark.getId());
+            redisTemplate.opsForSet().remove(
+                    openTime, BookmarkNotification.builder().bookmarkId(bookmark.getId()).build());
         } else { // status == deleted
             bookmark.updateIsValid(ValidStatus.VALID);
             createBookmarkInRedis(bookmark);
@@ -83,12 +87,10 @@ public class BookmarkServiceImpl implements BookmarkService {
      */
     private void createBookmarkInRedis(Bookmark bookmark) {
 
-        bookmarkRedisRepository.save(
-                BookmarkNotification.builder()
-                        .openTime("2400") // TODO 실제 예약 오픈 시간으로 수정
+        // TODO 실제 예약 오픈 시간으로 수정
+        redisTemplate.opsForSet().add(
+                "2400", BookmarkNotification.builder()
                         .bookmarkId(bookmark.getId())
-                        .themeId(bookmark.getThemeId())
-                        .profileId(bookmark.getProfileId())
                         .build());
     }
 

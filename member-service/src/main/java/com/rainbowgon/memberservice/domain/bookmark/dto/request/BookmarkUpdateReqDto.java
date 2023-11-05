@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookmarkUpdateReqDto {
 
-    List<Long> bookmarkThemeIdList;
+    List<String> bookmarkThemeIdList;
 }
