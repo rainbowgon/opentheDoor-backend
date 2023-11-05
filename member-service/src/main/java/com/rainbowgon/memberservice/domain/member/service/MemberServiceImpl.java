@@ -2,15 +2,18 @@ package com.rainbowgon.memberservice.domain.member.service;
 
 
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
+import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.member.repository.MemberRepository;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
+import com.rainbowgon.memberservice.global.error.exception.MemberBadPhoneNumberException;
 import com.rainbowgon.memberservice.global.error.exception.MemberNotFoundException;
 import com.rainbowgon.memberservice.global.security.JwtTokenProvider;
 import com.rainbowgon.memberservice.global.security.dto.JwtTokenDto;
+import com.rainbowgon.memberservice.global.util.CoolSmsSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -27,6 +31,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final ProfileService profileService;
+    private final CoolSmsSender coolSmsSender;
 
     @Transactional
     @Override
@@ -60,6 +65,20 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public String sendMessage(MemberPhoneReqDto memberPhoneReqDto) {
+
+        String phoneNumber = memberPhoneReqDto.getPhoneNumber();
+
+        // phoneNumber 형식 검증 (01012345678)
+        String phoneNumberPattern = "^010(\\d{4})(\\d{4})$";
+        if (!Pattern.matches(phoneNumberPattern, phoneNumber)) {
+            throw MemberBadPhoneNumberException.EXCEPTION;
+        }
+
+        return coolSmsSender.sendOne(phoneNumber);
+    }
+
+    @Override
     public MemberInfoResDto selectMemberInfo(UUID memberId) {
 
         // 요청 회원의 멤버 객체 조회
@@ -73,18 +92,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public Boolean updateMemberInfo(UUID memberId, MemberUpdateReqDto memberUpdateReqDto,
-                                    MultipartFile profileImage) {
+    public Boolean updateMemberInfo(UUID memberId, MemberUpdateReqDto memberUpdateReqDto, MultipartFile profileImage) {
 
         // 요청 회원의 멤버 객체 조회
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
         // 프로필 서비스로 수정 요청 보내기
         if (memberUpdateReqDto.getNickname() != null || profileImage != null) {
-            profileService.updateProfile(member.getId(),
-                                         memberUpdateReqDto.getProfileId(),
-                                         memberUpdateReqDto.getNickname(),
-                                         profileImage);
+            profileService.updateProfile(
+                    member.getId(), memberUpdateReqDto.getProfileId(), memberUpdateReqDto.getNickname(), profileImage);
         }
 
         // 이름, 생일 수정
@@ -117,7 +133,6 @@ public class MemberServiceImpl implements MemberService {
      * 중복값 있으면, 기존 회원의 전화번호 변경 로직 수행
      */
     private void checkPhoneNumber(String phoneNumber) {
-
         memberRepository.findByPhoneNumber(phoneNumber).ifPresent(this::overwritePhoneNumber);
     }
 
@@ -126,7 +141,6 @@ public class MemberServiceImpl implements MemberService {
      * 기존 전화번호의 앞자리를 999로 변경
      */
     private void overwritePhoneNumber(Member member) {
-
         String originPhoneNumber = member.getPhoneNumber();
         String newPhoneNumber = "999" + originPhoneNumber.substring(3);
         member.updatePhoneNumber(newPhoneNumber);

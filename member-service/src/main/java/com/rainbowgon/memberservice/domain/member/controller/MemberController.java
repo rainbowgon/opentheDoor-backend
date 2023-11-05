@@ -1,6 +1,7 @@
 package com.rainbowgon.memberservice.domain.member.controller;
 
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
+import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.oauth.KakaoProfileResDto;
@@ -45,12 +46,22 @@ public class MemberController {
      * 회원가입
      */
     @PostMapping("/signup")
-    public ResponseEntity<ResponseWrapper<JwtTokenDto>> createMember(
-            @RequestBody MemberCreateReqDto createReqDto) {
+    public ResponseEntity<ResponseWrapper<JwtTokenDto>> createMember(@RequestBody MemberCreateReqDto createReqDto) {
 
         JwtTokenDto jwtTokenDto = memberService.createMember(createReqDto);
 
         return JsonResponse.ok("회원가입에 성공하였습니다.", jwtTokenDto);
+    }
+
+    /**
+     * 전화번호 본인 인증
+     */
+    @PostMapping("/phone")
+    public ResponseEntity<ResponseWrapper<String>> sendMessage(@RequestBody MemberPhoneReqDto memberPhoneReqDto) {
+
+        String checkNumber = memberService.sendMessage(memberPhoneReqDto);
+
+        return JsonResponse.ok("인증번호를 발송했습니다.", checkNumber);
     }
 
     /**
