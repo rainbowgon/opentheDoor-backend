@@ -32,6 +32,8 @@ jobs:
 
       - run: ls -al
 
+      - run: cat ${{ secrets.CONFIG_SERVER_YML }}
+
       - name: Create application.yml file
         run: touch /src/main/resources/application.yml
 
