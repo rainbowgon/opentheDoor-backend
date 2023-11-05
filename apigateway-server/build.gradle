@@ -20,12 +20,12 @@ ext {
 }
 
 dependencies {
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.cloud:spring-cloud-starter-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp:4.0.1'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway' // GATEWAY 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // eureka에 등록하기 위한 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-config' // config server의 관리를 받기 위한 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // bootstrap.yml 파일을 사용하기 위한 설정 -> application.yml 파일보다 먼저 설정됨
+    implementation 'org.springframework.boot:spring-boot-starter-actuator' // health check와 bus refresh를 위한 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp:4.0.1' // rabbitmq를 사용하기 위한 설정
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
