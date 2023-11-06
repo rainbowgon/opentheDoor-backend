@@ -30,14 +30,14 @@ public class Bookmark extends BaseEntity {
     private Long profileId;
 
     @NotNull
-    private Long themeId;
+    private String themeId;
 
     @Column(columnDefinition = "VARCHAR(5) DEFAULT 'ON'")
     @Enumerated(EnumType.STRING)
     private NotificationStatus notificationStatus = NotificationStatus.ON; // 예약 오픈 알림 on/off
 
     @Builder
-    public Bookmark(Long profileId, Long themeId) {
+    public Bookmark(Long profileId, String themeId) {
         this.profileId = profileId;
         this.themeId = themeId;
     }

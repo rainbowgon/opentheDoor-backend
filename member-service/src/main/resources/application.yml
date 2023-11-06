@@ -4,7 +4,7 @@ server:
 
 spring:
   profiles:
-    include: oauth
+    include: secret
 
   h2:
     console:
