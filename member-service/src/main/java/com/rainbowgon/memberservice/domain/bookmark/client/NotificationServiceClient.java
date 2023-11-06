@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.domain.bookmark.client.dto;
+package com.rainbowgon.memberservice.domain.bookmark.client;
 
 import com.rainbowgon.memberservice.domain.bookmark.client.dto.output.NotificationOutDto;
 import org.springframework.cloud.openfeign.FeignClient;
