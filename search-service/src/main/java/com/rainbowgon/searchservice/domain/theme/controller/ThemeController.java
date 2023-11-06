@@ -53,7 +53,7 @@ public class ThemeController {
     @GetMapping("/lists")
     public ResponseEntity<ResponseWrapper<List<ThemeDetailResDto>>> selectThemes(
             @RequestBody ThemeCheckReqDtoList themeCheckReqDtoList) {
-        List<ThemeDetailResDto> themeDetailResDtoList = themeService.selectThemeById(themeCheckReqDtoList);
+        List<ThemeDetailResDto> themeDetailResDtoList = themeService.selectThemesById(themeCheckReqDtoList);
 
         return JsonResponse.ok("성공적으로 조회(리스트)가 완료되었습니다.", themeDetailResDtoList);
     }
