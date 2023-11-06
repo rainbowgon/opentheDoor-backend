@@ -18,14 +18,13 @@ import java.io.IOException;
 public class KafkaConsumer {
 
     private final SenderService senderService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = "notification", groupId = "rainbowgon")
     public void getMessage(String message) throws IOException {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        log.info("consumed message : {}", message);
         MessageInDTO messageInDTO = objectMapper.readValue(message, MessageInDTO.class);
-
-        log.info("consumed message : {}", messageInDTO);
         senderService.sendAndInsertMessage(messageInDTO);
     }
 }
