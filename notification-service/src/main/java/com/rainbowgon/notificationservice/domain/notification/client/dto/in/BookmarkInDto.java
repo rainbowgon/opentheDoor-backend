@@ -11,7 +11,7 @@ import java.time.LocalTime;
 public class BookmarkInDto {
 
     private Long profileId;
-    private String FCMToken;
+    private String fcmToken;
     private Long themeId;
     private String themeName;
     private String venueName;
