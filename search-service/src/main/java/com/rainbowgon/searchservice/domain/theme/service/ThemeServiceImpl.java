@@ -8,6 +8,7 @@ import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
 import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
+@EnableCaching
 public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
