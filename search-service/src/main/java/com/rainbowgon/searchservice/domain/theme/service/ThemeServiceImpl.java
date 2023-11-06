@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Integer> integerRedisTemplate;
     private final RedisTemplate<String, Theme> themeRedisTemplate;
 
     @Override
@@ -40,7 +42,6 @@ public class ThemeServiceImpl implements ThemeService {
         String bookmarkKey = keyword + ":BOOKMARK";
         String reviewKey = keyword + ":REVIEW";
 
-        System.out.println(redisTemplate.opsForZSet().zCard(bookmarkKey));
         // 여기서 기존의 점수가 있는지 체크하고, 없으면 0으로 초기화(기본 북마크)
         if (redisTemplate.opsForZSet().zCard(bookmarkKey) == 0) {
             for (Theme theme : themeList) {
@@ -96,14 +97,16 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     @Transactional(readOnly = true)
     public ThemeDetailResDto selectOneThemeById(String themeId) {
+        ValueOperations<String, Integer> valueOperations = integerRedisTemplate.opsForValue();
         Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+        valueOperations.increment(themeId, 1);
 
         return ThemeDetailResDto.from(theme);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ThemeDetailResDto> selectThemeById(ThemeCheckReqDtoList themeIdList) {
+    public List<ThemeDetailResDto> selectThemesById(ThemeCheckReqDtoList themeIdList) {
         List<ThemeDetailResDto> themeDetailResDtoList = new ArrayList<>();
         for (String themeId : themeIdList.getThemeList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
