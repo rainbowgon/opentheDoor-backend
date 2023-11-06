@@ -1,7 +1,7 @@
 package com.rainbowgon.senderserver.domain.kafka.dto.in;
 
 
-import com.rainbowgon.senderserver.domain.sender.entity.Type;
+import com.rainbowgon.senderserver.domain.sender.entity.NotificationType;
 import com.rainbowgon.senderserver.domain.sender.entity.ViewStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class MessageInDTO {
     private Long themeId;
     private String title;
     private String body;
-    private Type type;
+    private NotificationType notificationType;
     private ViewStatus viewStatus;
 
 }

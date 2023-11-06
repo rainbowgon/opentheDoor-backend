@@ -1,6 +1,6 @@
 package com.rainbowgon.senderserver.domain.sender.entity;
 
-public enum Type {
+public enum NotificationType {
 
     RESERVATION, CANCELATION, WAITING, BOOKMARK, ETC
 }

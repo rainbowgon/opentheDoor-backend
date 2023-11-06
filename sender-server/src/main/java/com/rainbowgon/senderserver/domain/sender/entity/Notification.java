@@ -26,20 +26,21 @@ public class Notification extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ETC'")
-    private Type type;
+    private NotificationType notificationType;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'NOT_VIEWED'")
     private ViewStatus isViewed;
 
     @Builder
-    public Notification(Long profileId, Long themeId, String title, String body, Type type,
+    public Notification(Long profileId, Long themeId, String title, String body,
+                        NotificationType notificationType,
                         ViewStatus isViewed) {
         this.profileId = profileId;
         this.themeId = themeId;
         this.title = title;
         this.body = body;
-        this.type = type;
+        this.notificationType = notificationType;
         this.isViewed = isViewed;
     }
 }

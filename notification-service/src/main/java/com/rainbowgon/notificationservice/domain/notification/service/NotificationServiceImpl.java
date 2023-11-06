@@ -1,6 +1,5 @@
 package com.rainbowgon.notificationservice.domain.notification.service;
 
-import com.rainbowgon.notificationservice.domain.kafka.dto.out.MessageOutDto;
 import com.rainbowgon.notificationservice.domain.kafka.service.KafkaProducer;
 import com.rainbowgon.notificationservice.domain.notification.client.dto.in.BookmarkInDto;
 import com.rainbowgon.notificationservice.domain.notification.client.dto.in.ReservationInDto;
@@ -10,7 +9,6 @@ import com.rainbowgon.notificationservice.global.util.MessageFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -52,15 +50,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendWaitingMessage(List<WaitingInDto> waitingInDtoList) {
+        
         for (WaitingInDto waitingInDto : waitingInDtoList) {
-
-            String title = String.format("%s 예약 대기 알림", waitingInDto.getThemeName());
-            String body = String.format("눈여겨보신 %s %s %s 테마가 지금 예약 가능합니다! 지금 바로 예약해주세요!",
-                                        waitingInDto.getThemeName(),
-                                        waitingInDto.getReservationDate().format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")),
-                                        waitingInDto.getReservationTime().format(DateTimeFormatter.ofPattern("a KK시 mm분")));
-
-            MessageOutDto messageOutDto = MessageOutDto.from(waitingInDto, title, body);
             kafkaProducer.sendMessage(MessageFactory.makeWaitingMessage(waitingInDto));
         }
     }
