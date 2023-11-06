@@ -27,7 +27,7 @@ public class NotificationController {
 
         Long profileId = 1L;
         List<NotificationListResDto> notificationList = notificationService.selectNotificationList(profileId);
-        return JsonResponse.ok("회원 전체 알림 리스트를 성공적으로가져왔습니다.", notificationList);
+        return JsonResponse.ok("회원 전체 알림 리스트를 성공적으로 가져왔습니다.", notificationList);
     }
 
     @PatchMapping("/{notification-id}")
@@ -51,7 +51,7 @@ public class NotificationController {
     public ResponseEntity<ResponseWrapper<Nullable>> sendBookmark(
             @RequestBody List<BookmarkInDto> bookmarkInDtoList) {
 
-        notificationService.makeBookmarkMessage(bookmarkInDtoList);
+        notificationService.sendBookmarkMessage(bookmarkInDtoList);
         return JsonResponse.ok("북마크한 테마 예약 오픈 알림 리스트를 성공적으로 전송했습니다.");
     }
 
@@ -59,7 +59,7 @@ public class NotificationController {
     public ResponseEntity<ResponseWrapper<Nullable>> sendReservation(
             @RequestBody List<ReservationInDto> reservationInDtoList) {
 
-        notificationService.makeReservationMessage(reservationInDtoList);
+        notificationService.sendReservationMessage(reservationInDtoList);
         return JsonResponse.ok("예약 확정 및 취소 알림 리스트를 성공적으로 전송했습니다.");
     }
 
@@ -67,7 +67,7 @@ public class NotificationController {
     public ResponseEntity<ResponseWrapper<Nullable>> sendWaiting(
             @RequestBody List<WaitingInDto> waitingInDtoList) {
 
-        notificationService.makeWaitingMessage(waitingInDtoList);
+        notificationService.sendWaitingMessage(waitingInDtoList);
         return JsonResponse.ok("예약 대기 알림 리스트를 성공적으로 전송했습니다.");
     }
 }

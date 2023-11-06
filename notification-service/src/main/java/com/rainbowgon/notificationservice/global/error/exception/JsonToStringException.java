@@ -3,11 +3,11 @@ package com.rainbowgon.notificationservice.global.error.exception;
 
 import com.rainbowgon.notificationservice.global.error.errorCode.GlobalErrorCode;
 
-public class JsonProcessingException extends CustomException {
+public class JsonToStringException extends CustomException {
 
-    public static final CustomException EXCEPTION = new JsonProcessingException();
+    public static final CustomException EXCEPTION = new JsonToStringException();
 
-    public JsonProcessingException() {
+    public JsonToStringException() {
         super(GlobalErrorCode.JSON_TOSTRING_FAIL);
     }
 }

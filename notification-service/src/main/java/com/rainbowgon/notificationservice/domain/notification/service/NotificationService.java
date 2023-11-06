@@ -15,10 +15,10 @@ public interface NotificationService {
 
     void checkAllNotification(Long profileId);
 
-    void makeBookmarkMessage(List<BookmarkInDto> bookmarkInDtoList);
+    void sendBookmarkMessage(List<BookmarkInDto> bookmarkInDtoList);
 
-    void makeReservationMessage(List<ReservationInDto> reservationInDtoList);
+    void sendReservationMessage(List<ReservationInDto> reservationInDtoList);
 
-    void makeWaitingMessage(List<WaitingInDto> waitingInDtoList);
+    void sendWaitingMessage(List<WaitingInDto> waitingInDtoList);
 
 }

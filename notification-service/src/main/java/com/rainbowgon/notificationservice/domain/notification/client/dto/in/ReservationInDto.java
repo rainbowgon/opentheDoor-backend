@@ -1,6 +1,6 @@
 package com.rainbowgon.notificationservice.domain.notification.client.dto.in;
 
-import com.rainbowgon.notificationservice.domain.notification.entity.Type;
+import com.rainbowgon.notificationservice.domain.notification.entity.NotificationType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +18,6 @@ public class ReservationInDto {
     private String themeName;
     private LocalDate reservationDate;
     private LocalTime reservationTime;
-    private Type reservationType;
+    private NotificationType reservationNotificationType;
 
 }
