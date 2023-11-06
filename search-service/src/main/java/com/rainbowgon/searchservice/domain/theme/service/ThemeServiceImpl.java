@@ -6,6 +6,7 @@ import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
+import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,9 +40,9 @@ public class ThemeServiceImpl implements ThemeService {
         List<Theme> themeList = search(keyword);
 
         // 레디스에 저장할 키를 생성
-        String bookmarkKey = "BOOKMARK:" + keyword;
-        String reviewKey = "REVIEW:" + keyword;
-        String recommendKey = "RECOMMEND:" + keyword;
+        String bookmarkKey = RedisKeyBuilder.buildKey("BOOKMARK", keyword);
+        String reviewKey = RedisKeyBuilder.buildKey("REVIEW", keyword);
+        String recommendKey = RedisKeyBuilder.buildKey("RECOMMEND", keyword);
 
         // 여기서 기존의 점수가 있는지 체크하고, 없으면 0으로 초기화(기본 북마크)
         if (redisTemplate.opsForZSet().zCard(bookmarkKey) == 0) {
@@ -129,7 +130,7 @@ public class ThemeServiceImpl implements ThemeService {
     @Transactional(readOnly = true)
     public Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Integer page, Integer size) {
 
-        String redisKey = sortBy + ":" + keyword;
+        String redisKey = RedisKeyBuilder.buildKey(sortBy, keyword);
 
         long start = page * size; // 페이지 계산에 따른 시작 인덱스
         long end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
