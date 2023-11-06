@@ -1,7 +1,3 @@
-server:
-  servlet:
-    context-path: /api/reservation-service
-
 spring:
   profiles:
     active: local
