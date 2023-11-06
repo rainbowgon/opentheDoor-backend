@@ -35,24 +35,21 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendBookmarkMessage(List<BookmarkInDto> bookmarkInDtoList) {
 
-        for (BookmarkInDto bookmarkInDto : bookmarkInDtoList) {
-            kafkaProducer.sendMessage(MessageFactory.makeBookmarkMessage(bookmarkInDto));
-        }
+        bookmarkInDtoList.stream()
+                .forEach(bookmarkInDto -> kafkaProducer.sendMessage(MessageFactory.makeBookmarkMessage(bookmarkInDto)));
     }
 
     @Override
     public void sendReservationMessage(List<ReservationInDto> reservationReqDtoList) {
 
-        for (ReservationInDto reservationInDto : reservationReqDtoList) {
-            kafkaProducer.sendMessage(MessageFactory.makeReservationMessage(reservationInDto));
-        }
+        reservationReqDtoList.stream()
+                .forEach(reservationInDto -> kafkaProducer.sendMessage(MessageFactory.makeReservationMessage(reservationInDto)));
     }
 
     @Override
     public void sendWaitingMessage(List<WaitingInDto> waitingInDtoList) {
-        
-        for (WaitingInDto waitingInDto : waitingInDtoList) {
-            kafkaProducer.sendMessage(MessageFactory.makeWaitingMessage(waitingInDto));
-        }
+
+        waitingInDtoList.stream()
+                .forEach(waitingInDto -> kafkaProducer.sendMessage(MessageFactory.makeWaitingMessage(waitingInDto)));
     }
 }

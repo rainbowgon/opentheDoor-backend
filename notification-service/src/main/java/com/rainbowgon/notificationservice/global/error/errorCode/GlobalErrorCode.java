@@ -19,7 +19,7 @@ public enum GlobalErrorCode implements BaseErrorCode {
     CUSTOM_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL_500_1", "서버 오류. 관리자에게 문의 부탁드립니다."),
 
     /*kafka*/
-    JSON_TOSTRING_FAIL(INTERNAL_SERVER_ERROR, "KAFKA_500_1", "KafkaProducer JSON to String 변환 오류입니다.");
+    JSON_TOSTRING_FAIL(INTERNAL_SERVER_ERROR, "KAFKA-500-1", "KafkaProducer JSON to String 변환 오류입니다.");
 
     private HttpStatus status;
     private String code;
