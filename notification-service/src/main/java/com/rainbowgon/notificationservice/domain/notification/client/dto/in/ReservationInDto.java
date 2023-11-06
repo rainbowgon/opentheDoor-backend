@@ -1,5 +1,6 @@
 package com.rainbowgon.notificationservice.domain.notification.client.dto.in;
 
+import com.rainbowgon.notificationservice.domain.notification.entity.Type;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +13,11 @@ import java.time.LocalTime;
 public class ReservationInDto {
 
     private Long profileId;
-    private String FCMToken;
+    private String fcmToken;
     private Long themeId;
     private String themeName;
     private LocalDate reservationDate;
     private LocalTime reservationTime;
+    private Type reservationType;
 
 }

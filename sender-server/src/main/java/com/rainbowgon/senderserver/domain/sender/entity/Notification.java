@@ -1,6 +1,6 @@
-package com.rainbowgon.notificationservice.domain.notification.entity;
+package com.rainbowgon.senderserver.domain.sender.entity;
 
-import com.rainbowgon.notificationservice.global.entity.BaseEntity;
+import com.rainbowgon.senderserver.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +33,8 @@ public class Notification extends BaseEntity {
     private ViewStatus isViewed;
 
     @Builder
-    public Notification(Long profileId, Long themeId, String title, String body, Type type, ViewStatus isViewed) {
+    public Notification(Long profileId, Long themeId, String title, String body, Type type,
+                        ViewStatus isViewed) {
         this.profileId = profileId;
         this.themeId = themeId;
         this.title = title;

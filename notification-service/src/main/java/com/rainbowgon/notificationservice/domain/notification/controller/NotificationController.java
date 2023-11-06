@@ -1,9 +1,9 @@
 package com.rainbowgon.notificationservice.domain.notification.controller;
 
 
-import com.rainbowgon.notificationservice.domain.kafka.service.KafkaProducer;
 import com.rainbowgon.notificationservice.domain.notification.client.dto.in.BookmarkInDto;
 import com.rainbowgon.notificationservice.domain.notification.client.dto.in.ReservationInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.in.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.dto.response.NotificationListResDto;
 import com.rainbowgon.notificationservice.domain.notification.service.NotificationService;
 import com.rainbowgon.notificationservice.global.response.JsonResponse;
@@ -20,21 +20,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    private final KafkaProducer kafkaProducer;
     private final NotificationService notificationService;
-
-    @GetMapping("/test")
-    public String test() {
-//        kafkaProducer.sendMessage("this is a test message");
-        return "test";
-    }
 
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<NotificationListResDto>>> selectNotificationList() {
 
         Long profileId = 1L;
         List<NotificationListResDto> notificationList = notificationService.selectNotificationList(profileId);
-        return JsonResponse.ok("회원 전체 알림 리스트를 성공적으로가져왔습니다.", null);
+        return JsonResponse.ok("회원 전체 알림 리스트를 성공적으로가져왔습니다.", notificationList);
     }
 
     @PatchMapping("/{notification-id}")
@@ -54,28 +47,27 @@ public class NotificationController {
     }
 
 
-    @PatchMapping("/bookmark")
+    @PostMapping("/bookmark")
     public ResponseEntity<ResponseWrapper<Nullable>> sendBookmark(
-            @RequestBody List<BookmarkInDto> bookmarkReqDtoList) {
+            @RequestBody List<BookmarkInDto> bookmarkInDtoList) {
 
-        notificationService.makeBookmarkMessage(bookmarkReqDtoList);
+        notificationService.makeBookmarkMessage(bookmarkInDtoList);
         return JsonResponse.ok("북마크한 테마 예약 오픈 알림 리스트를 성공적으로 전송했습니다.");
-
     }
 
     @PostMapping("/reservation")
     public ResponseEntity<ResponseWrapper<Nullable>> sendReservation(
-            @RequestBody List<ReservationInDto> reservationReqDtoList) {
+            @RequestBody List<ReservationInDto> reservationInDtoList) {
 
-        notificationService.makeReservationMessage(reservationReqDtoList);
+        notificationService.makeReservationMessage(reservationInDtoList);
         return JsonResponse.ok("예약 확정 및 취소 알림 리스트를 성공적으로 전송했습니다.");
     }
 
     @PostMapping("/waiting")
     public ResponseEntity<ResponseWrapper<Nullable>> sendWaiting(
-            @RequestBody List<ReservationInDto> waitingReqDtoList) {
+            @RequestBody List<WaitingInDto> waitingInDtoList) {
 
-        notificationService.makeWaitingMessage(waitingReqDtoList);
+        notificationService.makeWaitingMessage(waitingInDtoList);
         return JsonResponse.ok("예약 대기 알림 리스트를 성공적으로 전송했습니다.");
     }
 }
