@@ -16,13 +16,13 @@ public interface ThemeService {
 
     ThemeDetailResDto selectOneThemeById(String themeId);
 
-    List<ThemeDetailResDto> selectThemeById(ThemeCheckReqDtoList themeIdList);
+    List<ThemeDetailResDto> selectThemesById(ThemeCheckReqDtoList themeIdList);
 
     Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Integer page, Integer size);
 
-    public void reviewCnt(String themeId);
+    void reviewCnt(String themeId);
 
-    public void bookmarkCnt(String themeId);
+    void bookmarkCnt(String themeId);
 
     public void recommendCnt(String themeId);
 
