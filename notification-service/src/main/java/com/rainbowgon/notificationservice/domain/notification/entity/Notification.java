@@ -30,7 +30,7 @@ public class Notification extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'NOT_VIEWED'")
-    private ViewStatus isViewed;
+    private ViewStatus viewStatus;
 
     @Builder
     public Notification(Long profileId, Long themeId, String title, String body,
