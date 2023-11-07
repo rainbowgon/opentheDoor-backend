@@ -2,9 +2,8 @@ package com.rainbowgon.senderserver.domain.sender.service;
 
 import com.rainbowgon.senderserver.domain.fcm.service.FCMInitializer;
 import com.rainbowgon.senderserver.domain.fcm.service.FCMService;
-import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDTO;
+import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDto;
 import com.rainbowgon.senderserver.domain.sender.entity.Notification;
-import com.rainbowgon.senderserver.domain.sender.entity.NotificationLog;
 import com.rainbowgon.senderserver.domain.sender.repository.SenderRDBRepository;
 import com.rainbowgon.senderserver.domain.sender.repository.SenderRedisRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,25 +24,15 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     @Transactional
-    public void sendAndInsertMessage(MessageInDTO messageInDTO) {
+    public void sendAndInsertMessage(MessageInDto messageInDto) {
 
         fcmInitializer.initialize();
-        boolean result = fcmService.sendMessage(messageInDTO.getFcmToken(), messageInDTO.getTitle(),
-                                                messageInDTO.getBody());
-        if (result) {
-            NotificationLog notificationLog = senderRDBRepository.save(messageInDTO.toEntity());
 
-            Notification notification = Notification.builder()
-                    .id(notificationLog.getId())
-                    .profileId(notificationLog.getProfileId())
-                    .themeId(notificationLog.getThemeId())
-                    .title(notificationLog.getTitle())
-                    .body(notificationLog.getBody())
-                    .notificationType(notificationLog.getNotificationType())
-                    .build();
-            
-            senderRedisRepository.save(notification);
+        if (fcmService.sendMessage(messageInDto.getFcmToken(), messageInDto.getTitle(),
+                                   messageInDto.getBody())) {
+
+            senderRedisRepository.save(
+                    Notification.from(senderRDBRepository.save(messageInDto.toEntity())));
         }
-
     }
 }

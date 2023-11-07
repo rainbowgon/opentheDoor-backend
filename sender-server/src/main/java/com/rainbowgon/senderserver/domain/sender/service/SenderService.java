@@ -1,8 +1,8 @@
 package com.rainbowgon.senderserver.domain.sender.service;
 
-import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDTO;
+import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDto;
 
 public interface SenderService {
 
-    void sendAndInsertMessage(MessageInDTO messageInDTO);
+    void sendAndInsertMessage(MessageInDto messageInDto);
 }

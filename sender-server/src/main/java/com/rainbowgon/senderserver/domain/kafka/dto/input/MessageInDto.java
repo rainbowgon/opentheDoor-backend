@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MessageInDTO {
+public class MessageInDto {
 
     private Long profileId;
     private String fcmToken;

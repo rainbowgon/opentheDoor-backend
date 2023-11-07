@@ -20,12 +20,23 @@ public class Notification {
 
     @Builder
     public Notification(Long notificationId, Long profileId, Long themeId, String title, String body,
-                        NotificationType notificationType, ViewStatus viewStatus) {
+                        NotificationType notificationType) {
         this.notificationId = notificationId;
         this.profileId = profileId;
         this.themeId = themeId;
         this.title = title;
         this.body = body;
         this.notificationType = notificationType;
+    }
+
+    public static Notification from(NotificationLog notificationLog) {
+        return Notification.builder()
+                .notificationId(notificationLog.getId())
+                .profileId(notificationLog.getProfileId())
+                .themeId(notificationLog.getThemeId())
+                .title(notificationLog.getTitle())
+                .body(notificationLog.getBody())
+                .notificationType(notificationLog.getNotificationType())
+                .build();
     }
 }

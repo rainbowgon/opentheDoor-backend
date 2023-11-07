@@ -1,7 +1,7 @@
 package com.rainbowgon.senderserver.domain.kafka.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDTO;
+import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDto;
 import com.rainbowgon.senderserver.domain.sender.service.SenderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class KafkaConsumer {
     public void getMessage(String message) throws IOException {
 
         log.info("consumed message : {}", message);
-        MessageInDTO messageInDTO = objectMapper.readValue(message, MessageInDTO.class);
-        senderService.sendAndInsertMessage(messageInDTO);
+        MessageInDto messageInDto = objectMapper.readValue(message, MessageInDto.class);
+        senderService.sendAndInsertMessage(messageInDto);
     }
 }
