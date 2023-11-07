@@ -1,46 +1,42 @@
 package com.rainbowgon.senderserver.domain.sender.entity;
 
-import com.rainbowgon.senderserver.global.entity.BaseEntity;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
-import javax.persistence.*;
-
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notification extends BaseEntity {
+@RedisHash("notification")
+public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notification_id", columnDefinition = "INT UNSIGNED")
-    private Long id;
-
+    private Long notificationId;
     private Long profileId;
     private Long themeId;
     private String title;
     private String body;
-
-    @Enumerated(EnumType.STRING)
-    @ColumnDefault("'ETC'")
     private NotificationType notificationType;
-
-    @Enumerated(EnumType.STRING)
-    @ColumnDefault("'NOT_VIEWED'")
-    private ViewStatus isViewed;
+    private ViewStatus viewStatus = ViewStatus.NOT_VIEWED;
 
     @Builder
-    public Notification(Long profileId, Long themeId, String title, String body,
-                        NotificationType notificationType,
-                        ViewStatus isViewed) {
+    public Notification(Long notificationId, Long profileId, Long themeId, String title, String body,
+                        NotificationType notificationType) {
+        this.notificationId = notificationId;
         this.profileId = profileId;
         this.themeId = themeId;
         this.title = title;
         this.body = body;
         this.notificationType = notificationType;
-        this.isViewed = isViewed;
+    }
+
+    public static Notification from(NotificationLog notificationLog) {
+        return Notification.builder()
+                .notificationId(notificationLog.getId())
+                .profileId(notificationLog.getProfileId())
+                .themeId(notificationLog.getThemeId())
+                .title(notificationLog.getTitle())
+                .body(notificationLog.getBody())
+                .notificationType(notificationLog.getNotificationType())
+                .build();
     }
 }
