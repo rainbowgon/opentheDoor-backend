@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.domain.bookmark.dto.response;
+package com.rainbowgon.memberservice.domain.bookmark.client.dto.input;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class BookmarkDetailResDto { // 마이페이지에서 보여지는 북마크 리스트 객체
+public class SearchThemeInDto {
 
     /* 테마 정보 */
     private String themeId; // 테마 ID
@@ -23,19 +23,4 @@ public class BookmarkDetailResDto { // 마이페이지에서 보여지는 북마
     private Double activity; // 활동성
     private Double lockRatio; // 장치 비율
     private Double horror; // 공포도
-
-    /* 리뷰 정보 */
-    private Integer reviewCount; // 리뷰 수(별점 수)
-    private Double ratingScore; // 평균 별점
-
-    /* 북마크 정보 */
-    private Long bookmarkId; // 북마크 ID
-    private Integer bookmarkCount; // 북마크 수
-
-
-    public static BookmarkDetailResDto of() { // 테마 정보, 리뷰 정보, 북마크 정보
-        return BookmarkDetailResDto.builder()
-                .build();
-    }
-
 }

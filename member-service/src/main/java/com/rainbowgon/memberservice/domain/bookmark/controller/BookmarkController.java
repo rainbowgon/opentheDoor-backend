@@ -4,7 +4,6 @@ import com.rainbowgon.memberservice.domain.bookmark.dto.request.BookmarkUpdateRe
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkDetailResDto;
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkSimpleResDto;
 import com.rainbowgon.memberservice.domain.bookmark.service.BookmarkService;
-import com.rainbowgon.memberservice.global.entity.NotificationStatus;
 import com.rainbowgon.memberservice.global.response.JsonResponse;
 import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
@@ -69,13 +68,12 @@ public class BookmarkController {
     /**
      * 북마크 한 테마 예약 오픈 알림 on/off
      */
-    @PatchMapping("/notifications/{bookmark-id}")
-    public ResponseEntity<ResponseWrapper<NotificationStatus>> updateNotificationStatus(
+    @PatchMapping("/notifications/{theme-id}")
+    public ResponseEntity<ResponseWrapper<String>> updateNotificationStatus(
             @AuthenticationPrincipal String memberId,
-            @PathVariable("bookmark-id") Long bookmarkId) {
+            @PathVariable("theme-id") String themeId) {
 
-        NotificationStatus status = bookmarkService.updateNotificationStatus(UUID.fromString(memberId),
-                                                                             bookmarkId);
+        String status = bookmarkService.updateNotificationStatus(UUID.fromString(memberId), themeId);
 
         return JsonResponse.ok("오픈 알림 설정이 변경되었습니다.", status);
     }

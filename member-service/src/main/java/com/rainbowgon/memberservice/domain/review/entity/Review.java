@@ -1,7 +1,5 @@
 package com.rainbowgon.memberservice.domain.review.entity;
 
-import com.rainbowgon.memberservice.domain.bookmark.entity.EscapeStatus;
-import com.rainbowgon.memberservice.domain.bookmark.entity.SpoilStatus;
 import com.rainbowgon.memberservice.domain.profile.entity.Profile;
 import com.rainbowgon.memberservice.domain.review.dto.request.ReviewUpdateReqDto;
 import com.rainbowgon.memberservice.global.entity.BaseEntity;
