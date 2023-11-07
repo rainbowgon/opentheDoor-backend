@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisHash;
 public class Notification {
 
     @Id
-    private Long id;
+    private Long notificationId;
     private Long profileId;
     private Long themeId;
     private String title;
@@ -19,9 +19,9 @@ public class Notification {
     private ViewStatus viewStatus = ViewStatus.NOT_VIEWED;
 
     @Builder
-    public Notification(Long id, Long profileId, Long themeId, String title, String body,
+    public Notification(Long notificationId, Long profileId, Long themeId, String title, String body,
                         NotificationType notificationType, ViewStatus viewStatus) {
-        this.id = id;
+        this.notificationId = notificationId;
         this.profileId = profileId;
         this.themeId = themeId;
         this.title = title;
