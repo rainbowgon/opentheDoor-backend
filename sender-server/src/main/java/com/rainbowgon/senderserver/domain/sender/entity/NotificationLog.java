@@ -1,6 +1,6 @@
-package com.rainbowgon.notificationservice.domain.notification.entity;
+package com.rainbowgon.senderserver.domain.sender.entity;
 
-import com.rainbowgon.notificationservice.global.entity.BaseEntity;
+import com.rainbowgon.senderserver.global.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notification extends BaseEntity {
+public class NotificationLog extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,13 +28,9 @@ public class Notification extends BaseEntity {
     @ColumnDefault("'ETC'")
     private NotificationType notificationType;
 
-    @Enumerated(EnumType.STRING)
-    @ColumnDefault("'NOT_VIEWED'")
-    private ViewStatus viewStatus;
-
     @Builder
-    public Notification(Long profileId, Long themeId, String title, String body,
-                        NotificationType notificationType) {
+    public NotificationLog(Long profileId, Long themeId, String title, String body,
+                           NotificationType notificationType) {
         this.profileId = profileId;
         this.themeId = themeId;
         this.title = title;

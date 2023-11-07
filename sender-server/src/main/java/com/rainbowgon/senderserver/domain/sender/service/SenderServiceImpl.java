@@ -2,10 +2,15 @@ package com.rainbowgon.senderserver.domain.sender.service;
 
 import com.rainbowgon.senderserver.domain.fcm.service.FCMInitializer;
 import com.rainbowgon.senderserver.domain.fcm.service.FCMService;
-import com.rainbowgon.senderserver.domain.kafka.dto.in.MessageInDTO;
+import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDto;
+import com.rainbowgon.senderserver.domain.sender.entity.Notification;
+import com.rainbowgon.senderserver.domain.sender.repository.SenderRDBRepository;
+import com.rainbowgon.senderserver.domain.sender.repository.SenderRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,17 +19,20 @@ public class SenderServiceImpl implements SenderService {
 
     private final FCMInitializer fcmInitializer;
     private final FCMService fcmService;
+    private final SenderRDBRepository senderRDBRepository;
+    private final SenderRedisRepository senderRedisRepository;
 
     @Override
-    public void sendAndInsertMessage(MessageInDTO messageInDTO) {
+    @Transactional
+    public void sendAndInsertMessage(MessageInDto messageInDto) {
 
         fcmInitializer.initialize();
-        boolean result = fcmService.sendMessage(messageInDTO.getFcmToken(), messageInDTO.getTitle(),
-                                                messageInDTO.getBody());
-        if (result) {
-            // 메세지가 제대로 갔다면
-            // 디비에 넣어야
-        }
 
+        if (fcmService.sendMessage(messageInDto.getFcmToken(), messageInDto.getTitle(),
+                                   messageInDto.getBody())) {
+
+            senderRedisRepository.save(
+                    Notification.from(senderRDBRepository.save(messageInDto.toEntity())));
+        }
     }
 }
