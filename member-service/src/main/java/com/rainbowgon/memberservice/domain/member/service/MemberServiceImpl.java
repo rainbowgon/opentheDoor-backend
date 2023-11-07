@@ -70,11 +70,8 @@ public class MemberServiceImpl implements MemberService {
         String phoneNumber = memberPhoneReqDto.getPhoneNumber();
 
         // phoneNumber 형식 검증 (01012345678)
-        String phoneNumberPattern = "^010(\\d{4})(\\d{4})$";
-        if (!Pattern.matches(phoneNumberPattern, phoneNumber)) {
-            throw MemberBadPhoneNumberException.EXCEPTION;
-        }
-
+        checkPhoneNumberFormat(phoneNumber);
+        
         return coolSmsSender.sendOne(phoneNumber);
     }
 
@@ -144,6 +141,17 @@ public class MemberServiceImpl implements MemberService {
         String originPhoneNumber = member.getPhoneNumber();
         String newPhoneNumber = "999" + originPhoneNumber.substring(3);
         member.updatePhoneNumber(newPhoneNumber);
+    }
+
+    /**
+     * 전화번호 포맷 검증
+     * 11자리 숫자, 010으로 시작
+     */
+    private void checkPhoneNumberFormat(String phoneNumber) {
+        String phoneNumberPattern = "^010(\\d{4})(\\d{4})$";
+        if (!Pattern.matches(phoneNumberPattern, phoneNumber)) {
+            throw MemberBadPhoneNumberException.EXCEPTION;
+        }
     }
 
 }

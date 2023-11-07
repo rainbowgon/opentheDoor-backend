@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Random;
 
 @Slf4j
 @Component
@@ -40,31 +39,16 @@ public class CoolSmsSender {
         Message message = new Message();
 
         // 인증번호 생성
-        String authenticationNumber = generateAuthenticationNumber();
+        String authenticationNumber = MessageFactory.generateAuthenticationNumber();
 
         // 메시지 생성
         message.setFrom(senderNumber);
         message.setTo(phoneNumber);
-        message.setText("[오픈더도어] 인증번호 [ " + authenticationNumber + " ]를 입력해 주세요.\n");
+        message.setText(MessageFactory.generateMessageText(authenticationNumber));
 
         // 메시지 발송
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
         log.info("[CoolSmsSender] 발송 메시지 확인" + response);
-
-        return authenticationNumber;
-    }
-
-    /**
-     * 인증번호 생성, 6자리 숫자
-     */
-    private String generateAuthenticationNumber() {
-
-        Random rand = new Random();
-        String authenticationNumber = "";
-        for (int i = 0; i < 6; i++) {
-            String ran = Integer.toString(rand.nextInt(10));
-            authenticationNumber += ran;
-        }
 
         return authenticationNumber;
     }
