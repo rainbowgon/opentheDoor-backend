@@ -1,12 +1,11 @@
 package com.rainbowgon.notificationservice.domain.notification.service;
 
 import com.rainbowgon.notificationservice.domain.kafka.service.KafkaProducer;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.in.BookmarkInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.in.ReservationInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.BookmarkInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.ReservationInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.dto.response.NotificationListResDto;
-import com.rainbowgon.notificationservice.domain.notification.entity.Notification;
-import com.rainbowgon.notificationservice.domain.notification.entity.Type;
-import com.rainbowgon.notificationservice.domain.notification.entity.ViewStatus;
+import com.rainbowgon.notificationservice.global.util.MessageFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,31 +33,23 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void makeBookmarkMessage(List<BookmarkInDto> bookmarkReqDtoList) {
-        for (BookmarkInDto bookmarkReqDto : bookmarkReqDtoList) {
-            String title = bookmarkReqDto.getThemeName() + "예약 오픈 알림";
-            String content = "북마크 해두신" + bookmarkReqDto.getVenueName() + " " + bookmarkReqDto.getThemeName()
-                    + "예약이 10분 뒤" + bookmarkReqDto.getOpenTime() + "에 오픈됩니다.";
+    public void sendBookmarkMessage(List<BookmarkInDto> bookmarkInDtoList) {
 
-            Notification notification = Notification.builder()
-                    .profileId(bookmarkReqDto.getProfileId())
-                    .title(title)
-                    .content(content)
-                    .type(Type.BOOKMARK)
-                    .isViewed(ViewStatus.NOT_VIEWED)
-                    .build();
-
-            kafkaProducer.sendMessage(notification);
-        }
+        bookmarkInDtoList.stream()
+                .forEach(bookmarkInDto -> kafkaProducer.sendMessage(MessageFactory.makeBookmarkMessage(bookmarkInDto)));
     }
 
     @Override
-    public void makeReservationMessage(List<ReservationInDto> reservationReqDtoList) {
+    public void sendReservationMessage(List<ReservationInDto> reservationReqDtoList) {
 
+        reservationReqDtoList.stream()
+                .forEach(reservationInDto -> kafkaProducer.sendMessage(MessageFactory.makeReservationMessage(reservationInDto)));
     }
 
     @Override
-    public void makeWaitingMessage(List<ReservationInDto> waitingReqDtoList) {
+    public void sendWaitingMessage(List<WaitingInDto> waitingInDtoList) {
 
+        waitingInDtoList.stream()
+                .forEach(waitingInDto -> kafkaProducer.sendMessage(MessageFactory.makeWaitingMessage(waitingInDto)));
     }
 }

@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SenderController {
 
+    // 컨트롤러 삭제 예정
     private final FCMInitializer fcmInitializer;
     private final FCMService fcmService;
 
     @GetMapping
     public String v1() {
         fcmInitializer.initialize();
-        fcmService.sendMessage("모바일 토큰");
+        fcmService.sendMessage("모바일 토큰", "스프링에서 간 알림", "스프링에서 간 알림");
 
         return "test";
     }

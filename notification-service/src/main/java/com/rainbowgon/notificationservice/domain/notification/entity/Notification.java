@@ -22,24 +22,23 @@ public class Notification extends BaseEntity {
     private Long profileId;
     private Long themeId;
     private String title;
-    private String content;
+    private String body;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ETC'")
-    private Type type;
+    private NotificationType notificationType;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'NOT_VIEWED'")
     private ViewStatus isViewed;
 
     @Builder
-    public Notification(Long profileId, Long themeId, String title, String content, Type type,
-                        ViewStatus isViewed) {
+    public Notification(Long profileId, Long themeId, String title, String body,
+                        NotificationType notificationType) {
         this.profileId = profileId;
         this.themeId = themeId;
         this.title = title;
-        this.content = content;
-        this.type = type;
-        this.isViewed = isViewed;
+        this.body = body;
+        this.notificationType = notificationType;
     }
 }

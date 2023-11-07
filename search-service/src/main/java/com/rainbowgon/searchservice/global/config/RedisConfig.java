@@ -50,12 +50,12 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Integer> intRedisTemplate(
+    public RedisTemplate<String, Double> doubleRedisTemplate(
             RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Integer> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, Double> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Integer.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Double.class));
         return redisTemplate;
     }
 
@@ -80,6 +80,7 @@ public class RedisConfig {
     }
 
     // 레디스 캐시
+    @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext

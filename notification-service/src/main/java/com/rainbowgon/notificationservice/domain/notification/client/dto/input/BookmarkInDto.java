@@ -1,4 +1,4 @@
-package com.rainbowgon.notificationservice.domain.notification.client.dto.in;
+package com.rainbowgon.notificationservice.domain.notification.client.dto.input;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.time.LocalTime;
 public class BookmarkInDto {
 
     private Long profileId;
-    private String FCMToken;
+    private String fcmToken;
     private Long themeId;
     private String themeName;
     private String venueName;
