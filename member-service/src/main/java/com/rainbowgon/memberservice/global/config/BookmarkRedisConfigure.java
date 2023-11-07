@@ -1,8 +1,10 @@
 package com.rainbowgon.memberservice.global.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -22,7 +24,8 @@ public class BookmarkRedisConfigure {
     private String password;
 
     // Redis 저장소와 연결
-    @Bean
+    @Primary
+    @Bean(name = "bookmarkRedisConnectionFactory")
     public RedisConnectionFactory bookmarkRedisConnectionFactory() {
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
@@ -34,11 +37,12 @@ public class BookmarkRedisConfigure {
     }
 
     // RedisTemplate bean 생성
-    @Bean
-    public RedisTemplate<String, String> bookmarkRedisStringTemplate() {
+    @Bean(name = "bookmarkRedisStringTemplate")
+    public RedisTemplate<String, String> bookmarkRedisStringTemplate(
+            @Qualifier("bookmarkRedisConnectionFactory") RedisConnectionFactory bookmarkRedisConnectionFactory) {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(bookmarkRedisConnectionFactory());
+        redisTemplate.setConnectionFactory(bookmarkRedisConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
