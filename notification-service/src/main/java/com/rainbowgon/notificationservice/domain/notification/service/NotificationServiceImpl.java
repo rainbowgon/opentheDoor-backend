@@ -1,9 +1,9 @@
 package com.rainbowgon.notificationservice.domain.notification.service;
 
 import com.rainbowgon.notificationservice.domain.kafka.service.KafkaProducer;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.in.BookmarkInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.in.ReservationInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.in.WaitingInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.BookmarkInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.ReservationInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.dto.response.NotificationListResDto;
 import com.rainbowgon.notificationservice.global.util.MessageFactory;
 import lombok.RequiredArgsConstructor;

@@ -1,9 +1,9 @@
 package com.rainbowgon.notificationservice.global.util;
 
-import com.rainbowgon.notificationservice.domain.kafka.dto.out.MessageOutDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.in.BookmarkInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.in.ReservationInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.in.WaitingInDto;
+import com.rainbowgon.notificationservice.domain.kafka.dto.output.MessageOutDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.BookmarkInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.ReservationInDto;
+import com.rainbowgon.notificationservice.domain.notification.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.entity.NotificationType;
 
 import java.time.format.DateTimeFormatter;
