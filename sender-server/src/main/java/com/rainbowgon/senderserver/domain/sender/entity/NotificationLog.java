@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotificationLog extends BaseEntity {
+public class Notification extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +33,8 @@ public class NotificationLog extends BaseEntity {
     private ViewStatus viewStatus = ViewStatus.NOT_VIEWED;
 
     @Builder
-    public NotificationLog(Long profileId, Long themeId, String title, String body,
-                           NotificationType notificationType, ViewStatus viewStatus) {
+    public Notification(Long profileId, Long themeId, String title, String body,
+                        NotificationType notificationType, ViewStatus viewStatus) {
         this.profileId = profileId;
         this.themeId = themeId;
         this.title = title;
