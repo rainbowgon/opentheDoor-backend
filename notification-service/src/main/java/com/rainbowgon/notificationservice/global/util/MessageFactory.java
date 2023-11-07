@@ -34,7 +34,7 @@ public class MessageFactory {
                                     reservationInDto.getReservationTime().format(DateTimeFormatter.ofPattern("a KK시 mm분")),
                                     reservationInDto.getThemeName(), reservationStatus);
 
-        return MessageOutDto.from(reservationInDto, title, body, NotificationType.RESERVATION);
+        return MessageOutDto.from(reservationInDto, title, body);
     }
 
     public static MessageOutDto makeWaitingMessage(WaitingInDto waitingInDto) {

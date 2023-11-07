@@ -1,4 +1,4 @@
-package com.rainbowgon.notificationservice.domain.notification.client.dto.in;
+package com.rainbowgon.notificationservice.domain.notification.client.dto.input;
 
 import lombok.AccessLevel;
 import lombok.Getter;
