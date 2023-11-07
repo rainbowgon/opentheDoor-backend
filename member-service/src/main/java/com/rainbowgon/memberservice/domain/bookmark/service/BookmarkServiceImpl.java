@@ -1,7 +1,7 @@
 package com.rainbowgon.memberservice.domain.bookmark.service;
 
 import com.rainbowgon.memberservice.domain.bookmark.client.SearchServiceClient;
-import com.rainbowgon.memberservice.domain.bookmark.client.dto.input.SearchThemeInDto;
+import com.rainbowgon.memberservice.domain.bookmark.client.dto.input.SearchDetailInDto;
 import com.rainbowgon.memberservice.domain.bookmark.dto.request.BookmarkUpdateReqDto;
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkDetailResDto;
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkSimpleResDto;
@@ -86,7 +86,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         // search-service -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(전체) 가져오기
         List<String> themeIdList = bookmarkKeyList.stream().map(this::getThemeId).collect(Collectors.toList());
-        List<SearchThemeInDto> themeInfoList = searchServiceClient.getBookmarkThemeInfo(themeIdList);
+        List<SearchDetailInDto> themeInfoList = searchServiceClient.getBookmarkThemeDetailInfo(themeIdList);
 
         // TODO redis -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(평균 별점, 리뷰 수, 북마크 수) 가져오기
 
