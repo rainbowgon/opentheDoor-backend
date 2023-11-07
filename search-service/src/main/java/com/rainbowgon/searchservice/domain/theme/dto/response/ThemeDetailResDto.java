@@ -18,8 +18,7 @@ public class ThemeDetailResDto {
     private Integer level; // 난이도
     private Integer minHeadcount; // 최소 인원 수
     private Integer maxHeadcount; // 최대 인원 수
-
-//    private Integer price; // 가격
+    private Integer price; // 가격
 //    private Integer runningTime; // 소요 시간
 
     public static ThemeDetailResDto from(Theme theme) {
