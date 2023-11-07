@@ -1,9 +1,9 @@
 package com.rainbowgon.memberservice.domain.bookmark.service;
 
-import com.rainbowgon.memberservice.domain.bookmark.client.NotificationServiceClient;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,9 @@ import org.springframework.stereotype.Service;
 public class BookmarkNotificationServiceImpl implements BookmarkNotificationService {
 
     private final ProfileService profileService;
-    private final RedisTemplate<String, String> stringRedisTemplate;
-    private final NotificationServiceClient notificationServiceClient;
+    @Qualifier("bookmarkRedisStringTemplate")
+    private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
+//    private final NotificationServiceClient notificationServiceClient;
 
     /**
      * redis 타임테이블에 새로운 key가 추가되는지 확인

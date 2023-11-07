@@ -7,17 +7,15 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableRedisRepositories
-public class RedisConfigure {
+public class BookmarkRedisConfigure {
 
-    @Value("${spring.redis.host}")
+    @Value("${spring.redis.bookmark.host}")
     private String host;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.redis.bookmark.port}")
     private int port;
 
     @Value("${redis.password}")
@@ -25,7 +23,7 @@ public class RedisConfigure {
 
     // Redis 저장소와 연결
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
+    public RedisConnectionFactory bookmarkRedisConnectionFactory() {
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
@@ -37,10 +35,10 @@ public class RedisConfigure {
 
     // RedisTemplate bean 생성
     @Bean
-    public RedisTemplate<String, String> StringRedisTemplate() {
+    public RedisTemplate<String, String> bookmarkRedisStringTemplate() {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(bookmarkRedisConnectionFactory());
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());

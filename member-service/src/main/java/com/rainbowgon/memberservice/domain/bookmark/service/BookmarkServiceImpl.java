@@ -1,7 +1,5 @@
 package com.rainbowgon.memberservice.domain.bookmark.service;
 
-import com.rainbowgon.memberservice.domain.bookmark.client.SearchServiceClient;
-import com.rainbowgon.memberservice.domain.bookmark.client.dto.input.SearchThemeInDto;
 import com.rainbowgon.memberservice.domain.bookmark.dto.request.BookmarkUpdateReqDto;
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkDetailResDto;
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkSimpleResDto;
@@ -10,6 +8,7 @@ import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.global.error.exception.BookmarkNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
@@ -27,8 +26,9 @@ import java.util.stream.Collectors;
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final ProfileService profileService;
-    private final SearchServiceClient searchServiceClient;
-    private final RedisTemplate<String, String> stringRedisTemplate;
+    //    private final SearchServiceClient searchServiceClient;
+    @Qualifier("bookmarkRedisStringTemplate")
+    private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
 
     @Transactional
     @Override
@@ -37,8 +37,8 @@ public class BookmarkServiceImpl implements BookmarkService {
         // 요청 회원의 프로필 가져오기
         ProfileSimpleResDto profile = getProfile(memberId);
 
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        SetOperations<String, String> setOperations = stringRedisTemplate.opsForSet();
+        ValueOperations<String, String> valueOperations = bookmarkRedisStringTemplate.opsForValue();
+        SetOperations<String, String> setOperations = bookmarkRedisStringTemplate.opsForSet();
 
         for (String themeId : bookmarkUpdateReqDto.getBookmarkThemeIdList()) {
             // redis key 설정
@@ -81,12 +81,12 @@ public class BookmarkServiceImpl implements BookmarkService {
         Long profileId = getProfile(memberId).getProfileId();
 
         // 요청 회원의 북마크 테마 목록 가져오기
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        Set<String> bookmarkKeyList = stringRedisTemplate.keys("BOOKMARK:" + profileId + "$*");
+        ValueOperations<String, String> valueOperations = bookmarkRedisStringTemplate.opsForValue();
+        Set<String> bookmarkKeyList = bookmarkRedisStringTemplate.keys("BOOKMARK:" + profileId + "$*");
 
         // search-service -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(전체) 가져오기
         List<String> themeIdList = bookmarkKeyList.stream().map(this::getThemeId).collect(Collectors.toList());
-        List<SearchThemeInDto> themeInfoList = searchServiceClient.getBookmarkThemeInfo(themeIdList);
+//        List<SearchThemeInDto> themeInfoList = searchServiceClient.getBookmarkThemeInfo(themeIdList);
 
         // TODO redis -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(평균 별점, 리뷰 수, 북마크 수) 가져오기
 
@@ -103,7 +103,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         Long profileId = getProfile(memberId).getProfileId();
 
         // 프로필 ID, 테마 ID로 북마크 알림 상태 가져오기
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        ValueOperations<String, String> valueOperations = bookmarkRedisStringTemplate.opsForValue();
         String bookmarkKey = generateBookmarkKey(profileId, themeId);
         String notificationStatus = valueOperations.get(bookmarkKey);
 
