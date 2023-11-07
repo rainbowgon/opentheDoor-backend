@@ -2,24 +2,27 @@ package com.rainbowgon.senderserver.domain.fcm.service;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
-import com.rainbowgon.senderserver.domain.sender.repository.SenderRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 @Slf4j
 public class FCMService {
 
-    private SenderRepository senderRepository;
-
-    public void sendMessage(String token) {
+    public boolean sendMessage(String token, String title, String body) {
         Message message = Message.builder()
                 .setToken(token)
-                .putData("title", "스프링부트에서 간 제목")
-                .putData("body", "스프링부트에서 간 내용")
+                .putData("title", title)
+                .putData("body", body)
                 .build();
         FirebaseMessaging.getInstance().sendAsync(message);
 
+        // 메세지가 제대로 간다면
+        return true;
     }
 
 }

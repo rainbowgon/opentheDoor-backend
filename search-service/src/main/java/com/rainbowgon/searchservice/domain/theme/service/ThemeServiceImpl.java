@@ -6,11 +6,13 @@ import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
+import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Double> doubleRedisTemplate;
     private final RedisTemplate<String, Theme> themeRedisTemplate;
 
     @Override
@@ -37,10 +40,10 @@ public class ThemeServiceImpl implements ThemeService {
         List<Theme> themeList = search(keyword);
 
         // 레디스에 저장할 키를 생성
-        String bookmarkKey = keyword + ":BOOKMARK";
-        String reviewKey = keyword + ":REVIEW";
+        String bookmarkKey = RedisKeyBuilder.buildKey("BOOKMARK", keyword);
+        String reviewKey = RedisKeyBuilder.buildKey("REVIEW", keyword);
+        String recommendKey = RedisKeyBuilder.buildKey("RECOMMEND", keyword);
 
-        System.out.println(redisTemplate.opsForZSet().zCard(bookmarkKey));
         // 여기서 기존의 점수가 있는지 체크하고, 없으면 0으로 초기화(기본 북마크)
         if (redisTemplate.opsForZSet().zCard(bookmarkKey) == 0) {
             for (Theme theme : themeList) {
@@ -48,9 +51,18 @@ public class ThemeServiceImpl implements ThemeService {
                                                                                             theme.getId())).orElse(0.0);
                 Double reviewScore = Optional.ofNullable(redisTemplate.opsForZSet().score("REVIEW",
                                                                                           theme.getId())).orElse(0.0);
+                Double ratingScore = Optional.ofNullable(redisTemplate.opsForZSet().score("RATING",
+                                                                                          theme.getId())).orElse(0.0);
+
+                Double viewScore = doubleRedisTemplate.opsForValue().get(theme.getId());
+
+                Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
+
+                Double finalRatingScore = ratingScore - (ratingScore - 0.5) * 2 - Math.log(interest);
 
                 themeRedisTemplate.opsForZSet().add(bookmarkKey, theme, bookmarkScore);
                 themeRedisTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
+                themeRedisTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
             }
         }
 
@@ -96,14 +108,16 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     @Transactional(readOnly = true)
     public ThemeDetailResDto selectOneThemeById(String themeId) {
+        ValueOperations<String, Double> valueOperations = doubleRedisTemplate.opsForValue();
         Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+        valueOperations.increment(themeId, 1);
 
         return ThemeDetailResDto.from(theme);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ThemeDetailResDto> selectThemeById(ThemeCheckReqDtoList themeIdList) {
+    public List<ThemeDetailResDto> selectThemesById(ThemeCheckReqDtoList themeIdList) {
         List<ThemeDetailResDto> themeDetailResDtoList = new ArrayList<>();
         for (String themeId : themeIdList.getThemeList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
@@ -116,7 +130,7 @@ public class ThemeServiceImpl implements ThemeService {
     @Transactional(readOnly = true)
     public Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Integer page, Integer size) {
 
-        String redisKey = keyword + ":" + sortBy;
+        String redisKey = RedisKeyBuilder.buildKey(sortBy, keyword);
 
         long start = page * size; // 페이지 계산에 따른 시작 인덱스
         long end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
