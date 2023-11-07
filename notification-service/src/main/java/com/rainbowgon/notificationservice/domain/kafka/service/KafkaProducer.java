@@ -2,7 +2,7 @@ package com.rainbowgon.notificationservice.domain.kafka.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rainbowgon.notificationservice.domain.kafka.dto.out.MessageOutDto;
+import com.rainbowgon.notificationservice.domain.kafka.dto.output.MessageOutDto;
 import com.rainbowgon.notificationservice.global.error.exception.JsonToStringException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
