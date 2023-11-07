@@ -46,7 +46,7 @@ public class BookmarkServiceImpl implements BookmarkService {
             if (valueOperations.get(bookmarkKey) == null) { // 없으면 삽입 (북마크 등록)
                 valueOperations.set(bookmarkKey, profile.getBookmarkNotificationStatus().name());
                 // 테마별 예약 오픈 시간 가져와서 타임테이블에 추가하기
-                String openTime = "00:00:00"; // TODO themeId로 오픈 시간 정보 가져오기
+                String openTime = "0000"; // TODO themeId로 오픈 시간 정보 가져오기
                 setOperations.add(openTime, themeId);
             } else { // 있으면 삭제 (북마크 해제)
                 valueOperations.getAndDelete(bookmarkKey);
@@ -85,7 +85,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         Set<String> bookmarkKeyList = stringRedisTemplate.keys("BOOKMARK:" + profileId + "$*");
 
         // search-service -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(전체) 가져오기
-        List<String> themeIdList = bookmarkKeyList.stream().map(this::getThemeIdList).collect(Collectors.toList());
+        List<String> themeIdList = bookmarkKeyList.stream().map(this::getThemeId).collect(Collectors.toList());
         List<SearchThemeInDto> themeInfoList = searchServiceClient.getBookmarkThemeInfo(themeIdList);
 
         // TODO redis -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(평균 별점, 리뷰 수, 북마크 수) 가져오기
@@ -135,7 +135,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     /**
      * redis 북마크 key에서 테마 ID 뽑아내기
      */
-    private String getThemeIdList(String bookmarkKey) {
+    private String getThemeId(String bookmarkKey) {
         return bookmarkKey.split("$")[1];
     }
 
