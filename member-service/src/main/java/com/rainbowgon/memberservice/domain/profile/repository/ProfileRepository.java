@@ -10,5 +10,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     Optional<Profile> findByMemberId(UUID memberId);
 
-    Optional<Profile> deleteByMemberId(UUID memberId);
+    void deleteByMemberId(UUID memberId);
 }

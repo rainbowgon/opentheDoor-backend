@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,15 +55,19 @@ public class ThemeServiceImpl implements ThemeService {
                 Double ratingScore = Optional.ofNullable(redisTemplate.opsForZSet().score("RATING",
                                                                                           theme.getId())).orElse(0.0);
 
-                Double viewScore = doubleRedisTemplate.opsForValue().get(theme.getId());
+                Double viewScore =
+                        Optional.ofNullable(doubleRedisTemplate.opsForValue().get(theme.getId())).orElse(0.0);
 
                 Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
 
                 Double finalRatingScore = ratingScore - (ratingScore - 0.5) * 2 - Math.log(interest);
 
                 themeRedisTemplate.opsForZSet().add(bookmarkKey, theme, bookmarkScore);
+                themeRedisTemplate.expire(bookmarkKey, Duration.ofHours(2));
                 themeRedisTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
+                themeRedisTemplate.expire(reviewKey, Duration.ofHours(2));
                 themeRedisTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
+                themeRedisTemplate.expire(recommendKey, Duration.ofHours(2));
             }
         }
 

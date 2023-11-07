@@ -1,7 +1,7 @@
 package com.rainbowgon.memberservice.domain.review.dto.request;
 
-import com.rainbowgon.memberservice.domain.bookmark.entity.EscapeStatus;
-import com.rainbowgon.memberservice.domain.bookmark.entity.SpoilStatus;
+import com.rainbowgon.memberservice.domain.review.entity.EscapeStatus;
+import com.rainbowgon.memberservice.domain.review.entity.SpoilStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

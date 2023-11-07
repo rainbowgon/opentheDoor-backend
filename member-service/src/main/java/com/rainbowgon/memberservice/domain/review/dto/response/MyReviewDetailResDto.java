@@ -1,7 +1,7 @@
 package com.rainbowgon.memberservice.domain.review.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rainbowgon.memberservice.domain.bookmark.entity.EscapeStatus;
+import com.rainbowgon.memberservice.domain.review.entity.EscapeStatus;
 import com.rainbowgon.memberservice.domain.review.entity.Review;
 import lombok.*;
 
