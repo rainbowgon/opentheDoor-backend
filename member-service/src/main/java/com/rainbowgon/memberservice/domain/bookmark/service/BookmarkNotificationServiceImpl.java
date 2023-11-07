@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -46,19 +47,31 @@ public class BookmarkNotificationServiceImpl implements BookmarkNotificationServ
 
         // redis에서 12시에 오픈되는 테마 ID 리스트 가져오기
         SetOperations<String, String> setOperations = bookmarkRedisStringTemplate.opsForSet();
-        Set<String> themeIdList = setOperations.members("TIMETABLE:0000");
+        Set<String> themeIdSet = setOperations.members("TIMETABLE:0000");
 
         // search-service에서 테마 ID를 통해 테마 정보(테마 이름, 지점명) 가져오기
-        List<SearchSimpleInDto> themeInfoList = searchServiceClient.getBookmarkThemeSimpleInfo(themeIdList);
+        List<SearchSimpleInDto> themeInfoList = searchServiceClient.getBookmarkThemeSimpleInfo(themeIdSet);
+        List<String> themeIdList =
+                themeInfoList.stream().map(SearchSimpleInDto::getThemeId).collect(Collectors.toList());
 
-//        // redis에서 각각의 테마를 북마크 하고 있는 사용자 정보 가져오기
-//        themeInfoList.stream().map(SearchSimpleInDto::getThemeId) // 테마 ID
-//                .map(themeId -> bookmarkRedisStringTemplate.keys("BOOKMARK:*$" + themeId)) // 테마 ID가 포함된 북마크 키 리스트
-//                .filter(Objects::nonNull)
-//                .map(bookmarkKeySet -> bookmarkKeySet.stream()
-//                                                    .map(bookmarkKey -> getProfileId(bookmarkKey)) // 북마크 키에서 프로필
-//                                                    ID 가져오기
-//                                                    .map(profileId -> getFcmToken(profileId))
+        // redis에서 각각의 테마를 북마크 하고 있는 사용자 정보(프로필 ID) 가져오기
+        List<List<Long>> profileIdList =
+                themeIdList.stream()
+                        .map(themeId -> bookmarkRedisStringTemplate.keys("BOOKMARK:*$" + themeId))
+                        .map(bookmarkKeySet -> bookmarkKeySet.stream()
+                                .map(this::getProfileId)
+                                .collect(Collectors.toList()))
+                        .collect(Collectors.toList());
+
+        // redis에서 프로필 ID를 통해 fcm token 가져오기
+        List<List<String>> fcmTokenList =
+                profileIdList.stream()
+                        .map(list -> list.stream()
+                                .map(this::getFcmToken)
+                                .collect(Collectors.toList()))
+                        .collect(Collectors.toList());
+
+        // 각 데이터 결합해서 알림 세그먼트 만들기
 
 
     }
