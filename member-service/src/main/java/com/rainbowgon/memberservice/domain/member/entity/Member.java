@@ -45,14 +45,17 @@ public class Member extends BaseEntity {
     //    @NotNull
     private String providerId;
 
+    private String fcmToken;
+
     @Builder
-    public Member(String name, String phoneNumber, Provider provider, String providerId,
-                  LocalDate birthDate) {
+    public Member(String name, String phoneNumber, Provider provider, String providerId, LocalDate birthDate,
+                  String fcmToken) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.provider = provider;
         this.providerId = providerId;
         this.birthDate = birthDate;
+        this.fcmToken = fcmToken;
     }
 
     public void updateName(String name) {

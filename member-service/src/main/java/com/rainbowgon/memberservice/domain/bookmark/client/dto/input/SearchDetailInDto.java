@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class SearchThemeInDto {
+public class SearchDetailInDto {
 
     /* 테마 정보 */
     private String themeId; // 테마 ID

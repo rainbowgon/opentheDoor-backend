@@ -36,10 +36,10 @@ public class FcmTokenRedisConfigure {
 
     // RedisTemplate bean 생성
     @Bean(name = "fcmTokenRedisStringTemplate")
-    public RedisTemplate<String, String> fcmTokenRedisStringTemplate(
+    public RedisTemplate<Long, String> fcmTokenRedisStringTemplate(
             @Qualifier("fcmTokenRedisConnectionFactory") RedisConnectionFactory fcmTokenRedisConnectionFactory) {
 
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<Long, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(fcmTokenRedisConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());

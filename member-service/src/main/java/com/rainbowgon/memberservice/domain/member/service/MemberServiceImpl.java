@@ -48,6 +48,7 @@ public class MemberServiceImpl implements MemberService {
                         .provider(createReqDto.getProvider())
                         .providerId(createReqDto.getProviderId())
                         .birthDate(createReqDto.getBirthDate())
+                        .fcmToken(createReqDto.get)
                         .build());
 
         // 생성한 멤버 객체로 프로필 객체 생성
@@ -71,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
 
         // phoneNumber 형식 검증 (01012345678)
         checkPhoneNumberFormat(phoneNumber);
-        
+
         return coolSmsSender.sendOne(phoneNumber);
     }
 

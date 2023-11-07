@@ -103,8 +103,18 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Transactional
     @Override
-    public void delectProfile(UUID memberId) {
+    public void deletProfile(UUID memberId) {
         profileRepository.deleteByMemberId(memberId);
+        // TODO redis에서 해당 회원의 북마크 내역 삭제
+    }
+
+    /**
+     * 프로필 ID로 회원의 fcm token 가져오기
+     */
+    @Override
+    public String getFcmTokenByProfileId(Long profileId) {
+
+        profileRepository.findById(profileId).orElseThrow(ProfileNotFoundException::new);
     }
 
     /**
