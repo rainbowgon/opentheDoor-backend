@@ -1,8 +1,8 @@
-package com.rainbowgon.senderserver.domain.kafka.dto.in;
+package com.rainbowgon.senderserver.domain.kafka.dto.input;
 
 
+import com.rainbowgon.senderserver.domain.sender.entity.NotificationLog;
 import com.rainbowgon.senderserver.domain.sender.entity.NotificationType;
-import com.rainbowgon.senderserver.domain.sender.entity.ViewStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +17,14 @@ public class MessageInDTO {
     private String title;
     private String body;
     private NotificationType notificationType;
-    private ViewStatus viewStatus;
 
+    public NotificationLog toEntity() {
+        return NotificationLog.builder()
+                .profileId(profileId)
+                .themeId(themeId)
+                .title(title)
+                .body(body)
+                .notificationType(notificationType)
+                .build();
+    }
 }

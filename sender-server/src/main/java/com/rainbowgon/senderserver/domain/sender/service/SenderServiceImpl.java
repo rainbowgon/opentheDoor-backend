@@ -2,10 +2,16 @@ package com.rainbowgon.senderserver.domain.sender.service;
 
 import com.rainbowgon.senderserver.domain.fcm.service.FCMInitializer;
 import com.rainbowgon.senderserver.domain.fcm.service.FCMService;
-import com.rainbowgon.senderserver.domain.kafka.dto.in.MessageInDTO;
+import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDTO;
+import com.rainbowgon.senderserver.domain.sender.entity.Notification;
+import com.rainbowgon.senderserver.domain.sender.entity.NotificationLog;
+import com.rainbowgon.senderserver.domain.sender.repository.SenderRDBRepository;
+import com.rainbowgon.senderserver.domain.sender.repository.SenderRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,16 +20,29 @@ public class SenderServiceImpl implements SenderService {
 
     private final FCMInitializer fcmInitializer;
     private final FCMService fcmService;
+    private final SenderRDBRepository senderRDBRepository;
+    private final SenderRedisRepository senderRedisRepository;
 
     @Override
+    @Transactional
     public void sendAndInsertMessage(MessageInDTO messageInDTO) {
 
         fcmInitializer.initialize();
         boolean result = fcmService.sendMessage(messageInDTO.getFcmToken(), messageInDTO.getTitle(),
                                                 messageInDTO.getBody());
         if (result) {
-            // 메세지가 제대로 갔다면
-            // 디비에 넣어야
+            NotificationLog notificationLog = senderRDBRepository.save(messageInDTO.toEntity());
+
+            Notification notification = Notification.builder()
+                    .id(notificationLog.getId())
+                    .profileId(notificationLog.getProfileId())
+                    .themeId(notificationLog.getThemeId())
+                    .title(notificationLog.getTitle())
+                    .body(notificationLog.getBody())
+                    .notificationType(notificationLog.getNotificationType())
+                    .build();
+            
+            senderRedisRepository.save(notification);
         }
 
     }

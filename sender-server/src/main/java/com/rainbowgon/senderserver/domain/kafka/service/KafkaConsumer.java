@@ -1,7 +1,7 @@
 package com.rainbowgon.senderserver.domain.kafka.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rainbowgon.senderserver.domain.kafka.dto.in.MessageInDTO;
+import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDTO;
 import com.rainbowgon.senderserver.domain.sender.service.SenderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
