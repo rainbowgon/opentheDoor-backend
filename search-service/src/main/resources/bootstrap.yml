@@ -2,5 +2,5 @@ spring:
   cloud:
     config:
       uri: http://10.0.2.98:80
-      name: search-service // 위에서 지정한 파일 이름
+      name: search-service
       profile: prod
