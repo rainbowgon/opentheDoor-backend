@@ -8,4 +8,4 @@ CONTAINER="app_container"
 IMAGE="app_image"
 
 docker build -t "$IMAGE" "$ROOT_PATH"
-docker run -dp 80:8080 --name "$CONTAINER" "$IMAGE"
+docker run -dp 80:80 --name "$CONTAINER" "$IMAGE"
