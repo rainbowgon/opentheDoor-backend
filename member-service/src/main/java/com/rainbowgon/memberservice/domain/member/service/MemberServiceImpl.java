@@ -48,7 +48,6 @@ public class MemberServiceImpl implements MemberService {
                         .provider(createReqDto.getProvider())
                         .providerId(createReqDto.getProviderId())
                         .birthDate(createReqDto.getBirthDate())
-                        .fcmToken(createReqDto.get)
                         .build());
 
         // 생성한 멤버 객체로 프로필 객체 생성
@@ -120,7 +119,7 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(UUID memberId) {
 
         // 프로필 서비스로 삭제 요청 보내기
-        profileService.delectProfile(memberId);
+        profileService.deleteProfile(memberId);
 
         // 회원 삭제
         memberRepository.deleteById(memberId);
