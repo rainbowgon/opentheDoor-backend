@@ -5,5 +5,9 @@ elasticsearch:
 spring:
   data:
     redis:
-      host: localhost
-      port: 6379
+      cache:
+        host: localhost
+        port: 6379
+      bookmark:
+        host: localhost
+        port: 6381
