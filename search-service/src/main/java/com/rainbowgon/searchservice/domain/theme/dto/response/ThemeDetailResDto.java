@@ -27,6 +27,8 @@ public class ThemeDetailResDto {
     private Double activity; // 활동성
     private Double lockRatio; // 장치 비율
     private Double horror; // 공포도
+    private Double latitude; // 위도
+    private Double longitude; // 경도
 
 
     public static ThemeDetailResDto from(Theme theme) {
@@ -43,6 +45,8 @@ public class ThemeDetailResDto {
                 .minHeadcount(theme.getMinHeadcount())
                 .maxHeadcount(theme.getMaxHeadcount())
                 .reservationNotice(theme.getReservationNotice())
+                .latitude(theme.getLatitude())
+                .longitude(theme.getLongitude())
                 .build();
     }
 }

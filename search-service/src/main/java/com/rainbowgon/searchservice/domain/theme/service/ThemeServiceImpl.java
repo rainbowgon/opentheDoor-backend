@@ -97,8 +97,9 @@ public class ThemeServiceImpl implements ThemeService {
 
         Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
 
-        Double finalRatingScore = ratingScore - (ratingScore - 0.5) * 2 - Math.log(interest);
-
+        Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2, -Math.log(interest + 1));
+        System.out.println(Math.log(interest));
+        System.out.println(finalRatingScore);
         cacheRedisThemeTemplate.opsForZSet().add(sortingKey, theme, bookmarkScore);
         cacheRedisThemeTemplate.expire(sortingKey, Duration.ofHours(2));
         cacheRedisThemeTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
