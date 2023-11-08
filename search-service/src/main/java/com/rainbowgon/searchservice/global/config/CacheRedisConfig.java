@@ -12,19 +12,17 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableRedisRepositories
 public class CacheRedisConfig {
 
-    @Value("${spring.data.redis.cache.host}")
+    @Value("${spring.redis.cache.host}")
     private String host;
-    @Value("${spring.data.redis.cache.port}")
+    @Value("${spring.redis.cache.port}")
     private int port;
 
 //    @Value("${spring.data.redis.password}")
@@ -45,7 +43,9 @@ public class CacheRedisConfig {
     // RedisTemplate bean 생성
     @Bean(name = "cacheRedisStringTemplate")
     public RedisTemplate<String, String> cacheRedisStringTemplate(
-            @Qualifier("cacheRedisConnectionFactory") RedisConnectionFactory cacheRedisConnectionFactory) {
+            @Qualifier("cacheRedisConnectionFactory")
+
+            RedisConnectionFactory cacheRedisConnectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(cacheRedisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -55,6 +55,8 @@ public class CacheRedisConfig {
 
     @Bean(name = "cacheRedisDoubleTemplate")
     public RedisTemplate<String, Double> cacheRedisDoubleTemplate(
+            @Qualifier("cacheRedisConnectionFactory")
+
             RedisConnectionFactory cacheRedisConnectionFactory) {
         RedisTemplate<String, Double> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(cacheRedisConnectionFactory);
@@ -65,6 +67,8 @@ public class CacheRedisConfig {
 
     @Bean(name = "cacheRedisFloatTemplate")
     public RedisTemplate<String, Float> cacheRedisFloatTemplate(
+            @Qualifier("cacheRedisConnectionFactory")
+
             RedisConnectionFactory cacheRedisConnectionFactory) {
         RedisTemplate<String, Float> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(cacheRedisConnectionFactory);

@@ -33,18 +33,19 @@ public class ThemeServiceImpl implements ThemeService {
     private final ThemeRepository themeRepository;
 
 
-    @Qualifier("bookmarkRedisDoubleTemplate")
-    private RedisTemplate<String, Double> bookmarkRedisDoubleTemplate;
+    @Qualifier("sortingRedisDoubleTemplate")
+    private final RedisTemplate<String, Double> sortingRedisDoubleTemplate;
 
-    @Qualifier("bookmarkRedisStringTemplate")
-    private RedisTemplate<String, String> bookmarkRedisStringTemplate;
+    @Qualifier("sortingRedisStringTemplate")
+    private final RedisTemplate<String, String> sortingRedisStringTemplate;
 
 
 //    @Qualifier("doubleRedisTemplate")
 //    private RedisTemplate<String, String> reservationRedisStringTemplate;
 
     @Qualifier("cacheRedisThemeTemplate")
-    private RedisTemplate<String, Theme> cacheRedisThemeTemplate;
+    private final RedisTemplate<String, Theme> cacheRedisThemeTemplate;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -53,37 +54,39 @@ public class ThemeServiceImpl implements ThemeService {
         List<Theme> themeList = search(keyword);
 
         // 레디스에 저장할 키를 생성
-        String bookmarkKey = RedisKeyBuilder.buildKey("BOOKMARK", keyword);
+        String sortingKey = RedisKeyBuilder.buildKey("BOOKMARK", keyword);
         String reviewKey = RedisKeyBuilder.buildKey("REVIEW", keyword);
         String recommendKey = RedisKeyBuilder.buildKey("RECOMMEND", keyword);
 
         // 여기서 기존의 점수가 있는지 체크하고, 없으면 0으로 초기화(기본 북마크)
-        if (bookmarkRedisStringTemplate.opsForZSet().zCard(bookmarkKey) == 0) {
-            for (Theme theme : themeList) {
-                Double bookmarkScore = Optional.ofNullable(bookmarkRedisStringTemplate.opsForZSet().score(
-                        "BOOKMARK",
-                        theme.getId())).orElse(0.0);
-                Double reviewScore = Optional.ofNullable(bookmarkRedisStringTemplate.opsForZSet().score(
-                        "REVIEW",
-                        theme.getId())).orElse(0.0);
-                Double ratingScore = Optional.ofNullable(bookmarkRedisStringTemplate.opsForZSet().score(
-                        "RATING",
-                        theme.getId())).orElse(0.0);
+        for (Theme theme : themeList) {
+            //검색 결과로 나온 테마의 북마크 수
+            Double bookmarkScore = Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(
+                    "BOOKMARK",
+                    theme.getId())).orElse(0.0);
+            //검색 결과로 나온 테마의 리뷰 수
+            Double reviewScore = Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(
+                    "REVIEW",
+                    theme.getId())).orElse(0.0);
+            //검색 결과로 나온 테마의 평균 별점
+            Double ratingScore = Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(
+                    "RATING",
+                    theme.getId())).orElse(0.0);
 
-                Double viewScore =
-                        Optional.ofNullable(bookmarkRedisDoubleTemplate.opsForValue().get(theme.getId())).orElse(0.0);
+            //검색 결과로 나온 테마의 조회 수
+            Double viewScore =
+                    Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getId())).orElse(0.0);
 
-                Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
+            Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
 
-                Double finalRatingScore = ratingScore - (ratingScore - 0.5) * 2 - Math.log(interest);
+            Double finalRatingScore = ratingScore - (ratingScore - 0.5) * 2 - Math.log(interest);
 
-                cacheRedisThemeTemplate.opsForZSet().add(bookmarkKey, theme, bookmarkScore);
-                cacheRedisThemeTemplate.expire(bookmarkKey, Duration.ofHours(2));
-                cacheRedisThemeTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
-                cacheRedisThemeTemplate.expire(reviewKey, Duration.ofHours(2));
-                cacheRedisThemeTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
-                cacheRedisThemeTemplate.expire(recommendKey, Duration.ofHours(2));
-            }
+            cacheRedisThemeTemplate.opsForZSet().add(sortingKey, theme, bookmarkScore);
+            cacheRedisThemeTemplate.expire(sortingKey, Duration.ofHours(2));
+            cacheRedisThemeTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
+            cacheRedisThemeTemplate.expire(reviewKey, Duration.ofHours(2));
+            cacheRedisThemeTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
+            cacheRedisThemeTemplate.expire(recommendKey, Duration.ofHours(2));
         }
 
         // 페이지네이션을 위한 시작과 끝 인덱스 계산
@@ -91,10 +94,10 @@ public class ThemeServiceImpl implements ThemeService {
         long end = (page + 1) * size - 1;
 
         // 레디스에서 전체 zset의 크기를 가져옵니다.
-        Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(bookmarkKey);
+        Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(sortingKey);
 
         // 레디스에서 정렬된 결과를 가져옵니다.
-        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(bookmarkKey, start,
+        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(sortingKey, start,
                                                                                       end);
 
         // 결과를 DTO로 변환합니다.
@@ -129,7 +132,7 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     @Transactional(readOnly = true)
     public ThemeDetailResDto selectOneThemeById(String themeId) {
-        ValueOperations<String, Double> valueOperations = bookmarkRedisDoubleTemplate.opsForValue();
+        ValueOperations<String, Double> valueOperations = sortingRedisDoubleTemplate.opsForValue();
         Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
         valueOperations.increment(themeId, 1);
 
@@ -170,7 +173,7 @@ public class ThemeServiceImpl implements ThemeService {
 
 
     public void bookmarkCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = bookmarkRedisStringTemplate.opsForZSet();
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
 
         Boolean themeExists = zSetOperations.score("BOOKMARK", themeId) != null;
 
@@ -186,7 +189,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     public void reviewCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = bookmarkRedisStringTemplate.opsForZSet();
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
         Boolean themeExists = zSetOperations.score("REVIEW", themeId) != null;
 
         if (themeExists) {
@@ -199,7 +202,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     public void recommendCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = bookmarkRedisStringTemplate.opsForZSet();
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
         Boolean themeExists = zSetOperations.score("RECOMMEND", themeId) != null;
 
         if (themeExists) {
