@@ -19,8 +19,6 @@ public interface ProfileService {
 
     NotificationStatus updateBookmarkNotificationStatus(UUID memberId);
 
-    void deletProfile(UUID memberId);
-
-    String getFcmTokenByProfileId(Long profileId);
+    void deleteProfile(UUID memberId);
 
 }
