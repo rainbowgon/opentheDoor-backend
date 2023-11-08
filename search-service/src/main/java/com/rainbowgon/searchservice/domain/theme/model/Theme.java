@@ -32,8 +32,8 @@ public class Theme {
     @Field(type = FieldType.Keyword, name = "genre", index = false)
     private String[] genre;
 
-    @Field(type = FieldType.Integer, name = "level")
-    private Integer level;
+    @Field(type = FieldType.Double, name = "level")
+    private Double level;
 
     @Field(type = FieldType.Integer, name = "minHeadcount")
     private Integer minHeadcount;

@@ -15,7 +15,7 @@ public class ThemeCreateReqDto {
     private String explanation; // 설명
     private String poster; // 포스터
     private String[] genre; // 장르
-    private Integer level; // 난이도
+    private Double level; // 난이도
     private Integer minHeadcount; // 최소 인원 수
     private Integer maxHeadcount; // 최대 인원 수
 
