@@ -1,6 +1,5 @@
 package com.rainbowgon.memberservice.global.config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,8 +37,7 @@ public class BookmarkRedisConfigure {
 
     // RedisTemplate bean 생성
     @Bean(name = "bookmarkRedisStringTemplate")
-    public RedisTemplate<String, String> bookmarkRedisStringTemplate(
-            @Qualifier("bookmarkRedisConnectionFactory") RedisConnectionFactory bookmarkRedisConnectionFactory) {
+    public RedisTemplate<String, String> bookmarkRedisStringTemplate(RedisConnectionFactory bookmarkRedisConnectionFactory) {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(bookmarkRedisConnectionFactory);
