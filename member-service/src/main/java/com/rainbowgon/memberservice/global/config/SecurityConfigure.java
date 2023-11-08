@@ -37,6 +37,7 @@ public class SecurityConfigure {
                 .antMatchers("/members/login/**").permitAll()
                 .antMatchers("/reviews/themes/one/**").permitAll()
                 .antMatchers("/members/phone/**").permitAll()
+                .antMatchers(("/actuator/**")).permitAll()
                 .anyRequest().authenticated();
 
         httpSecurity
