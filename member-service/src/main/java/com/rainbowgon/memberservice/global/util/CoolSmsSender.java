@@ -15,13 +15,13 @@ import javax.annotation.PostConstruct;
 @Component
 public class CoolSmsSender {
 
-    @Value("${coolsms.api.key}")
+    @Value("${spring.coolsms.api.key}")
     private String apiKey;
 
-    @Value("${coolsms.api.secret}")
+    @Value("${spring.coolsms.api.secret}")
     private String apiSecretKey;
 
-    @Value("${coolsms.sender}")
+    @Value("${spring.coolsms.sender}")
     private String senderNumber;
 
     private DefaultMessageService messageService;
