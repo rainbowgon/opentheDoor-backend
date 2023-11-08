@@ -1,6 +1,5 @@
 package com.rainbowgon.memberservice.domain.bookmark.service;
 
-import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,13 +16,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BookmarkNotificationServiceImpl implements BookmarkNotificationService {
 
-    private final ProfileService profileService;
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
     @Qualifier("fcmTokenRedisStringTemplate")
-    private final RedisTemplate<Long, String> fcmTokenRedisStringTemplate;
-//    private final NotificationServiceClient notificationServiceClient;
-//    private final SearchServiceClient searchServiceClient;
+    private final RedisTemplate<String, String> fcmTokenRedisStringTemplate;
+
 
     /**
      * redis 타임테이블에 새로운 key가 추가되는지 확인
@@ -74,15 +71,15 @@ public class BookmarkNotificationServiceImpl implements BookmarkNotificationServ
     /**
      * redis 북마크 key에서 프로필 ID 뽑아내기
      */
-    private Long getProfileId(String bookmarkKey) {
-        return Long.parseLong(bookmarkKey.split(":")[1].split("$")[0]);
+    private String getProfileId(String bookmarkKey) {
+        return bookmarkKey.split(":")[1].split("$")[0];
     }
 
     /**
      * redis에서 프로필 ID(key)로 fcm token(value) 가져오기
      */
-    private String getFcmToken(Long profileId) {
-        ValueOperations<Long, String> valueOperations = fcmTokenRedisStringTemplate.opsForValue();
+    private String getFcmToken(String profileId) {
+        ValueOperations<String, String> valueOperations = fcmTokenRedisStringTemplate.opsForValue();
         return valueOperations.get(profileId);
     }
 }

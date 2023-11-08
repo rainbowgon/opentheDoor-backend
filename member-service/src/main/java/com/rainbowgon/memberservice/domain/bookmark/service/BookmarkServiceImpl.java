@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,9 +27,15 @@ import java.util.stream.Collectors;
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final ProfileService profileService;
-    //    private final SearchServiceClient searchServiceClient;
+
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
+    @Qualifier("fcmTokenRedisStringTemplate")
+    private final RedisTemplate<String, String> fcmTokenRedisStringTemplate;
+    @Qualifier("refreshTokenRedisStringTemplate")
+    private final RedisTemplate<String, String> refreshTokenRedisStringTemplate;
+    @Qualifier("sortingRedisStringTemplate")
+    private final RedisTemplate<String, String> sortingRedisStringTemplate;
 
     @Transactional
     @Override
@@ -37,19 +44,33 @@ public class BookmarkServiceImpl implements BookmarkService {
         // 요청 회원의 프로필 가져오기
         ProfileSimpleResDto profile = getProfile(memberId);
 
-        ValueOperations<String, String> valueOperations = bookmarkRedisStringTemplate.opsForValue();
-        SetOperations<String, String> setOperations = bookmarkRedisStringTemplate.opsForSet();
+        // 북마크
+        ValueOperations<String, String> bookmarkOps = bookmarkRedisStringTemplate.opsForValue();
+        // 타임테이블
+        SetOperations<String, String> openTimeOps = bookmarkRedisStringTemplate.opsForSet();
+        // fcm token
+        ValueOperations<String, String> fcmOps = fcmTokenRedisStringTemplate.opsForValue();
+        // refresh token
+        ValueOperations<String, String> refreshOps = refreshTokenRedisStringTemplate.opsForValue();
+        // sorting
+        ZSetOperations<String, String> sortingOps = sortingRedisStringTemplate.opsForZSet();
 
         for (String themeId : bookmarkUpdateReqDto.getBookmarkThemeIdList()) {
             // redis key 설정
             String bookmarkKey = generateBookmarkKey(profile.getProfileId(), themeId);
-            if (valueOperations.get(bookmarkKey) == null) { // 없으면 삽입 (북마크 등록)
-                valueOperations.set(bookmarkKey, profile.getBookmarkNotificationStatus().name());
+            if (bookmarkOps.get(bookmarkKey) == null) { // 없으면 삽입 (북마크 등록)
+                bookmarkOps.set(bookmarkKey, profile.getBookmarkNotificationStatus().name());
                 // 테마별 예약 오픈 시간 가져와서 타임테이블에 추가하기
                 String openTime = "0000"; // TODO themeId로 오픈 시간 정보 가져오기
-                setOperations.add(openTime, themeId);
+                openTimeOps.add(openTime, themeId);
+
+                /** 테스트 */
+                fcmOps.set("test", "테스트");
+                refreshOps.set("test", "테스트");
+                sortingOps.add("bookmark", "themeId", 1);
+
             } else { // 있으면 삭제 (북마크 해제)
-                valueOperations.getAndDelete(bookmarkKey);
+                bookmarkOps.getAndDelete(bookmarkKey);
             }
         }
 

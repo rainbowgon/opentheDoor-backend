@@ -11,19 +11,19 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class FcmTokenRedisConfigure {
+public class ThemeSortingRedisConfigure {
 
-    @Value("${spring.redis.fcm-token.host}")
+    @Value("${spring.redis.sorting.host}")
     private String host;
 
-    @Value("${spring.redis.fcm-token.port}")
+    @Value("${spring.redis.sorting.port}")
     private int port;
 
 //    @Value("${redis.password}")
 //    private String password;
 
-    @Bean(name = "fcmTokenRedisConnectionFactory")
-    public RedisConnectionFactory fcmTokenRedisConnectionFactory() {
+    @Bean(name = "sortingRedisConnectionFactory")
+    public RedisConnectionFactory sortingRedisConnectionFactory() {
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
@@ -33,12 +33,12 @@ public class FcmTokenRedisConfigure {
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
-    @Bean(name = "fcmTokenRedisStringTemplate")
-    public RedisTemplate<String, String> fcmTokenRedisStringTemplate(
-            @Qualifier("fcmTokenRedisConnectionFactory") RedisConnectionFactory fcmTokenRedisConnectionFactory) {
+    @Bean(name = "sortingRedisStringTemplate")
+    public RedisTemplate<String, String> sortingRedisStringTemplate(
+            @Qualifier("sortingRedisConnectionFactory") RedisConnectionFactory sortingRedisConnectionFactory) {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(fcmTokenRedisConnectionFactory);
+        redisTemplate.setConnectionFactory(sortingRedisConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());

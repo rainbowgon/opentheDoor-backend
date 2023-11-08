@@ -27,10 +27,10 @@ public class KakaoLoginService {
 
     private final MemberRepository memberRepository;
 
-    @Value("${oauth.kakao.client-id}")
+    @Value("${spring.oauth.kakao.client-id}")
     private String kakaoClientId;
 
-    @Value("${oauth.kakao.redirect-uri}")
+    @Value("${spring.oauth.kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
     // json 타입을 객체로 변환하기 위한 객체
