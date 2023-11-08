@@ -1,5 +1,6 @@
 package com.rainbowgon.memberservice.domain.member.controller;
 
+import com.rainbowgon.memberservice.domain.client.NotificationServiceClient;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
@@ -29,6 +30,8 @@ public class MemberController {
 
     private final MemberService memberService;
     private final KakaoLoginService kakaoLoginService;
+    private final NotificationServiceClient notificationServiceClient;
+
 
     /**
      * 카카오 로그인
@@ -102,6 +105,17 @@ public class MemberController {
         memberService.deleteMember(UUID.fromString(memberId));
 
         return JsonResponse.ok("회원이 성공적으로 삭제되었습니다.");
+    }
+
+    /**
+     * 통신 테스트를 위한 API
+     */
+    @GetMapping("/test")
+    public ResponseEntity<String> testNotificationService() {
+
+        String testResponse = notificationServiceClient.testNotificationService();
+
+        return ResponseEntity.ok("notification-service에서 받은 응답 : " + testResponse);
     }
 
 }
