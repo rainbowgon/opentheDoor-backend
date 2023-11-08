@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @RedisHash("notification")
@@ -11,6 +12,7 @@ public class Notification {
 
     @Id
     private Long notificationId;
+    @Indexed
     private Long profileId;
     private Long themeId;
     private String title;
