@@ -5,8 +5,10 @@ import com.rainbowgon.notificationservice.domain.notification.client.dto.input.B
 import com.rainbowgon.notificationservice.domain.notification.client.dto.input.ReservationInDto;
 import com.rainbowgon.notificationservice.domain.notification.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.dto.response.NotificationListResDto;
+import com.rainbowgon.notificationservice.domain.notification.repository.NotificationRedisRepository;
 import com.rainbowgon.notificationservice.global.util.MessageFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,10 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
 
     private final KafkaProducer kafkaProducer;
+    private final NotificationRedisRepository notificationRedisRepository;
+    private final RedisTemplate<String, String> stringRedisTemplate;
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public List<NotificationListResDto> selectNotificationList(Long profileId) {
