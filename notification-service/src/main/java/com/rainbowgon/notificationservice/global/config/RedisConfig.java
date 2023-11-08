@@ -15,7 +15,7 @@ public class RedisConfig {
     @Value("${spring.redis.notification.host}")
     private String redisHost;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.redis.notification.port}")
     private int redisPort;
 
     @Bean
