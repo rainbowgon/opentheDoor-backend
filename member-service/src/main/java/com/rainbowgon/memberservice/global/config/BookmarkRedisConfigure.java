@@ -20,8 +20,8 @@ public class BookmarkRedisConfigure {
     @Value("${spring.redis.bookmark.port}")
     private int port;
 
-    @Value("${redis.password}")
-    private String password;
+//    @Value("${redis.password}")
+//    private String password;
 
     // Redis 저장소와 연결
     @Primary
@@ -31,7 +31,7 @@ public class BookmarkRedisConfigure {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
-        redisStandaloneConfiguration.setPassword(password);
+//        redisStandaloneConfiguration.setPassword(password);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
