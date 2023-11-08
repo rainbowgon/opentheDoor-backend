@@ -206,4 +206,4 @@ gradle-app.setting
 
 ### secret yml files ###
 application-*.yml
-!application.yml
+application.yml
