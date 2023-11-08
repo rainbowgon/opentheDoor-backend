@@ -14,20 +14,17 @@ public class ThemeSimpleResDto {
     private String venue; // 지점명
     private String title; // 테마명
     private String poster; // 포스터
-    private String explanation; // 테마 설명
-    private Integer level; // 난이도
+    private Double level; // 난이도
     private Integer minHeadcount; // 최소 인원 수
     private Integer maxHeadcount; // 최대 인원 수
-
-//    private Integer price; // 가격
-//    private Integer runningTime; // 소요 시간
+    private Integer price; // 가격
+    private Integer timeLimit; // 소요 시간 (분 단위)
 
     public static ThemeSimpleResDto from(Theme theme) {
         return ThemeSimpleResDto.builder()
                 .id(theme.getId())
                 .venue(theme.getVenue())
                 .title(theme.getTitle())
-                .explanation(theme.getExplanation())
                 .poster(theme.getPoster())
                 .level(theme.getLevel())
                 .minHeadcount(theme.getMinHeadcount())

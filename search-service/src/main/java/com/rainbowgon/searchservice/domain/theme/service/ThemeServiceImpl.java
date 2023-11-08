@@ -8,6 +8,8 @@ import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
 import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,9 +32,21 @@ import java.util.stream.StreamSupport;
 public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
-    private final RedisTemplate<String, String> redisTemplate;
-    private final RedisTemplate<String, Double> doubleRedisTemplate;
-    private final RedisTemplate<String, Theme> themeRedisTemplate;
+
+
+    @Qualifier("sortingRedisDoubleTemplate")
+    private final RedisTemplate<String, Double> sortingRedisDoubleTemplate;
+
+    @Qualifier("sortingRedisStringTemplate")
+    private final RedisTemplate<String, String> sortingRedisStringTemplate;
+
+
+//    @Qualifier("doubleRedisTemplate")
+//    private RedisTemplate<String, String> reservationRedisStringTemplate;
+
+    @Qualifier("cacheRedisThemeTemplate")
+    private final RedisTemplate<String, Theme> cacheRedisThemeTemplate;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -41,34 +55,13 @@ public class ThemeServiceImpl implements ThemeService {
         List<Theme> themeList = search(keyword);
 
         // 레디스에 저장할 키를 생성
-        String bookmarkKey = RedisKeyBuilder.buildKey("BOOKMARK", keyword);
+        String sortingKey = RedisKeyBuilder.buildKey("BOOKMARK", keyword);
         String reviewKey = RedisKeyBuilder.buildKey("REVIEW", keyword);
         String recommendKey = RedisKeyBuilder.buildKey("RECOMMEND", keyword);
 
         // 여기서 기존의 점수가 있는지 체크하고, 없으면 0으로 초기화(기본 북마크)
-        if (redisTemplate.opsForZSet().zCard(bookmarkKey) == 0) {
-            for (Theme theme : themeList) {
-                Double bookmarkScore = Optional.ofNullable(redisTemplate.opsForZSet().score("BOOKMARK",
-                                                                                            theme.getId())).orElse(0.0);
-                Double reviewScore = Optional.ofNullable(redisTemplate.opsForZSet().score("REVIEW",
-                                                                                          theme.getId())).orElse(0.0);
-                Double ratingScore = Optional.ofNullable(redisTemplate.opsForZSet().score("RATING",
-                                                                                          theme.getId())).orElse(0.0);
-
-                Double viewScore =
-                        Optional.ofNullable(doubleRedisTemplate.opsForValue().get(theme.getId())).orElse(0.0);
-
-                Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
-
-                Double finalRatingScore = ratingScore - (ratingScore - 0.5) * 2 - Math.log(interest);
-
-                themeRedisTemplate.opsForZSet().add(bookmarkKey, theme, bookmarkScore);
-                themeRedisTemplate.expire(bookmarkKey, Duration.ofHours(2));
-                themeRedisTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
-                themeRedisTemplate.expire(reviewKey, Duration.ofHours(2));
-                themeRedisTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
-                themeRedisTemplate.expire(recommendKey, Duration.ofHours(2));
-            }
+        for (Theme theme : themeList) {
+            createZSET(sortingKey, reviewKey, recommendKey, theme);
         }
 
         // 페이지네이션을 위한 시작과 끝 인덱스 계산
@@ -76,10 +69,11 @@ public class ThemeServiceImpl implements ThemeService {
         long end = (page + 1) * size - 1;
 
         // 레디스에서 전체 zset의 크기를 가져옵니다.
-        Long totalElements = themeRedisTemplate.opsForZSet().zCard(bookmarkKey);
+        Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(recommendKey);
 
         // 레디스에서 정렬된 결과를 가져옵니다.
-        Set<Theme> sortedThemeIds = themeRedisTemplate.opsForZSet().reverseRange(bookmarkKey, start, end);
+        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(recommendKey, start,
+                                                                                      end);
 
         // 결과를 DTO로 변환합니다.
         List<ThemeSimpleResDto> content = sortedThemeIds.stream()
@@ -88,6 +82,36 @@ public class ThemeServiceImpl implements ThemeService {
 
         // Page 객체를 생성하고 반환합니다.
         return new PageImpl<>(content, PageRequest.of(page, size), totalElements);
+    }
+
+    //Zset에 각 정렬 기준별로 넣는 함수
+    private void createZSET(String sortingKey, String reviewKey, String recommendKey, Theme theme) {
+        //검색 결과로 나온 테마의 북마크 수
+        Double bookmarkScore = getScore(theme, "BOOKMARK");
+        Double reviewScore = getScore(theme, "REVIEW");
+        Double ratingScore = getScore(theme, "RATING");
+
+        //검색 결과로 나온 테마의 조회 수
+        Double viewScore =
+                Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getId())).orElse(0.0);
+
+        Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
+
+        Double finalRatingScore = ratingScore - (ratingScore - 0.5) * 2 - Math.log(interest);
+
+        cacheRedisThemeTemplate.opsForZSet().add(sortingKey, theme, bookmarkScore);
+        cacheRedisThemeTemplate.expire(sortingKey, Duration.ofHours(2));
+        cacheRedisThemeTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
+        cacheRedisThemeTemplate.expire(reviewKey, Duration.ofHours(2));
+        cacheRedisThemeTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
+        cacheRedisThemeTemplate.expire(recommendKey, Duration.ofHours(2));
+    }
+
+    //ZSet Score 값을 get하는 함수
+    @NotNull
+    private Double getScore(Theme theme, String key) {
+        return Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(key, theme.getId()))
+                .orElse(0.0);
     }
 
 
@@ -113,7 +137,7 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     @Transactional(readOnly = true)
     public ThemeDetailResDto selectOneThemeById(String themeId) {
-        ValueOperations<String, Double> valueOperations = doubleRedisTemplate.opsForValue();
+        ValueOperations<String, Double> valueOperations = sortingRedisDoubleTemplate.opsForValue();
         Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
         valueOperations.increment(themeId, 1);
 
@@ -141,9 +165,9 @@ public class ThemeServiceImpl implements ThemeService {
         long end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
 
         // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
-        Set<Theme> sortedThemeIds = themeRedisTemplate.opsForZSet().reverseRange(redisKey, start, end);
+        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, start, end);
 
-        Long totalElements = themeRedisTemplate.opsForZSet().zCard(redisKey);
+        Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(redisKey);
 
         List<ThemeSimpleResDto> content = sortedThemeIds.stream()
                 .map(ThemeSimpleResDto::from)
@@ -154,7 +178,7 @@ public class ThemeServiceImpl implements ThemeService {
 
 
     public void bookmarkCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
 
         Boolean themeExists = zSetOperations.score("BOOKMARK", themeId) != null;
 
@@ -170,7 +194,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     public void reviewCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
         Boolean themeExists = zSetOperations.score("REVIEW", themeId) != null;
 
         if (themeExists) {
@@ -183,7 +207,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
     public void recommendCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
         Boolean themeExists = zSetOperations.score("RECOMMEND", themeId) != null;
 
         if (themeExists) {
