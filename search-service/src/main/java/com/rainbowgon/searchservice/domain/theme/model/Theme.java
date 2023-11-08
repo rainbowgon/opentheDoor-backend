@@ -1,6 +1,5 @@
 package com.rainbowgon.searchservice.domain.theme.model;
 
-import com.rainbowgon.searchservice.domain.theme.dto.request.ThemeCreateReqDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -66,25 +65,5 @@ public class Theme {
     @Field(type = FieldType.Double, name = "horror", index = false)
     private Double horror;
 
-    public static Theme of(ThemeCreateReqDto syncTheme) {
-        return Theme.builder()
-                .venue(syncTheme.getVenue())
-                .title(syncTheme.getTitle())
-                .explanation(syncTheme.getExplanation())
-                .location(syncTheme.getLocation())
-                .poster(syncTheme.getPoster())
-                .genre(syncTheme.getGenre())
-                .level(syncTheme.getLevel())
-                .minHeadcount(syncTheme.getMinHeadcount())
-                .maxHeadcount(syncTheme.getMaxHeadcount())
-                .timeLimit(syncTheme.getTimeLimit())
-                .activity(syncTheme.getActivity())
-                .lockRatio(syncTheme.getLockRatio())
-                .horror(syncTheme.getHorror())
-                .price(syncTheme.getPrice())
-                .tel(syncTheme.getTel())
-                .reservationNotice(syncTheme.getReservationNotice())
-                .build();
-    }
 
 }

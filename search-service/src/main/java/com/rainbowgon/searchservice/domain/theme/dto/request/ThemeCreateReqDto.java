@@ -1,5 +1,6 @@
 package com.rainbowgon.searchservice.domain.theme.dto.request;
 
+import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,4 +28,24 @@ public class ThemeCreateReqDto {
     private Double lockRatio; // 장치 비율
     private Double horror; // 공포도
 
+    public Theme toDocument(ThemeCreateReqDto syncTheme) {
+        return Theme.builder()
+                .venue(syncTheme.getVenue())
+                .title(syncTheme.getTitle())
+                .explanation(syncTheme.getExplanation())
+                .location(syncTheme.getLocation())
+                .poster(syncTheme.getPoster())
+                .genre(syncTheme.getGenre())
+                .level(syncTheme.getLevel())
+                .minHeadcount(syncTheme.getMinHeadcount())
+                .maxHeadcount(syncTheme.getMaxHeadcount())
+                .timeLimit(syncTheme.getTimeLimit())
+                .activity(syncTheme.getActivity())
+                .lockRatio(syncTheme.getLockRatio())
+                .horror(syncTheme.getHorror())
+                .price(syncTheme.getPrice())
+                .tel(syncTheme.getTel())
+                .reservationNotice(syncTheme.getReservationNotice())
+                .build();
+    }
 }

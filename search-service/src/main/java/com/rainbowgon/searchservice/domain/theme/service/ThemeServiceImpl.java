@@ -94,10 +94,10 @@ public class ThemeServiceImpl implements ThemeService {
         long end = (page + 1) * size - 1;
 
         // 레디스에서 전체 zset의 크기를 가져옵니다.
-        Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(sortingKey);
+        Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(recommendKey);
 
         // 레디스에서 정렬된 결과를 가져옵니다.
-        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(sortingKey, start,
+        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(recommendKey, start,
                                                                                       end);
 
         // 결과를 DTO로 변환합니다.

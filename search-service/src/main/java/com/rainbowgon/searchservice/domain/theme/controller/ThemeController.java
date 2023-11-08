@@ -33,13 +33,13 @@ public class ThemeController {
     @GetMapping("/sorts")
     public ResponseEntity<ResponseWrapper<List<ThemeSimpleResDto>>> sortThemes(
             @RequestParam(required = false, defaultValue = "") String keyword,
-            @RequestParam(required = false, defaultValue = "BOOKMARK") String sortBy,
+            @RequestParam(required = false, defaultValue = "RECOMMEND") String sortBy,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
         Page<ThemeSimpleResDto> searchList = themeService.sort(keyword, sortBy, page, size);
 
 
-        return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList);
+        return JsonResponse.ok("성공적으로 정렬 검색이 완료되었습니다.", searchList);
     }
 
     @GetMapping("/{theme-id}")
