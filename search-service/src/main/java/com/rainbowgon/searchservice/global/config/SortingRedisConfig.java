@@ -24,7 +24,6 @@ public class SortingRedisConfig {
 
     // Redis 저장소와 연결
     @Bean(name = "sortingRedisConnectionFactory")
-    @Qualifier("sortingRedisConnectionFactory")
     public RedisConnectionFactory sortingRedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
@@ -37,7 +36,6 @@ public class SortingRedisConfig {
     @Bean(name = "sortingRedisStringTemplate")
     public RedisTemplate<String, String> sortingRedisStringTemplate(
             @Qualifier("sortingRedisConnectionFactory")
-
             RedisConnectionFactory sortingRedisConnectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(sortingRedisConnectionFactory);
@@ -49,7 +47,6 @@ public class SortingRedisConfig {
     @Bean(name = "sortingRedisDoubleTemplate")
     public RedisTemplate<String, Double> sortingRedisDoubleTemplate(
             @Qualifier("sortingRedisConnectionFactory")
-
             RedisConnectionFactory sortingRedisConnectionFactory) {
         RedisTemplate<String, Double> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(sortingRedisConnectionFactory);
@@ -61,7 +58,6 @@ public class SortingRedisConfig {
     @Bean(name = "sortingRedisFloatTemplate")
     public RedisTemplate<String, Float> sortingRedisFloatTemplate(
             @Qualifier("sortingRedisConnectionFactory")
-
             RedisConnectionFactory sortingRedisConnectionFactory) {
         RedisTemplate<String, Float> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(sortingRedisConnectionFactory);
@@ -72,6 +68,7 @@ public class SortingRedisConfig {
 
     @Bean(name = "sortingRedisThemeTemplate")
     public RedisTemplate<String, Theme> sortingRedisThemeTemplate(
+            @Qualifier("sortingRedisConnectionFactory")
             RedisConnectionFactory sortingConnectionFactory) {
         RedisTemplate<String, Theme> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(sortingConnectionFactory);

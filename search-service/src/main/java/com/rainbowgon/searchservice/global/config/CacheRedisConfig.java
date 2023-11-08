@@ -44,7 +44,6 @@ public class CacheRedisConfig {
     @Bean(name = "cacheRedisStringTemplate")
     public RedisTemplate<String, String> cacheRedisStringTemplate(
             @Qualifier("cacheRedisConnectionFactory")
-
             RedisConnectionFactory cacheRedisConnectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(cacheRedisConnectionFactory);
@@ -56,7 +55,6 @@ public class CacheRedisConfig {
     @Bean(name = "cacheRedisDoubleTemplate")
     public RedisTemplate<String, Double> cacheRedisDoubleTemplate(
             @Qualifier("cacheRedisConnectionFactory")
-
             RedisConnectionFactory cacheRedisConnectionFactory) {
         RedisTemplate<String, Double> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(cacheRedisConnectionFactory);
@@ -68,7 +66,6 @@ public class CacheRedisConfig {
     @Bean(name = "cacheRedisFloatTemplate")
     public RedisTemplate<String, Float> cacheRedisFloatTemplate(
             @Qualifier("cacheRedisConnectionFactory")
-
             RedisConnectionFactory cacheRedisConnectionFactory) {
         RedisTemplate<String, Float> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(cacheRedisConnectionFactory);
@@ -79,6 +76,7 @@ public class CacheRedisConfig {
 
     @Bean(name = "cacheRedisThemeTemplate")
     public RedisTemplate<String, Theme> cacheRedisThemeTemplate(
+            @Qualifier("cacheRedisConnectionFactory")
             RedisConnectionFactory cacheConnectionFactory) {
         RedisTemplate<String, Theme> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(cacheConnectionFactory);
