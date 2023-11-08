@@ -1,9 +1,7 @@
 #!/bin/bash
 
 ROOT_PATH="/home/ubuntu/app"
-JAR="$ROOT_PATH/app.jar"
 
-# Spring 에러 코드
 CONTAINER="app_container"
 IMAGE="app_image"
 
@@ -17,4 +15,4 @@ docker run \
     --log-opt awslogs-region="$REGION" \
     --log-opt awslogs-group="$GROUP" \
     --log-opt awslogs-stream="$STREAM" \
-    -dp 80:80 --name "$CONTAINER" "$IMAGE"j
+    -dp 80:80 --name "$CONTAINER" "$IMAGE"

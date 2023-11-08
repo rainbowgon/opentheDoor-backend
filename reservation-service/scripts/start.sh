@@ -1,15 +1,13 @@
 #!/bin/bash
 
 ROOT_PATH="/home/ubuntu/app"
-JAR="$ROOT_PATH/app.jar"
 
-# Spring 에러 코드
 CONTAINER="app_container"
 IMAGE="app_image"
 
 REGION="ap-northeast-2"
 GROUP="ssafy-openthedoor-log-group"
-STREAM="apigateway-server-log-stream"
+STREAM="reservation-service-log-stream"
 
 docker build -t "$IMAGE" "$ROOT_PATH"
 docker run \
