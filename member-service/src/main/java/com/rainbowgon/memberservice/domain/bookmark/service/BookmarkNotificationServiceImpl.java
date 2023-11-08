@@ -1,6 +1,5 @@
 package com.rainbowgon.memberservice.domain.bookmark.service;
 
-import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,13 +16,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BookmarkNotificationServiceImpl implements BookmarkNotificationService {
 
-    private final ProfileService profileService;
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
     @Qualifier("fcmTokenRedisStringTemplate")
     private final RedisTemplate<String, String> fcmTokenRedisStringTemplate;
-//    private final NotificationServiceClient notificationServiceClient;
-//    private final SearchServiceClient searchServiceClient;
+
 
     /**
      * redis 타임테이블에 새로운 key가 추가되는지 확인
