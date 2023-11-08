@@ -17,7 +17,8 @@ public class ThemeSimpleResDto {
     private Double level; // 난이도
     private Integer minHeadcount; // 최소 인원 수
     private Integer maxHeadcount; // 최대 인원 수
-
+    private Integer price; // 가격
+    private Integer timeLimit; // 소요 시간 (분 단위)
 
     public static ThemeSimpleResDto from(Theme theme) {
         return ThemeSimpleResDto.builder()

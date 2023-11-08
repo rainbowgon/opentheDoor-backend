@@ -9,14 +9,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ThemeCreateReqDto {
 
-    private String themeId; // 테마아이디
+    private String id; // 테마 ID
+    private String poster; // 테마 포스터
+    private String title; // 테마명
     private String venue; // 지점명
-    private String title; // 타이틀
+    private String location; // 지점 위치
     private String explanation; // 설명
-    private String poster; // 포스터
+    private String reservationNotice; // 예약 사항
+    private String tel;// 전화번호
     private String[] genre; // 장르
-    private Double level; // 난이도
-    private Integer minHeadcount; // 최소 인원 수
     private Integer maxHeadcount; // 최대 인원 수
+    private Integer minHeadcount; // 최소 인원 수
+    private Integer price; // 가격
+    private Integer timeLimit; // 소요 시간 (분 단위)
+    private Double level; // 난이도
+    private Double activity; // 활동성
+    private Double lockRatio; // 장치 비율
+    private Double horror; // 공포도
 
 }
