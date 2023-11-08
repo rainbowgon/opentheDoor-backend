@@ -7,7 +7,7 @@ IMAGE="app_image"
 
 REGION="ap-northeast-2"
 GROUP="ssafy-openthedoor-log-group"
-STREAM="eureka-server-log-stream"
+STREAM="config-server-log-stream"
 
 docker build -t "$IMAGE" "$ROOT_PATH"
 docker run \
