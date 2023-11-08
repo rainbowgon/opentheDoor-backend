@@ -18,7 +18,6 @@ public class MemberCreateReqDto {
     private String providerId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
-    private String fcmToken;
 
     // Profile에 저장되는 정보
     private String nickname;
