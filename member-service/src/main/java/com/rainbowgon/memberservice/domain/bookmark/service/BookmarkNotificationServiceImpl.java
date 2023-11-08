@@ -21,7 +21,7 @@ public class BookmarkNotificationServiceImpl implements BookmarkNotificationServ
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
     @Qualifier("fcmTokenRedisStringTemplate")
-    private final RedisTemplate<Long, String> fcmTokenRedisStringTemplate;
+    private final RedisTemplate<String, String> fcmTokenRedisStringTemplate;
 //    private final NotificationServiceClient notificationServiceClient;
 //    private final SearchServiceClient searchServiceClient;
 
@@ -74,15 +74,15 @@ public class BookmarkNotificationServiceImpl implements BookmarkNotificationServ
     /**
      * redis 북마크 key에서 프로필 ID 뽑아내기
      */
-    private Long getProfileId(String bookmarkKey) {
-        return Long.parseLong(bookmarkKey.split(":")[1].split("$")[0]);
+    private String getProfileId(String bookmarkKey) {
+        return bookmarkKey.split(":")[1].split("$")[0];
     }
 
     /**
      * redis에서 프로필 ID(key)로 fcm token(value) 가져오기
      */
-    private String getFcmToken(Long profileId) {
-        ValueOperations<Long, String> valueOperations = fcmTokenRedisStringTemplate.opsForValue();
+    private String getFcmToken(String profileId) {
+        ValueOperations<String, String> valueOperations = fcmTokenRedisStringTemplate.opsForValue();
         return valueOperations.get(profileId);
     }
 }
