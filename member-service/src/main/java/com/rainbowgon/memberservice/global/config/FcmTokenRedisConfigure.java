@@ -1,5 +1,6 @@
 package com.rainbowgon.memberservice.global.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,6 @@ public class FcmTokenRedisConfigure {
     @Value("${redis.password}")
     private String password;
 
-    // Redis 저장소와 연결
     @Bean(name = "fcmTokenRedisConnectionFactory")
     public RedisConnectionFactory fcmTokenRedisConnectionFactory() {
 
@@ -33,11 +33,11 @@ public class FcmTokenRedisConfigure {
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
-    // RedisTemplate bean 생성
     @Bean(name = "fcmTokenRedisStringTemplate")
-    public RedisTemplate<Long, String> fcmTokenRedisStringTemplate(RedisConnectionFactory fcmTokenRedisConnectionFactory) {
+    public RedisTemplate<String, String> fcmTokenRedisStringTemplate(
+            @Qualifier("fcmTokenRedisConnectionFactory") RedisConnectionFactory fcmTokenRedisConnectionFactory) {
 
-        RedisTemplate<Long, String> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(fcmTokenRedisConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
