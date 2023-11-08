@@ -19,8 +19,8 @@ public class FcmTokenRedisConfigure {
     @Value("${spring.redis.fcm-token.port}")
     private int port;
 
-    @Value("${redis.password}")
-    private String password;
+//    @Value("${redis.password}")
+//    private String password;
 
     @Bean(name = "fcmTokenRedisConnectionFactory")
     public RedisConnectionFactory fcmTokenRedisConnectionFactory() {
@@ -28,7 +28,7 @@ public class FcmTokenRedisConfigure {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
-        redisStandaloneConfiguration.setPassword(password);
+//        redisStandaloneConfiguration.setPassword(password);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }

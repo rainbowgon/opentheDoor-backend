@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final ProfileService profileService;
-    //    private final SearchServiceClient searchServiceClient;
+
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
     @Qualifier("fcmTokenRedisStringTemplate")

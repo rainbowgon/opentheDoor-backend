@@ -19,8 +19,8 @@ public class ThemeSortingRedisConfigure {
     @Value("${spring.redis.sorting.port}")
     private int port;
 
-    @Value("${redis.password}")
-    private String password;
+//    @Value("${redis.password}")
+//    private String password;
 
     @Bean(name = "sortingRedisConnectionFactory")
     public RedisConnectionFactory sortingRedisConnectionFactory() {
@@ -28,7 +28,7 @@ public class ThemeSortingRedisConfigure {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
-        redisStandaloneConfiguration.setPassword(password);
+//        redisStandaloneConfiguration.setPassword(password);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
