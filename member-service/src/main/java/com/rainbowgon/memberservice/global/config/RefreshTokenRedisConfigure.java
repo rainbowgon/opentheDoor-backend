@@ -33,8 +33,7 @@ public class RefreshTokenRedisConfigure {
     }
 
     @Bean(name = "fcmTokenRedisStringTemplate")
-    public RedisTemplate<String, String> refreshTokenRedisStringTemplate(
-            RedisConnectionFactory refreshTokenRedisConnectionFactory) {
+    public RedisTemplate<String, String> refreshTokenRedisStringTemplate(RedisConnectionFactory refreshTokenRedisConnectionFactory) {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(refreshTokenRedisConnectionFactory);
