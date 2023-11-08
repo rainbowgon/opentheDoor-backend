@@ -12,7 +12,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableRedisRepositories
 public class RedisConfig {
 
-    @Value("${spring.redis.host}")
+    @Value("${spring.redis.notification.host}")
     private String redisHost;
 
     @Value("${spring.redis.port}")
