@@ -1,5 +1,7 @@
 fcm:
   certification: fcm/openthedoor-930e4-firebase-adminsdk-t332b-aa9888ba26.json
+
+
 server:
   port: 8081
 
