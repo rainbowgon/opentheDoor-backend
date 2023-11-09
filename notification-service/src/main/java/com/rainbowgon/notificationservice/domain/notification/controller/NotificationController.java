@@ -1,9 +1,6 @@
 package com.rainbowgon.notificationservice.domain.notification.controller;
 
 
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.BookmarkInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.ReservationInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.dto.response.NotificationListResDto;
 import com.rainbowgon.notificationservice.domain.notification.service.NotificationService;
 import com.rainbowgon.notificationservice.global.response.JsonResponse;
@@ -46,28 +43,4 @@ public class NotificationController {
         return JsonResponse.ok("알림 전체를 확인 완료로 변경했습니다.");
     }
 
-
-    @PostMapping("/bookmark")
-    public ResponseEntity<ResponseWrapper<Nullable>> sendBookmark(
-            @RequestBody List<BookmarkInDto> bookmarkInDtoList) {
-
-        notificationService.sendBookmarkMessage(bookmarkInDtoList);
-        return JsonResponse.ok("북마크한 테마 예약 오픈 알림 리스트를 성공적으로 전송했습니다.");
-    }
-
-    @PostMapping("/reservation")
-    public ResponseEntity<ResponseWrapper<Nullable>> sendReservation(
-            @RequestBody List<ReservationInDto> reservationInDtoList) {
-
-        notificationService.sendReservationMessage(reservationInDtoList);
-        return JsonResponse.ok("예약 확정 및 취소 알림 리스트를 성공적으로 전송했습니다.");
-    }
-
-    @PostMapping("/waiting")
-    public ResponseEntity<ResponseWrapper<Nullable>> sendWaiting(
-            @RequestBody List<WaitingInDto> waitingInDtoList) {
-
-        notificationService.sendWaitingMessage(waitingInDtoList);
-        return JsonResponse.ok("예약 대기 알림 리스트를 성공적으로 전송했습니다.");
-    }
 }

@@ -1,6 +1,5 @@
-package com.rainbowgon.notificationservice.domain.notification.client.dto.input;
+package com.rainbowgon.notificationservice.global.client.dto.input;
 
-import com.rainbowgon.notificationservice.domain.notification.entity.NotificationType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReservationInDto {
+public class WaitingInDto {
 
     private Long profileId;
     private String fcmToken;
@@ -18,6 +17,5 @@ public class ReservationInDto {
     private String themeName;
     private LocalDate reservationDate;
     private LocalTime reservationTime;
-    private NotificationType reservationNotificationType;
 
 }
