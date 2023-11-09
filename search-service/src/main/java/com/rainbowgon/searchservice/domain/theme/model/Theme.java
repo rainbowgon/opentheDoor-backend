@@ -65,5 +65,11 @@ public class Theme {
     @Field(type = FieldType.Double, name = "horror", index = false)
     private Double horror;
 
+    @Field(type = FieldType.Double, name = "latitude", index = false)
+    private Double latitude;
+
+    @Field(type = FieldType.Double, name = "longitude", index = false)
+    private Double longitude;
+
 
 }

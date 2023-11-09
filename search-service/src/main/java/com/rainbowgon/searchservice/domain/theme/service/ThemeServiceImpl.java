@@ -5,6 +5,8 @@ import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
+import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
+import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
 import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
 import lombok.RequiredArgsConstructor;
@@ -97,14 +99,13 @@ public class ThemeServiceImpl implements ThemeService {
 
         Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
 
-        Double finalRatingScore = ratingScore - (ratingScore - 0.5) * 2 - Math.log(interest);
-
+        Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2, -Math.log(interest + 1));
         cacheRedisThemeTemplate.opsForZSet().add(sortingKey, theme, bookmarkScore);
-        cacheRedisThemeTemplate.expire(sortingKey, Duration.ofHours(2));
+        cacheRedisThemeTemplate.expire(sortingKey, Duration.ofMinutes(10));
         cacheRedisThemeTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
-        cacheRedisThemeTemplate.expire(reviewKey, Duration.ofHours(2));
+        cacheRedisThemeTemplate.expire(reviewKey, Duration.ofMinutes(10));
         cacheRedisThemeTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
-        cacheRedisThemeTemplate.expire(recommendKey, Duration.ofHours(2));
+        cacheRedisThemeTemplate.expire(recommendKey, Duration.ofMinutes(10));
     }
 
     //ZSet Score 값을 get하는 함수
@@ -146,11 +147,22 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ThemeDetailResDto> selectThemesById(ThemeCheckReqDtoList themeIdList) {
-        List<ThemeDetailResDto> themeDetailResDtoList = new ArrayList<>();
+    public List<BookmarkDetailOutDto> selectDetailThemesById(ThemeCheckReqDtoList themeIdList) {
+        List<BookmarkDetailOutDto> themeDetailResDtoList = new ArrayList<>();
         for (String themeId : themeIdList.getThemeList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-            themeDetailResDtoList.add(ThemeDetailResDto.from(theme));
+            themeDetailResDtoList.add(BookmarkDetailOutDto.from(theme));
+        }
+        return themeDetailResDtoList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookmarkSimpleOutDto> selectSimpleThemesById(ThemeCheckReqDtoList themeIdList) {
+        List<BookmarkSimpleOutDto> themeDetailResDtoList = new ArrayList<>();
+        for (String themeId : themeIdList.getThemeList()) {
+            Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+            themeDetailResDtoList.add(BookmarkSimpleOutDto.from(theme));
         }
         return themeDetailResDtoList;
     }
@@ -164,10 +176,14 @@ public class ThemeServiceImpl implements ThemeService {
         long start = page * size; // 페이지 계산에 따른 시작 인덱스
         long end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
 
-        // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
-        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, start, end);
 
         Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(redisKey);
+        if (totalElements == 0) {
+            totalElements = searchThemes(keyword, page, size).getTotalElements();
+        }
+
+        // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
+        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, start, end);
 
         List<ThemeSimpleResDto> content = sortedThemeIds.stream()
                 .map(ThemeSimpleResDto::from)

@@ -32,7 +32,6 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String accessToken = getToken(request);
-        log.info("[JwtFilter] Request Header Access Token = " + accessToken);
 
         if (accessToken != null) {
             String memberId = tokenProvider.getMemberId(accessToken); // 토큰에 담긴 회원 id 정보
