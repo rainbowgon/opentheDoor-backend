@@ -34,8 +34,6 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     private void setErrorResponse(CustomException customException, String requestUrl,
                                   HttpServletResponse response) {
 
-        log.info("[ExceptionHandlerFilter] setErrorResponse 로직 start");
-
         BaseErrorCode code = customException.getErrorCode();
         ErrorReason errorReason = code.getErrorReason();
 
