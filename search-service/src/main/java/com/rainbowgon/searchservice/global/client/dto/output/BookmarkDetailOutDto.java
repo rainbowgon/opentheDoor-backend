@@ -1,15 +1,14 @@
-package com.rainbowgon.searchservice.domain.theme.dto.response;
+package com.rainbowgon.searchservice.global.client.dto.output;
 
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import lombok.*;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
-public class ThemeDetailResDto {
+public class BookmarkDetailOutDto {
 
-    /* 테마 정보 */
     private String id; // 테마 ID
     private String poster; // 테마 포스터
     private String title; // 테마명
@@ -30,21 +29,25 @@ public class ThemeDetailResDto {
     private Double latitude; // 위도
     private Double longitude; // 경도
 
-
-    public static ThemeDetailResDto from(Theme theme) {
-        return ThemeDetailResDto.builder()
+    public static BookmarkDetailOutDto from(Theme theme) {
+        return BookmarkDetailOutDto.builder()
                 .id(theme.getId())
-                .venue(theme.getVenue())
-                .title(theme.getTitle())
-                .explanation(theme.getExplanation())
-                .location(theme.getLocation())
-                .tel(theme.getTel())
                 .poster(theme.getPoster())
+                .title(theme.getTitle())
+                .venue(theme.getVenue())
+                .location(theme.getLocation())
+                .explanation(theme.getExplanation())
+                .reservationNotice(theme.getReservationNotice())
+                .tel(theme.getTel())
                 .genre(theme.getGenre())
-                .level(theme.getLevel())
                 .minHeadcount(theme.getMinHeadcount())
                 .maxHeadcount(theme.getMaxHeadcount())
-                .reservationNotice(theme.getReservationNotice())
+                .price(theme.getPrice())
+                .timeLimit(theme.getTimeLimit())
+                .level(theme.getLevel())
+                .activity(theme.getActivity())
+                .lockRatio(theme.getLockRatio())
+                .horror(theme.getHorror())
                 .latitude(theme.getLatitude())
                 .longitude(theme.getLongitude())
                 .build();
