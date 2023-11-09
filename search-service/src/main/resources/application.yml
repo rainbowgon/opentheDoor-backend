@@ -3,7 +3,10 @@ elasticsearch:
   port: 9200
 
 spring:
-  data:
-    redis:
+  redis:
+    cache:
       host: localhost
       port: 6379
+    sorting:
+      host: localhost
+      port: 6376

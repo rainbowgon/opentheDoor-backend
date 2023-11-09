@@ -1,11 +1,11 @@
-package com.rainbowgon.memberservice.domain.bookmark.client.dto.input;
+package com.rainbowgon.memberservice.global.client.dto.input;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class SearchDetailInDto {
 
     /* 테마 정보 */

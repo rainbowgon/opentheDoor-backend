@@ -25,6 +25,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Create Directory
+        run: mkdir -p src/main/resources/fcm
+
+      - name: Copy FCM token
+        run: echo "${{ secrets.FCM_TOKEN }}" > src/main/resources/fcm/openthedoor-firebase-adminsdk.json
+
       - name: Grant Permission for gradlew
         run: chmod +x ./gradlew
 

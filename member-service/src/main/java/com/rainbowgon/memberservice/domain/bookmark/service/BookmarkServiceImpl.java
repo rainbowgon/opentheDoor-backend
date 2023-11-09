@@ -30,10 +30,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
-    @Qualifier("fcmTokenRedisStringTemplate")
-    private final RedisTemplate<String, String> fcmTokenRedisStringTemplate;
-    @Qualifier("refreshTokenRedisStringTemplate")
-    private final RedisTemplate<String, String> refreshTokenRedisStringTemplate;
+    @Qualifier("tokenRedisStringTemplate")
+    private final RedisTemplate<String, String> tokenRedisStringTemplate;
     @Qualifier("sortingRedisStringTemplate")
     private final RedisTemplate<String, String> sortingRedisStringTemplate;
 
@@ -48,10 +46,8 @@ public class BookmarkServiceImpl implements BookmarkService {
         ValueOperations<String, String> bookmarkOps = bookmarkRedisStringTemplate.opsForValue();
         // 타임테이블
         SetOperations<String, String> openTimeOps = bookmarkRedisStringTemplate.opsForSet();
-        // fcm token
-        ValueOperations<String, String> fcmOps = fcmTokenRedisStringTemplate.opsForValue();
-        // refresh token
-        ValueOperations<String, String> refreshOps = refreshTokenRedisStringTemplate.opsForValue();
+        // fcm token, refresh token
+        ValueOperations<String, String> tokenOps = tokenRedisStringTemplate.opsForValue();
         // sorting
         ZSetOperations<String, String> sortingOps = sortingRedisStringTemplate.opsForZSet();
 
@@ -65,8 +61,7 @@ public class BookmarkServiceImpl implements BookmarkService {
                 openTimeOps.add(openTime, themeId);
 
                 /** 테스트 */
-                fcmOps.set("test", "테스트");
-                refreshOps.set("test", "테스트");
+                tokenOps.set("test", "테스트");
                 sortingOps.add("bookmark", "themeId", 1);
 
             } else { // 있으면 삭제 (북마크 해제)
