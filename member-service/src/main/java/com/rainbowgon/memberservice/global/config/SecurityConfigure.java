@@ -38,6 +38,7 @@ public class SecurityConfigure {
                 .antMatchers("/reviews/themes/one/**").permitAll()
                 .antMatchers("/members/phone/**").permitAll()
                 .antMatchers(("/actuator/**")).permitAll()
+                .antMatchers("/clients/**").permitAll() // 서버 간 통신
                 .anyRequest().authenticated();
 
         httpSecurity
