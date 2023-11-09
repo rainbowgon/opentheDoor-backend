@@ -5,6 +5,8 @@ import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
+import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
+import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
 import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
 import lombok.RequiredArgsConstructor;
@@ -145,11 +147,22 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ThemeDetailResDto> selectThemesById(ThemeCheckReqDtoList themeIdList) {
-        List<ThemeDetailResDto> themeDetailResDtoList = new ArrayList<>();
+    public List<BookmarkDetailOutDto> selectDetailThemesById(ThemeCheckReqDtoList themeIdList) {
+        List<BookmarkDetailOutDto> themeDetailResDtoList = new ArrayList<>();
         for (String themeId : themeIdList.getThemeList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-            themeDetailResDtoList.add(ThemeDetailResDto.from(theme));
+            themeDetailResDtoList.add(BookmarkDetailOutDto.from(theme));
+        }
+        return themeDetailResDtoList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookmarkSimpleOutDto> selectSimpleThemesById(ThemeCheckReqDtoList themeIdList) {
+        List<BookmarkSimpleOutDto> themeDetailResDtoList = new ArrayList<>();
+        for (String themeId : themeIdList.getThemeList()) {
+            Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+            themeDetailResDtoList.add(BookmarkSimpleOutDto.from(theme));
         }
         return themeDetailResDtoList;
     }

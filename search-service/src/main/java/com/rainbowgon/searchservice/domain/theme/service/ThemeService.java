@@ -4,6 +4,8 @@ import com.rainbowgon.searchservice.domain.theme.dto.request.ThemeCheckReqDtoLis
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
+import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
+import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -16,7 +18,9 @@ public interface ThemeService {
 
     ThemeDetailResDto selectOneThemeById(String themeId);
 
-    List<ThemeDetailResDto> selectThemesById(ThemeCheckReqDtoList themeIdList);
+    List<BookmarkDetailOutDto> selectDetailThemesById(ThemeCheckReqDtoList themeIdList);
+
+    List<BookmarkSimpleOutDto> selectSimpleThemesById(ThemeCheckReqDtoList themeIdList);
 
     Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Integer page, Integer size);
 

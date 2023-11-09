@@ -1,4 +1,4 @@
-package com.rainbowgon.searchservice.domain.client;
+package com.rainbowgon.searchservice.global.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 
