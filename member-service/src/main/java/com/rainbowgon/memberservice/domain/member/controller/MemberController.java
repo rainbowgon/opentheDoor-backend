@@ -1,6 +1,5 @@
 package com.rainbowgon.memberservice.domain.member.controller;
 
-import com.rainbowgon.memberservice.domain.client.NotificationServiceClient;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
@@ -9,6 +8,7 @@ import com.rainbowgon.memberservice.domain.member.dto.response.oauth.KakaoProfil
 import com.rainbowgon.memberservice.domain.member.dto.response.oauth.OAuthProfileResDto;
 import com.rainbowgon.memberservice.domain.member.service.KakaoLoginService;
 import com.rainbowgon.memberservice.domain.member.service.MemberService;
+import com.rainbowgon.memberservice.global.client.NotificationServiceClient;
 import com.rainbowgon.memberservice.global.response.JsonResponse;
 import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import com.rainbowgon.memberservice.global.security.dto.JwtTokenDto;

@@ -18,8 +18,8 @@ public class BookmarkNotificationServiceImpl implements BookmarkNotificationServ
 
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
-    @Qualifier("fcmTokenRedisStringTemplate")
-    private final RedisTemplate<String, String> fcmTokenRedisStringTemplate;
+    @Qualifier("tokenRedisStringTemplate")
+    private final RedisTemplate<String, String> tokenRedisStringTemplate;
 
 
     /**
@@ -79,7 +79,7 @@ public class BookmarkNotificationServiceImpl implements BookmarkNotificationServ
      * redis에서 프로필 ID(key)로 fcm token(value) 가져오기
      */
     private String getFcmToken(String profileId) {
-        ValueOperations<String, String> valueOperations = fcmTokenRedisStringTemplate.opsForValue();
+        ValueOperations<String, String> valueOperations = tokenRedisStringTemplate.opsForValue();
         return valueOperations.get(profileId);
     }
 }
