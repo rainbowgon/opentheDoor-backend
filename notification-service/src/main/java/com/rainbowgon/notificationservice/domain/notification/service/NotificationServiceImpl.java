@@ -2,7 +2,7 @@ package com.rainbowgon.notificationservice.domain.notification.service;
 
 import com.rainbowgon.notificationservice.domain.kafka.service.KafkaProducer;
 import com.rainbowgon.notificationservice.domain.notification.dto.response.NotificationListResDto;
-import com.rainbowgon.notificationservice.domain.notification.entity.Notification;
+import com.rainbowgon.notificationservice.domain.notification.entity.ViewStatus;
 import com.rainbowgon.notificationservice.domain.notification.repository.NotificationRedisRepository;
 import com.rainbowgon.notificationservice.global.client.dto.input.BookmarkInDto;
 import com.rainbowgon.notificationservice.global.client.dto.input.ReservationInDto;
@@ -10,11 +10,13 @@ import com.rainbowgon.notificationservice.global.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.global.util.MessageFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,16 +26,11 @@ import java.util.stream.Collectors;
 public class NotificationServiceImpl implements NotificationService {
 
     private final KafkaProducer kafkaProducer;
-    private final RedisTemplate<String, Notification> redisTemplate;
     private final NotificationRedisRepository notificationRedisRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public List<NotificationListResDto> selectNotificationList(Long profileId) {
-
-        SetOperations<String, Notification> setOperations = redisTemplate.opsForSet();
-        String key = "notification:profileId:" + profileId;
-        Set<Notification> set = setOperations.members(key);
-
 
         return notificationRedisRepository.findAllByProfileId(profileId).stream()
                 .map(notification -> NotificationListResDto.from(notification)).collect(Collectors.toList());
@@ -42,11 +39,24 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void checkOneNotification(Long notificationId) {
 
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        String key = "notification:" + notificationId;
+        Map<String, String> map = hashOperations.entries(key);
+
+        hashOperations.put(key, "viewStatus", String.valueOf(ViewStatus.VIEWED));
     }
 
     @Override
     public void checkAllNotification(Long profileId) {
 
+        HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
+        SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+        String key = "notification:profileId:" + profileId;
+        Set<String> set = setOperations.members(key);
+
+        set.stream().forEach(notificationId -> hashOperations.put("notification:" + notificationId,
+                                                                  "viewStatus",
+                                                                  String.valueOf(ViewStatus.VIEWED)));
     }
 
     @Override
