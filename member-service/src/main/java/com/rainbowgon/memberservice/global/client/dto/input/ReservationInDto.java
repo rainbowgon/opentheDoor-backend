@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.domain.client.dto.input;
+package com.rainbowgon.memberservice.global.client.dto.input;
 
 import lombok.AccessLevel;
 import lombok.Getter;
