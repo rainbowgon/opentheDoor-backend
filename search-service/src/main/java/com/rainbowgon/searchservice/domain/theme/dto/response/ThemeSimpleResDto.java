@@ -19,6 +19,8 @@ public class ThemeSimpleResDto {
     private Integer maxHeadcount; // 최대 인원 수
     private Integer price; // 가격
     private Integer timeLimit; // 소요 시간 (분 단위)
+    private Double latitude; // 위도
+    private Double longitude; // 경도
 
     public static ThemeSimpleResDto from(Theme theme) {
         return ThemeSimpleResDto.builder()
@@ -29,6 +31,8 @@ public class ThemeSimpleResDto {
                 .level(theme.getLevel())
                 .minHeadcount(theme.getMinHeadcount())
                 .maxHeadcount(theme.getMaxHeadcount())
+                .latitude(theme.getLatitude())
+                .longitude(theme.getLongitude())
                 .build();
     }
 
