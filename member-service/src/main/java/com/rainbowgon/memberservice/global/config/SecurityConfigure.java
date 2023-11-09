@@ -39,6 +39,7 @@ public class SecurityConfigure {
                 .antMatchers("/members/phone/**").permitAll()
                 .antMatchers(("/actuator/**")).permitAll()
                 .antMatchers("/clients/**").permitAll() // 서버 간 통신
+                .antMatchers("/members/test/**").permitAll() // 서버 간 통신 테스트
                 .anyRequest().authenticated();
 
         httpSecurity
