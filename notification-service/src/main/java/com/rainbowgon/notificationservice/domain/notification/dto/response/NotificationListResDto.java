@@ -12,7 +12,6 @@ import lombok.*;
 public class NotificationListResDto {
 
     private Long notificationId;
-    private Long profileId;
     private Long themeId;
     private String title;
     private String body;
@@ -22,7 +21,6 @@ public class NotificationListResDto {
     public static NotificationListResDto from(Notification notification) {
         return NotificationListResDto.builder()
                 .notificationId(notification.getNotificationId())
-                .profileId(notification.getProfileId())
                 .themeId(notification.getThemeId())
                 .title(notification.getTitle())
                 .body(notification.getBody())
