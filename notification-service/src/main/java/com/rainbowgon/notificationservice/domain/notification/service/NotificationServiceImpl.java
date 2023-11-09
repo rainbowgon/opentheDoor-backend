@@ -3,6 +3,7 @@ package com.rainbowgon.notificationservice.domain.notification.service;
 import com.rainbowgon.notificationservice.domain.kafka.service.KafkaProducer;
 import com.rainbowgon.notificationservice.domain.notification.dto.response.NotificationListResDto;
 import com.rainbowgon.notificationservice.domain.notification.entity.Notification;
+import com.rainbowgon.notificationservice.domain.notification.repository.NotificationRedisRepository;
 import com.rainbowgon.notificationservice.global.client.dto.input.BookmarkInDto;
 import com.rainbowgon.notificationservice.global.client.dto.input.ReservationInDto;
 import com.rainbowgon.notificationservice.global.client.dto.input.WaitingInDto;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,17 +25,18 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final KafkaProducer kafkaProducer;
     private final RedisTemplate<String, Notification> redisTemplate;
+    private final NotificationRedisRepository notificationRedisRepository;
 
     @Override
     public List<NotificationListResDto> selectNotificationList(Long profileId) {
 
-
         SetOperations<String, Notification> setOperations = redisTemplate.opsForSet();
         String key = "notification:profileId:" + profileId;
         Set<Notification> set = setOperations.members(key);
-        log.info(set.toString());
 
-        return null;
+
+        return notificationRedisRepository.findAllByProfileId(profileId).stream()
+                .map(notification -> NotificationListResDto.from(notification)).collect(Collectors.toList());
     }
 
     @Override
