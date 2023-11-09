@@ -1,6 +1,5 @@
 package com.rainbowgon.searchservice.domain.theme.controller;
 
-import com.rainbowgon.searchservice.domain.theme.dto.request.ThemeCheckReqDtoList;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.service.ThemeService;
@@ -48,14 +47,6 @@ public class ThemeController {
         ThemeDetailResDto searchTheme = themeService.selectOneThemeById(themeId);
 
         return JsonResponse.ok("성공적으로 조회가 완료되었습니다.", searchTheme);
-    }
-
-    @GetMapping("/lists")
-    public ResponseEntity<ResponseWrapper<List<ThemeDetailResDto>>> selectThemes(
-            @RequestBody ThemeCheckReqDtoList themeCheckReqDtoList) {
-        List<ThemeDetailResDto> themeDetailResDtoList = themeService.selectThemesById(themeCheckReqDtoList);
-
-        return JsonResponse.ok("성공적으로 조회(리스트)가 완료되었습니다.", themeDetailResDtoList);
     }
 
     @GetMapping("/review/{theme-id}")

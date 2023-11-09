@@ -176,10 +176,14 @@ public class ThemeServiceImpl implements ThemeService {
         long start = page * size; // 페이지 계산에 따른 시작 인덱스
         long end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
 
-        // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
-        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, start, end);
 
         Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(redisKey);
+        if (totalElements == 0) {
+            totalElements = searchThemes(keyword, page, size).getTotalElements();
+        }
+
+        // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
+        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, start, end);
 
         List<ThemeSimpleResDto> content = sortedThemeIds.stream()
                 .map(ThemeSimpleResDto::from)
