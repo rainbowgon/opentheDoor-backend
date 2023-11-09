@@ -3,10 +3,9 @@ package com.rainbowgon.notificationservice.domain.notification.repository;
 import com.rainbowgon.notificationservice.domain.notification.entity.Notification;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
 import java.util.Set;
 
-public interface NotificationRedisRepository extends CrudRepository<Notification, Long> {
+public interface NotificationRedisRepository extends CrudRepository<Notification, String> {
 
-    Set<Optional<Object>> findByProfileId(Long profileId);
+    Set<String> findByProfileId(Long profileId);
 }

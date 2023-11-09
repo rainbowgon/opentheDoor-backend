@@ -1,10 +1,10 @@
 package com.rainbowgon.notificationservice.domain.kafka.dto.output;
 
 
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.BookmarkInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.ReservationInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.entity.NotificationType;
+import com.rainbowgon.notificationservice.global.client.dto.input.BookmarkInDto;
+import com.rainbowgon.notificationservice.global.client.dto.input.ReservationInDto;
+import com.rainbowgon.notificationservice.global.client.dto.input.WaitingInDto;
 import lombok.*;
 
 @Getter

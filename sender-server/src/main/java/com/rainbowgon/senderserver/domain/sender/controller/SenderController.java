@@ -17,7 +17,7 @@ public class SenderController {
     private final FCMService fcmService;
 
     @GetMapping
-    public String v1() {
+    public String test() {
         fcmInitializer.initialize();
         fcmService.sendMessage("모바일 토큰", "스프링에서 간 알림", "스프링에서 간 알림");
 
