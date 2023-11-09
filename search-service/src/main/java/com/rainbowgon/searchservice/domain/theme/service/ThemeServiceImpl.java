@@ -83,33 +83,6 @@ public class ThemeServiceImpl implements ThemeService {
         // Page 객체를 생성하고 반환합니다.
         return new PageImpl<>(content, PageRequest.of(page, size), totalElements);
     }
-//    @Override
-//    @Transactional(readOnly = true)
-//    public Page<ThemeSimpleResDto> searchThemes(String keyword, Integer page, Integer size) {
-//
-//        List<Theme> themeList = search(keyword);
-//
-//        // 페이지네이션을 위한 시작과 끝 인덱스 계산
-//        int start = page * size;
-//        int end = (page + 1) * size - 1;
-//
-//        // 레디스에서 전체 zset의 크기를 가져옵니다.
-//        int totalElements = themeList.size();
-//
-//        // 레디스에서 정렬된 결과를 가져옵니다.
-//        Set<Theme> sortedThemeIds = new HashSet<>();
-//        for (int i = start; i < end; i++) {
-//            sortedThemeIds.add(themeList.get(i));
-//        }
-//
-//        // 결과를 DTO로 변환합니다.
-//        List<ThemeSimpleResDto> content = sortedThemeIds.stream()
-//                .map(ThemeSimpleResDto::from)
-//                .collect(Collectors.toList());
-//
-//        // Page 객체를 생성하고 반환합니다.
-//        return new PageImpl<>(content, PageRequest.of(page, size), totalElements);
-//    }
 
     //Zset에 각 정렬 기준별로 넣는 함수
     private void createZSET(String sortingKey, String reviewKey, String recommendKey, Theme theme) {
