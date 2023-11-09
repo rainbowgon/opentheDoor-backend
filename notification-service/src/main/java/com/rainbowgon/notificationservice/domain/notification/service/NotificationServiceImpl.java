@@ -1,24 +1,38 @@
 package com.rainbowgon.notificationservice.domain.notification.service;
 
 import com.rainbowgon.notificationservice.domain.kafka.service.KafkaProducer;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.BookmarkInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.ReservationInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.dto.response.NotificationListResDto;
+import com.rainbowgon.notificationservice.domain.notification.entity.Notification;
+import com.rainbowgon.notificationservice.global.client.dto.input.BookmarkInDto;
+import com.rainbowgon.notificationservice.global.client.dto.input.ReservationInDto;
+import com.rainbowgon.notificationservice.global.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.global.util.MessageFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
     private final KafkaProducer kafkaProducer;
+    private final RedisTemplate<String, Notification> redisTemplate;
 
     @Override
     public List<NotificationListResDto> selectNotificationList(Long profileId) {
+
+
+        SetOperations<String, Notification> setOperations = redisTemplate.opsForSet();
+        String key = "notification:profileId:" + profileId;
+        Set<Notification> set = setOperations.members(key);
+        log.info(set.toString());
+
         return null;
     }
 

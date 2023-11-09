@@ -55,10 +55,18 @@ dependencies {
 
     // cool sms api
     implementation 'net.nurigo:sdk:4.3.0'
-    
-    // spring cloud
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // eureka
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    // config server
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    // health check, bus refresh
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // rabbitmq
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+    // feign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 }
 
 tasks.named('test') {

@@ -71,7 +71,7 @@ public class MemberServiceImpl implements MemberService {
 
         // phoneNumber 형식 검증 (01012345678)
         checkPhoneNumberFormat(phoneNumber);
-        
+
         return coolSmsSender.sendOne(phoneNumber);
     }
 
@@ -119,7 +119,7 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(UUID memberId) {
 
         // 프로필 서비스로 삭제 요청 보내기
-        profileService.delectProfile(memberId);
+        profileService.deleteProfile(memberId);
 
         // 회원 삭제
         memberRepository.deleteById(memberId);

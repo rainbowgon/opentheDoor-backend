@@ -103,8 +103,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Transactional
     @Override
-    public void delectProfile(UUID memberId) {
+    public void deleteProfile(UUID memberId) {
         profileRepository.deleteByMemberId(memberId);
+        // TODO redis에서 해당 회원의 북마크 내역 삭제
     }
 
     /**

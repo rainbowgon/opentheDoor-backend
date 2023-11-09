@@ -46,8 +46,7 @@ public class Member extends BaseEntity {
     private String providerId;
 
     @Builder
-    public Member(String name, String phoneNumber, Provider provider, String providerId,
-                  LocalDate birthDate) {
+    public Member(String name, String phoneNumber, Provider provider, String providerId, LocalDate birthDate) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.provider = provider;

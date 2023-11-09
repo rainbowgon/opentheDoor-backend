@@ -34,5 +34,4 @@ public class KafkaProducer {
             throw JsonToStringException.EXCEPTION;
         }
     }
-
 }

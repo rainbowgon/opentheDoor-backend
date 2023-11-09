@@ -1,11 +1,10 @@
 package com.rainbowgon.notificationservice.domain.kafka.dto.output;
 
 
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.BookmarkInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.ReservationInDto;
-import com.rainbowgon.notificationservice.domain.notification.client.dto.input.WaitingInDto;
 import com.rainbowgon.notificationservice.domain.notification.entity.NotificationType;
-import com.rainbowgon.notificationservice.domain.notification.entity.ViewStatus;
+import com.rainbowgon.notificationservice.global.client.dto.input.BookmarkInDto;
+import com.rainbowgon.notificationservice.global.client.dto.input.ReservationInDto;
+import com.rainbowgon.notificationservice.global.client.dto.input.WaitingInDto;
 import lombok.*;
 
 @Getter
@@ -20,7 +19,6 @@ public class MessageOutDto {
     private String title;
     private String body;
     private NotificationType notificationType;
-    private ViewStatus viewStatus;
 
 
     public static MessageOutDto from(BookmarkInDto bookmarkInDto, String title, String body) {
@@ -31,7 +29,6 @@ public class MessageOutDto {
                 .title(title)
                 .body(body)
                 .notificationType(NotificationType.BOOKMARK)
-                .viewStatus(ViewStatus.NOT_VIEWED)
                 .build();
     }
 
@@ -43,7 +40,6 @@ public class MessageOutDto {
                 .title(title)
                 .body(body)
                 .notificationType(NotificationType.RESERVATION)
-                .viewStatus(ViewStatus.NOT_VIEWED)
                 .build();
     }
 
@@ -55,7 +51,6 @@ public class MessageOutDto {
                 .title(title)
                 .body(body)
                 .notificationType(NotificationType.WAITING)
-                .viewStatus(ViewStatus.NOT_VIEWED)
                 .build();
     }
 }
