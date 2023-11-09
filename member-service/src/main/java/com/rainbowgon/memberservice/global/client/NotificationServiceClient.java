@@ -1,6 +1,6 @@
-package com.rainbowgon.memberservice.domain.client;
+package com.rainbowgon.memberservice.global.client;
 
-import com.rainbowgon.memberservice.domain.client.dto.output.NotificationOutDto;
+import com.rainbowgon.memberservice.global.client.dto.output.NotificationOutDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

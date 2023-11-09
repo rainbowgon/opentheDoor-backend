@@ -1,6 +1,6 @@
-package com.rainbowgon.memberservice.domain.client;
+package com.rainbowgon.memberservice.global.client;
 
-import com.rainbowgon.memberservice.domain.client.dto.input.ReservationInDto;
+import com.rainbowgon.memberservice.global.client.dto.input.ReservationInDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

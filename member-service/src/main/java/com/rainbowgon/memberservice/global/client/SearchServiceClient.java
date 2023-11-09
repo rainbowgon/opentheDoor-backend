@@ -1,7 +1,7 @@
-package com.rainbowgon.memberservice.domain.client;
+package com.rainbowgon.memberservice.global.client;
 
-import com.rainbowgon.memberservice.domain.client.dto.input.SearchDetailInDto;
-import com.rainbowgon.memberservice.domain.client.dto.input.SearchSimpleInDto;
+import com.rainbowgon.memberservice.global.client.dto.input.SearchDetailInDto;
+import com.rainbowgon.memberservice.global.client.dto.input.SearchSimpleInDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;

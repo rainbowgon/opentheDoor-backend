@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.domain.client.dto.output;
+package com.rainbowgon.memberservice.global.client.dto.output;
 
 import lombok.*;
 
