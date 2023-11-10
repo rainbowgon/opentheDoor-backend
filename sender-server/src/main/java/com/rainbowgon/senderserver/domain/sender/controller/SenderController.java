@@ -21,6 +21,6 @@ public class SenderController {
         fcmInitializer.initialize();
         fcmService.sendMessage("모바일 토큰", "스프링에서 간 알림", "스프링에서 간 알림");
 
-        return "test";
+        return "success";
     }
 }
