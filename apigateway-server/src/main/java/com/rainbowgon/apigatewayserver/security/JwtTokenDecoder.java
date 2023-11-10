@@ -29,9 +29,8 @@ public class JwtTokenDecoder {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String getProfileId(String token) {
-//        return extractAllClaims(token).get("profileId", String.class);
-        return extractAllClaims(token).get("memberId", String.class);
+    public Long getProfileId(String token) {
+        return extractAllClaims(token).get("profileId", Long.class);
     }
 
     public Boolean validateToken(String token) {
