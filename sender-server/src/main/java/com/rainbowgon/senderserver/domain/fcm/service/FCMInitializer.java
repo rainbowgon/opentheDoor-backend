@@ -7,17 +7,20 @@ import com.rainbowgon.senderserver.global.error.exception.FCMInitializerFailExce
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
 
-@Service
+@Component
 @Slf4j
 public class FCMInitializer {
 
     @Value("${fcm.certification}")
     private String credential;
+
+    @Value("${fcm.project-id}")
+    private String projectId;
 
     @PostConstruct
     public void initialize() {
@@ -26,6 +29,7 @@ public class FCMInitializer {
         try (InputStream stream = resource.getInputStream()) {
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(stream))
+                    .setProjectId(projectId)
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
@@ -33,9 +37,11 @@ public class FCMInitializer {
                 log.info("FirebaseApp initialization complete");
             }
         } catch (Exception e) {
+            System.out.println("================================");
             e.printStackTrace();
+            System.out.println("================================");
+
             throw FCMInitializerFailException.EXCEPTION;
         }
-
     }
 }

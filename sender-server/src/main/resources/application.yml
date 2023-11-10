@@ -1,5 +1,6 @@
 fcm:
   certification: fcm/openthedoor-firebase-adminsdk.json
+  project-id: openthedoor-930e4
 
 
 server:
