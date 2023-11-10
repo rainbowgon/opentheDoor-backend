@@ -7,12 +7,12 @@ import com.rainbowgon.senderserver.global.error.exception.FCMInitializerFailExce
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
 
-@Component
+@Service
 @Slf4j
 public class FCMInitializer {
 
