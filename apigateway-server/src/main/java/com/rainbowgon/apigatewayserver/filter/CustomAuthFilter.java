@@ -54,11 +54,10 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, NoAuthorizationException.EXCEPTION);
             }
-
-            // token 유효성 확인
             String accessToken = getToken(request);
             log.info("Custom Auth Filter ... accessToken = {}", accessToken);
 
+            // token 유효성 확인
             if (accessToken != null) {
                 String profileId = jwtTokenDecoder.getProfileId(accessToken);
                 log.info("Custom Auth Filter ... profileId = {}", profileId);
@@ -81,6 +80,11 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
 
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
+
+        // 각 서비스의 응답을 그대로 반환
+        if (response.isCommitted()) {
+            return response.setComplete();
+        }
 
         // custom exception 가져오기
         BaseErrorCode code = customException.getErrorCode();
