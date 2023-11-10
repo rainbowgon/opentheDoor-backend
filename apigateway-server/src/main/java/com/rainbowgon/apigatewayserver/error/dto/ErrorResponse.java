@@ -24,7 +24,8 @@ public class ErrorResponse {
                 .code(errorReason.getCode())
                 .reason(errorReason.getReason())
                 .timeStamp(LocalDateTime.now())
-                .path(path).build();
+                .path(path)
+                .build();
     }
 
     public static ErrorResponse of(HttpStatus status, String code, String reason, String path) {
@@ -33,7 +34,8 @@ public class ErrorResponse {
                 .code(code)
                 .reason(reason)
                 .timeStamp(LocalDateTime.now())
-                .path(path).build();
+                .path(path)
+                .build();
     }
 
 }

@@ -15,6 +15,7 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 
     @Data
     public static class Config {
+
         private String baseMessage;
         private boolean preLogger;
         private boolean postLogger;
@@ -34,12 +35,15 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
 
             log.info("Global Filter baseMessage = {}", config.getBaseMessage());
 
+            // request id 로그로 출력
             if (config.isPreLogger()) {
                 log.info("Global Filter is start ... request id = {}", request.getId());
             }
 
             // global post filter
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+
+                // response status code 로그로 출력
                 if (config.isPostLogger()) {
                     log.info("Global Filter is end ... status code = {}", response.getStatusCode());
                 }
