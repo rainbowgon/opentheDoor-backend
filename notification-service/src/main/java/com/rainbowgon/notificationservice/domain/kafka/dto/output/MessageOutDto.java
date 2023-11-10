@@ -15,7 +15,7 @@ public class MessageOutDto {
 
     private Long profileId;
     private String fcmToken;
-    private Long themeId;
+    private String themeId;
     private String title;
     private String body;
     private NotificationType notificationType;

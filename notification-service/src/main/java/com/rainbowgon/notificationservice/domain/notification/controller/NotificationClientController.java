@@ -21,7 +21,7 @@ public class NotificationClientController {
     @GetMapping("/test")
     public ResponseEntity<String> test() {
 
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok("알림 서비스 통신 테스트 성공");
     }
 
     @PostMapping("/bookmark")
