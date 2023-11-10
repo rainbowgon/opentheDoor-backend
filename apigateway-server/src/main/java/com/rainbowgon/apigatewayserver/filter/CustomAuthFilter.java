@@ -9,7 +9,6 @@ import com.rainbowgon.apigatewayserver.error.exception.NoAuthorizationException;
 import com.rainbowgon.apigatewayserver.error.exception._CustomException;
 import com.rainbowgon.apigatewayserver.redis.TokenRedisRepository;
 import com.rainbowgon.apigatewayserver.security.JwtTokenDecoder;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -27,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFilter.Config> {
 
     private final JwtTokenDecoder jwtTokenDecoder;
@@ -35,6 +33,14 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
     private final ObjectMapper objectMapper;
 
     public static class Config {}
+
+    public CustomAuthFilter(JwtTokenDecoder jwtTokenDecoder, TokenRedisRepository tokenRedisRepository,
+                            ObjectMapper objectMapper) {
+        super(Config.class);
+        this.jwtTokenDecoder = jwtTokenDecoder;
+        this.tokenRedisRepository = tokenRedisRepository;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public GatewayFilter apply(Config config) {
