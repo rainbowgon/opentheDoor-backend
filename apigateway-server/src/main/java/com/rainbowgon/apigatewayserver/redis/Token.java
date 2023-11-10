@@ -7,21 +7,23 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
-@RedisHash("refreshToken")
-public class RefreshToken {
+@RedisHash("Token")
+public class Token {
 
     @Id
     private String memberId; // UUID
     private String accessToken;
     private String refreshToken;
+    private String fcmToken;
     @TimeToLive
     private Long expiration;
 
     @Builder
-    public RefreshToken(String memberId, String accessToken, String refreshToken, Long expiration) {
+    public Token(String memberId, String accessToken, String refreshToken, String fcmToken, Long expiration) {
         this.memberId = memberId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.fcmToken = fcmToken;
         this.expiration = expiration;
     }
 }
