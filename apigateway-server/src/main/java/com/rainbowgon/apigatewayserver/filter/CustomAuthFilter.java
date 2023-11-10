@@ -92,7 +92,7 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
 
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
-
+		
         // custom exception 가져오기
         BaseErrorCode code = customException.getErrorCode();
         ErrorReason errorReason = code.getErrorReason();
