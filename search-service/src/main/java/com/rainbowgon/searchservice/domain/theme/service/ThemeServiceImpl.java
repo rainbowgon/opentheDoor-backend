@@ -49,10 +49,23 @@ public class ThemeServiceImpl implements ThemeService {
     @Qualifier("cacheRedisThemeTemplate")
     private final RedisTemplate<String, Theme> cacheRedisThemeTemplate;
 
+    // Haversine 공식을 사용하여 거리를 계산하는 메소드
+    public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // 지구의 반경(km)
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // 단위: km
+    }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ThemeSimpleResDto> searchThemes(String keyword, Integer page, Integer size) {
+    public Page<ThemeSimpleResDto> searchThemes(String keyword, Double latitude, Double longitude,
+                                                Integer page, Integer size) {
 
         List<Theme> themeList = search(keyword);
 
@@ -60,15 +73,23 @@ public class ThemeServiceImpl implements ThemeService {
         String sortingKey = RedisKeyBuilder.buildKey("BOOKMARK", keyword);
         String reviewKey = RedisKeyBuilder.buildKey("REVIEW", keyword);
         String recommendKey = RedisKeyBuilder.buildKey("RECOMMEND", keyword);
+        String distanceKey = RedisKeyBuilder.buildKey("DISTANCE", keyword);
 
-        // 여기서 기존의 점수가 있는지 체크하고, 없으면 0으로 초기화(기본 북마크)
-        for (Theme theme : themeList) {
-            createZSET(sortingKey, reviewKey, recommendKey, theme);
+        boolean keyExists = cacheRedisThemeTemplate.hasKey(sortingKey);
+        if (!keyExists) {
+            // 여기서 기존의 점수가 있는지 체크하고, 없으면 0으로 초기화(기본 북마크)
+            for (Theme theme : themeList) {
+                Double distanceScore = calculateDistance(theme.getLatitude(), theme.getLongitude(), latitude,
+                                                         longitude);
+                cacheRedisThemeTemplate.opsForZSet().add(distanceKey, theme, distanceScore);
+                cacheRedisThemeTemplate.expire(recommendKey, Duration.ofMinutes(20));
+                createZSET(sortingKey, reviewKey, recommendKey, theme);
+            }
         }
 
         // 페이지네이션을 위한 시작과 끝 인덱스 계산
-        long start = page * size;
-        long end = (page + 1) * size - 1;
+        int start = page * size;
+        int end = Math.min((page + 1) * size, themeList.size());
 
         // 레디스에서 전체 zset의 크기를 가져옵니다.
         Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(recommendKey);
@@ -101,11 +122,12 @@ public class ThemeServiceImpl implements ThemeService {
 
         Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2, -Math.log(interest + 1));
         cacheRedisThemeTemplate.opsForZSet().add(sortingKey, theme, bookmarkScore);
-        cacheRedisThemeTemplate.expire(sortingKey, Duration.ofMinutes(10));
+        cacheRedisThemeTemplate.expire(sortingKey, Duration.ofMinutes(20));
         cacheRedisThemeTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
-        cacheRedisThemeTemplate.expire(reviewKey, Duration.ofMinutes(10));
+        cacheRedisThemeTemplate.expire(reviewKey, Duration.ofMinutes(20));
         cacheRedisThemeTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
-        cacheRedisThemeTemplate.expire(recommendKey, Duration.ofMinutes(10));
+        cacheRedisThemeTemplate.expire(recommendKey, Duration.ofMinutes(20));
+
     }
 
     //ZSet Score 값을 get하는 함수
@@ -114,7 +136,6 @@ public class ThemeServiceImpl implements ThemeService {
         return Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(key, theme.getId()))
                 .orElse(0.0);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -169,22 +190,31 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Integer page, Integer size) {
+    public Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Double latitude, Double longitude,
+                                        Integer page, Integer size) {
 
         String redisKey = RedisKeyBuilder.buildKey(sortBy, keyword);
 
         long start = page * size; // 페이지 계산에 따른 시작 인덱스
         long end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
+        long totalElements = 0L;
 
-
-        Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(redisKey);
-        if (totalElements == 0) {
-            totalElements = searchThemes(keyword, page, size).getTotalElements();
+        boolean keyExists = cacheRedisThemeTemplate.hasKey(redisKey);
+        if (!keyExists) {
+            // 키가 존재하지 않으면, searchThemes 메서드를 실행
+            Page<ThemeSimpleResDto> searchResult = searchThemes(keyword, latitude, longitude, page, size);
+            totalElements = searchResult.getTotalElements();
         }
 
-        // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
-        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, start, end);
+        Set<Theme> sortedThemeIds;
 
+        // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
+        if (!sortBy.equals("DISTANCE")) {
+            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, start,
+                                                                               end);
+        } else {
+            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, start, end);
+        }
         List<ThemeSimpleResDto> content = sortedThemeIds.stream()
                 .map(ThemeSimpleResDto::from)
                 .collect(Collectors.toList());
