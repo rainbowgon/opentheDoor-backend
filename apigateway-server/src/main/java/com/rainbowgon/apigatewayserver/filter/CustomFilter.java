@@ -1,7 +1,8 @@
 package com.rainbowgon.apigatewayserver.filter;
 
-import com.rainbowgon.apigatewayserver.redis.RefreshTokenRedisRepository;
+import com.rainbowgon.apigatewayserver.redis.TokenRedisRepository;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -15,16 +16,12 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Config> {
 
-    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final TokenRedisRepository tokenRedisRepository;
 
     public static class Config { }
-
-    public CustomFilter(RefreshTokenRedisRepository refreshTokenRedisRepository) {
-        super(Config.class);
-        this.refreshTokenRedisRepository = refreshTokenRedisRepository;
-    }
 
     @Override
     public GatewayFilter apply(Config config) {
@@ -38,17 +35,15 @@ public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Conf
             log.info("Custom Filter is start ... request id = {}", request.getId());
 
             // 토큰 없을 때
-            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                return onError(exchange, "토큰이 없습니다.", HttpStatus.UNAUTHORIZED);
-            }
+//            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+//                return onError(exchange, "토큰이 없습니다.", HttpStatus.UNAUTHORIZED);
+//            }
 
 
 
             // global post filter
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-                if (config.isPostLogger()) {
-                    log.info("Global Filter is end ... status code = {}", response.getStatusCode());
-                }
+                log.info("Custom Filter is end ... status code = {}", response.getStatusCode());
             }));
         };
     }
