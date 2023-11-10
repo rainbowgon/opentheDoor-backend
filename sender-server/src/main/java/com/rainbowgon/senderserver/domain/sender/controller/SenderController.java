@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SenderController {
 
-    // 컨트롤러 삭제 예정
     private final FCMInitializer fcmInitializer;
     private final FCMService fcmService;
 
@@ -21,6 +20,6 @@ public class SenderController {
         fcmInitializer.initialize();
         fcmService.sendMessage("모바일 토큰", "스프링에서 간 알림", "스프링에서 간 알림");
 
-        return "success";
+        return "작업 서버 FCM 테스트 성공";
     }
 }

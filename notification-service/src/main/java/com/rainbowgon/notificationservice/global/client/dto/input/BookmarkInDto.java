@@ -12,7 +12,7 @@ public class BookmarkInDto {
 
     private Long profileId;
     private String fcmToken;
-    private Long themeId;
+    private String themeId;
     private String themeName;
     private String venueName;
     private LocalTime openTime;

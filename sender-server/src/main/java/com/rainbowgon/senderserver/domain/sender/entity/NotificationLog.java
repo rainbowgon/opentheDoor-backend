@@ -20,7 +20,7 @@ public class NotificationLog extends BaseEntity {
     private Long id;
 
     private Long profileId;
-    private Long themeId;
+    private String themeId;
     private String title;
     private String body;
 
@@ -29,7 +29,7 @@ public class NotificationLog extends BaseEntity {
     private NotificationType notificationType;
 
     @Builder
-    public NotificationLog(Long profileId, Long themeId, String title, String body,
+    public NotificationLog(Long profileId, String themeId, String title, String body,
                            NotificationType notificationType) {
         this.profileId = profileId;
         this.themeId = themeId;

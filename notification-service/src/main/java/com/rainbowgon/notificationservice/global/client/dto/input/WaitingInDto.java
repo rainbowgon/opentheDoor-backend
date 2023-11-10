@@ -13,7 +13,7 @@ public class WaitingInDto {
 
     private Long profileId;
     private String fcmToken;
-    private Long themeId;
+    private String themeId;
     private String themeName;
     private LocalDate reservationDate;
     private LocalTime reservationTime;

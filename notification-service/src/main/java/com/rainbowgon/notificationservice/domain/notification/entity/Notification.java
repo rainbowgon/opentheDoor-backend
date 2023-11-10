@@ -14,14 +14,14 @@ public class Notification {
     private Long notificationId;
     @Indexed
     private Long profileId;
-    private Long themeId;
+    private String themeId;
     private String title;
     private String body;
     private NotificationType notificationType;
     private ViewStatus viewStatus;
 
     @Builder
-    public Notification(Long notificationId, Long profileId, Long themeId, String title, String body,
+    public Notification(Long notificationId, Long profileId, String themeId, String title, String body,
                         NotificationType notificationType, ViewStatus viewStatus) {
         this.notificationId = notificationId;
         this.profileId = profileId;
