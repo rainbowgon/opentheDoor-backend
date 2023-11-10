@@ -36,8 +36,8 @@ public class ThemeController {
     public ResponseEntity<ResponseWrapper<List<ThemeSimpleResDto>>> sortThemes(
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(required = false, defaultValue = "RECOMMEND") String sortBy,
-            @RequestParam(required = false, defaultValue = "") Double latitude,
-            @RequestParam(required = false, defaultValue = "") Double longitude,
+            @RequestParam(required = false, defaultValue = "37.5013") Double latitude,
+            @RequestParam(required = false, defaultValue = "127.0396781") Double longitude,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
         Page<ThemeSimpleResDto> searchList = themeService.sort(keyword, sortBy, latitude, longitude, page,
