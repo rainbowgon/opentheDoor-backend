@@ -12,7 +12,8 @@ import java.util.List;
 
 public interface ThemeService {
 
-    Page<ThemeSimpleResDto> searchThemes(String keyword, Integer page, Integer size);
+    Page<ThemeSimpleResDto> searchThemes(String keyword, Double latitude, Double longitude,
+                                         Integer page, Integer size);
 
     List<Theme> search(String keyword);
 
@@ -22,7 +23,8 @@ public interface ThemeService {
 
     List<BookmarkSimpleOutDto> selectSimpleThemesById(ThemeCheckReqDtoList themeIdList);
 
-    Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Integer page, Integer size);
+    Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Double latitude, Double longitude,
+                                 Integer page, Integer size);
 
     void reviewCnt(String themeId);
 

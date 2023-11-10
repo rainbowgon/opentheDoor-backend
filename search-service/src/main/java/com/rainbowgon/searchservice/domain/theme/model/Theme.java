@@ -19,7 +19,7 @@ public class Theme {
     @Field(type = FieldType.Text, name = "venue")
     private String venue;
 
-    @Field(type = FieldType.Text, name = "title")
+    @Field(type = FieldType.Keyword, name = "title")
     private String title;
 
     @Field(type = FieldType.Text, name = "explanation")
