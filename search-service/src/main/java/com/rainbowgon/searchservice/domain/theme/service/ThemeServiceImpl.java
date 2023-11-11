@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -65,6 +62,7 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     @Transactional(readOnly = true)
     public Page<ThemeSimpleResDto> searchThemes(String keyword, Double latitude, Double longitude,
+                                                Integer headcount, List<String> region,
                                                 Integer page, Integer size) {
 
         List<Theme> themeList = search(keyword);
@@ -87,24 +85,47 @@ public class ThemeServiceImpl implements ThemeService {
             }
         }
 
-        // 페이지네이션을 위한 시작과 끝 인덱스 계산
+        // 레디스에서 전체 정렬된 결과를 가져옵니다.
+        Set<Theme> allSortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(recommendKey, 0, -1);
+
+        // 필터링 로직 적용
+        Set<Theme> filteredThemes;
+        if ((region != null && !region.isEmpty()) || (headcount != null && headcount > 0)) {
+            filteredThemes = allSortedThemeIds.stream()
+                    .filter(theme -> {
+                        boolean regionMatch = true;
+                        boolean headcountMatch = true;
+
+                        // 지역 필터링
+                        if (region != null && !region.isEmpty()) {
+                            String locationFirstPart = theme.getLocation().split("\\s+")[0];
+                            regionMatch = region.contains(locationFirstPart);
+                        }
+
+                        // 인원수 필터링
+                        if (headcount != null && headcount > 0) {
+                            headcountMatch =
+                                    theme.getMinHeadcount() <= headcount && headcount <= theme.getMaxHeadcount();
+                        }
+                        return regionMatch && headcountMatch;
+                    })
+                    .collect(Collectors.toSet());
+        } else {
+            filteredThemes = new HashSet<>(allSortedThemeIds);
+        }
+
+// 수동 페이지네이션 적용
         int start = page * size;
-        int end = Math.min((page + 1) * size, themeList.size());
-
-        // 레디스에서 전체 zset의 크기를 가져옵니다.
-        Long totalElements = cacheRedisThemeTemplate.opsForZSet().zCard(recommendKey);
-
-        // 레디스에서 정렬된 결과를 가져옵니다.
-        Set<Theme> sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(recommendKey, start,
-                                                                                      end);
-
-        // 결과를 DTO로 변환합니다.
-        List<ThemeSimpleResDto> content = sortedThemeIds.stream()
+        int end = Math.min((page + 1) * size, filteredThemes.size());
+        List<ThemeSimpleResDto> content = filteredThemes.stream()
+                .skip(start)
+                .limit(size)
                 .map(ThemeSimpleResDto::from)
                 .collect(Collectors.toList());
+        
 
         // Page 객체를 생성하고 반환합니다.
-        return new PageImpl<>(content, PageRequest.of(page, size), totalElements);
+        return new PageImpl<>(content, PageRequest.of(page, size), filteredThemes.size());
     }
 
     //Zset에 각 정렬 기준별로 넣는 함수
@@ -191,19 +212,19 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     @Transactional(readOnly = true)
     public Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Double latitude, Double longitude,
+                                        Integer headcount, List<String> region,
                                         Integer page, Integer size) {
 
         String redisKey = RedisKeyBuilder.buildKey(sortBy, keyword);
 
         long start = page * size; // 페이지 계산에 따른 시작 인덱스
         long end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
-        long totalElements = 0L;
 
         boolean keyExists = cacheRedisThemeTemplate.hasKey(redisKey);
         if (!keyExists) {
             // 키가 존재하지 않으면, searchThemes 메서드를 실행
-            Page<ThemeSimpleResDto> searchResult = searchThemes(keyword, latitude, longitude, page, size);
-            totalElements = searchResult.getTotalElements();
+            Page<ThemeSimpleResDto> searchResult = searchThemes(keyword, latitude, longitude, headcount,
+                                                                region, page, size);
         }
 
         Set<Theme> sortedThemeIds;
@@ -215,9 +236,36 @@ public class ThemeServiceImpl implements ThemeService {
         } else {
             sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, start, end);
         }
+
+        System.out.println(sortedThemeIds.size());
+        if ((region != null && !region.isEmpty()) || (headcount != null && headcount > 0)) {
+            sortedThemeIds = sortedThemeIds.stream()
+                    .filter(theme -> {
+                        boolean regionMatch = true;
+                        boolean headcountMatch = true;
+
+                        // 지역 필터링
+                        if (region != null && !region.isEmpty()) {
+                            String locationFirstPart = theme.getLocation().split("\\s+")[0];
+                            regionMatch = region.contains(locationFirstPart);
+                        }
+
+                        // 인원수 필터링
+                        if (headcount != null && headcount > 0) {
+                            headcountMatch =
+                                    theme.getMinHeadcount() <= headcount && headcount <= theme.getMaxHeadcount();
+                        }
+                        return regionMatch && headcountMatch;
+                    })
+                    .collect(Collectors.toSet());
+        }
+
+
         List<ThemeSimpleResDto> content = sortedThemeIds.stream()
                 .map(ThemeSimpleResDto::from)
                 .collect(Collectors.toList());
+
+        int totalElements = content.size();
 
         return new PageImpl<>(content, PageRequest.of(page, size), totalElements);
     }
