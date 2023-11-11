@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +33,7 @@ public class MemberController {
 
 
     /**
-     * 카카오 로그인
+     * TODO 카카오 로그인
      */
     @GetMapping("/login/kakao")
     public ResponseEntity<OAuthProfileResDto> kakaoLogin(@RequestParam("code") String code) throws Exception {
@@ -44,6 +43,7 @@ public class MemberController {
 
         return ResponseEntity.ok(OAuthProfileResDto.fromKakao(kakaoProfileResDto));
     }
+    
 
     /**
      * 회원가입
@@ -64,7 +64,7 @@ public class MemberController {
 
         String checkNumber = memberService.sendMessage(memberPhoneReqDto);
 
-        return JsonResponse.ok("인증번호를 발송했습니다.", checkNumber);
+        return JsonResponse.ok("인증번호를 발송했습니다.", "인증번호 = " + checkNumber);
     }
 
     /**
@@ -73,7 +73,7 @@ public class MemberController {
      */
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapper<MemberInfoResDto>> selectMemberInfo(
-            @AuthenticationPrincipal String memberId) {
+            @RequestHeader("memberId") String memberId) {
 
         MemberInfoResDto memberInfoResDto = memberService.selectMemberInfo(UUID.fromString(memberId));
 
@@ -87,7 +87,7 @@ public class MemberController {
      */
     @PatchMapping
     public ResponseEntity<ResponseWrapper<Nullable>> updateMemberInfo(
-            @AuthenticationPrincipal String memberId,
+            @RequestHeader("memberId") String memberId,
             @RequestPart(value = "info") MemberUpdateReqDto memberUpdateReqDto,
             @RequestPart(value = "file", required = false) MultipartFile profileImage) {
 
@@ -100,7 +100,7 @@ public class MemberController {
      * 회원 탈퇴
      */
     @DeleteMapping
-    public ResponseEntity<ResponseWrapper<Nullable>> deleteMember(@AuthenticationPrincipal String memberId) {
+    public ResponseEntity<ResponseWrapper<Nullable>> deleteMember(@RequestHeader("memberId") String memberId) {
 
         memberService.deleteMember(UUID.fromString(memberId));
 

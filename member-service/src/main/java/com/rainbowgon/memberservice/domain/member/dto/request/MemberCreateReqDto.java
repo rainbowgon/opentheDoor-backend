@@ -14,13 +14,15 @@ public class MemberCreateReqDto {
 
     private String name;
     private String phoneNumber;
-    private Provider provider;
-    private String providerId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
+    private Provider provider;
+    private String providerId;
 
     // Profile에 저장되는 정보
     private String nickname;
     private String profileImage;
 
+    // Redis에 저장되는 정보
+    private String fcmToken;
 }
