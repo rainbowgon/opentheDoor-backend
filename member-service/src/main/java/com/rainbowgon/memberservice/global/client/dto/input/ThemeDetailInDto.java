@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SearchDetailInDto {
+public class ThemeDetailInDto {
 
     /* 테마 정보 */
     private String themeId; // 테마 ID
@@ -23,4 +23,11 @@ public class SearchDetailInDto {
     private Double activity; // 활동성
     private Double lockRatio; // 장치 비율
     private Double horror; // 공포도
+    
+    /* 리뷰 정보 */
+    private Integer reviewCount; // 리뷰 수(별점 수)
+    private Double ratingScore; // 평균 별점
+
+    /* 북마크 정보 */
+    private Integer bookmarkCount; // 북마크 수
 }

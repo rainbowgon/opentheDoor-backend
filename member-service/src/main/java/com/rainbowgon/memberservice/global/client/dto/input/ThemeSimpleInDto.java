@@ -6,11 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SearchSimpleInDto {
+public class ThemeSimpleInDto {
 
     private String themeId; // 테마 ID
     private String poster; // 테마 포스터
     private String title; // 테마명
     private String venue; // 지점명
-    private String location; // 지점 위치
+    private Double ratingScore; // 평균 별점
+    private Integer reviewCnt; // 리뷰 수(별점 수)
 }

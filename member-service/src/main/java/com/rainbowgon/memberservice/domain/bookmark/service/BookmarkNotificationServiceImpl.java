@@ -1,11 +1,12 @@
 package com.rainbowgon.memberservice.domain.bookmark.service;
 
+import com.rainbowgon.memberservice.domain.member.entity.Token;
+import com.rainbowgon.memberservice.domain.member.repository.TokenRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +19,7 @@ public class BookmarkNotificationServiceImpl implements BookmarkNotificationServ
 
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
-    @Qualifier("tokenRedisStringTemplate")
-    private final RedisTemplate<String, String> tokenRedisStringTemplate;
-
+    private final TokenRedisRepository tokenRedisRepository;
 
     /**
      * redis 타임테이블에 새로운 key가 추가되는지 확인
@@ -78,8 +77,8 @@ public class BookmarkNotificationServiceImpl implements BookmarkNotificationServ
     /**
      * redis에서 프로필 ID(key)로 fcm token(value) 가져오기
      */
-    private String getFcmToken(String profileId) {
-        ValueOperations<String, String> valueOperations = tokenRedisStringTemplate.opsForValue();
-        return valueOperations.get(profileId);
+    private String getFcmToken(Long profileId) {
+        Token token = tokenRedisRepository.findById(profileId).orElseThrow(); // TODO 에러핸들링
+        return token.getFcmToken();
     }
 }

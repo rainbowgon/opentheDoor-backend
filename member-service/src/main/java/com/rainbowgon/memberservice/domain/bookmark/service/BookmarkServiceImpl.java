@@ -5,6 +5,9 @@ import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkDetailR
 import com.rainbowgon.memberservice.domain.bookmark.dto.response.BookmarkSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
+import com.rainbowgon.memberservice.global.client.SearchServiceClient;
+import com.rainbowgon.memberservice.global.client.dto.input.ThemeDetailInDto;
+import com.rainbowgon.memberservice.global.client.dto.input.ThemeSimpleInDto;
 import com.rainbowgon.memberservice.global.error.exception.BookmarkNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +30,10 @@ import java.util.stream.Collectors;
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final ProfileService profileService;
+    private final SearchServiceClient searchServiceClient;
 
     @Qualifier("bookmarkRedisStringTemplate")
     private final RedisTemplate<String, String> bookmarkRedisStringTemplate;
-    @Qualifier("tokenRedisStringTemplate")
-    private final RedisTemplate<String, String> tokenRedisStringTemplate;
     @Qualifier("sortingRedisStringTemplate")
     private final RedisTemplate<String, String> sortingRedisStringTemplate;
 
@@ -39,88 +41,76 @@ public class BookmarkServiceImpl implements BookmarkService {
     @Override
     public void updateBookmarkList(UUID memberId, BookmarkUpdateReqDto bookmarkUpdateReqDto) {
 
+        // 북마크 redis
+        ValueOperations<String, String> bookmarkOps = bookmarkRedisStringTemplate.opsForValue();
+        // 타임테이블 redis
+        SetOperations<String, String> openTimeOps = bookmarkRedisStringTemplate.opsForSet();
+
         // 요청 회원의 프로필 가져오기
         ProfileSimpleResDto profile = getProfile(memberId);
 
-        // 북마크
-        ValueOperations<String, String> bookmarkOps = bookmarkRedisStringTemplate.opsForValue();
-        // 타임테이블
-        SetOperations<String, String> openTimeOps = bookmarkRedisStringTemplate.opsForSet();
-        // fcm token, refresh token
-        ValueOperations<String, String> tokenOps = tokenRedisStringTemplate.opsForValue();
-        // sorting
-        ZSetOperations<String, String> sortingOps = sortingRedisStringTemplate.opsForZSet();
-
         for (String themeId : bookmarkUpdateReqDto.getBookmarkThemeIdList()) {
+
             // redis key 설정
-            String bookmarkKey = generateBookmarkKey(profile.getProfileId(), themeId);
-            if (bookmarkOps.get(bookmarkKey) == null) { // 없으면 삽입 (북마크 등록)
-                bookmarkOps.set(bookmarkKey, profile.getBookmarkNotificationStatus().name());
-                // 테마별 예약 오픈 시간 가져와서 타임테이블에 추가하기
+            String bookmarkKey = generateBookmarkKey(memberId, themeId);
+
+            // 기존에 존재하는 북마크이면 삭제, 없으면 삽입
+            if (bookmarkOps.get(bookmarkKey) == null) {
+                bookmarkOps.set(bookmarkKey, profile.getBookmarkNotificationStatus().name()); // 북마크 등록
                 String openTime = "0000"; // TODO themeId로 오픈 시간 정보 가져오기
-                openTimeOps.add(openTime, themeId);
-
-                /** 테스트 */
-                tokenOps.set("test", "테스트");
-                sortingOps.add("bookmark", "themeId", 1);
-
-            } else { // 있으면 삭제 (북마크 해제)
-                bookmarkOps.getAndDelete(bookmarkKey);
+                openTimeOps.add(openTime, themeId); // 오픈 시간 타임 테이블에 추가
+                updateBookmarkCount(themeId, 1); // 테마 북마크 수 +1
+            } else {
+                bookmarkOps.getAndDelete(bookmarkKey); // 북마크 해제
+                updateBookmarkCount(themeId, -1); // 테마 북마크 수 -1
             }
-        }
 
-        // TODO redis에 북마크 수 업데이트
+        }
     }
 
     @Override
-    public BookmarkSimpleResDto selectSimpleBookmarkList(UUID memberId) {
-
-        // 요청 회원의 프로필 ID 가져오기
-        Long profileId = getProfile(memberId).getProfileId();
+    public List<BookmarkSimpleResDto> selectSimpleBookmarkList(UUID memberId) {
 
         // 요청 회원의 북마크 테마 목록 가져오기
         // TODO 최신순으로 20개까지 자르기
+        Set<String> bookmarkKeyList = bookmarkRedisStringTemplate.keys("BOOKMARK:" + memberId + "$*");
 
-        // TODO 북마크 목록에서 테마 ID를 통해 각각의 테마 정보(아이디, 포스터, 테마명, 지점명) 가져오기 -> search-service
+        if (bookmarkKeyList == null) {
+            return null;
+        }
 
-        // TODO 북마크 목록에서 테마 ID를 통해 각각의 리뷰 정보(평균 별점, 리뷰 수) 가져오기 -> redis
+        // search-service -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(아이디, 포스터, 테마명, 지점명, 평균 별점, 리뷰 수) 가져오기
+        List<String> themeIdList = bookmarkKeyList.stream().map(this::getThemeId).collect(Collectors.toList());
+        List<ThemeSimpleInDto> themeList = searchServiceClient.getBookmarkThemeSimpleInfo(themeIdList);
 
-
-        // TODO pageInfo 추가
-        return null;
+        return themeList.stream().map(BookmarkSimpleResDto::from).collect(Collectors.toList());
     }
 
     @Override
-    public BookmarkDetailResDto selectDetailBookmarkList(UUID memberId) {
-
-        // 요청 회원의 프로필 ID 가져오기
-        Long profileId = getProfile(memberId).getProfileId();
+    public List<BookmarkDetailResDto> selectDetailBookmarkList(UUID memberId) {
 
         // 요청 회원의 북마크 테마 목록 가져오기
-        ValueOperations<String, String> valueOperations = bookmarkRedisStringTemplate.opsForValue();
-        Set<String> bookmarkKeyList = bookmarkRedisStringTemplate.keys("BOOKMARK:" + profileId + "$*");
+        // TODO pagination
+        Set<String> bookmarkKeyList = bookmarkRedisStringTemplate.keys("BOOKMARK:" + memberId + "$*");
 
-        // search-service -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(전체) 가져오기
+        if (bookmarkKeyList == null) {
+            return null;
+        }
+
+        // search-service -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(전체 + 평균 별점, 리뷰 수, 북마크 수) 가져오기
         List<String> themeIdList = bookmarkKeyList.stream().map(this::getThemeId).collect(Collectors.toList());
-//        List<SearchDetailInDto> themeInfoList = searchServiceClient.getBookmarkThemeDetailInfo(themeIdList);
+        List<ThemeDetailInDto> themeList = searchServiceClient.getBookmarkThemeDetailInfo(themeIdList);
 
-        // TODO redis -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(평균 별점, 리뷰 수, 북마크 수) 가져오기
-
-
-        // TODO 무한스크롤
-        return null;
+        return themeList.stream().map(BookmarkDetailResDto::from).collect(Collectors.toList());
     }
 
     @Transactional
     @Override
     public String updateNotificationStatus(UUID memberId, String themeId) {
 
-        // 요청 회원의 프로필 ID 가져오기
-        Long profileId = getProfile(memberId).getProfileId();
-
-        // 프로필 ID, 테마 ID로 북마크 알림 상태 가져오기
+        // 회원 ID, 테마 ID로 북마크 알림 상태 가져오기
         ValueOperations<String, String> valueOperations = bookmarkRedisStringTemplate.opsForValue();
-        String bookmarkKey = generateBookmarkKey(profileId, themeId);
+        String bookmarkKey = generateBookmarkKey(memberId, themeId);
         String notificationStatus = valueOperations.get(bookmarkKey);
 
         if (notificationStatus == null) {
@@ -135,6 +125,19 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     /**
+     * 회원 ID로 해당 회원의 북마크 전체 삭제
+     */
+    @Override
+    public void deleteBookmark(UUID memberId) {
+
+        // 회원의 북마크 목록 가져오기
+        Set<String> bookmarkKeyList = bookmarkRedisStringTemplate.keys("BOOKMARK:" + memberId + "$*");
+
+        // 북마크 목록 전체 삭제
+        bookmarkRedisStringTemplate.delete(bookmarkKeyList);
+    }
+
+    /**
      * 회원 ID(uuid)로 프로필 조회
      */
     private ProfileSimpleResDto getProfile(UUID memberId) {
@@ -142,10 +145,10 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     /**
-     * 프로필 ID, 테마 ID로 redis 북마크 key 만들기
+     * 회원 ID, 테마 ID로 북마크 redis key 만들기
      */
-    private String generateBookmarkKey(Long profileId, String themeId) {
-        return new StringBuilder("BOOKMARK:").append(profileId.toString()).append("$").append(themeId).toString();
+    private String generateBookmarkKey(UUID memberId, String themeId) {
+        return new StringBuilder("BOOKMARK:").append(memberId.toString()).append("$").append(themeId).toString();
     }
 
     /**
@@ -153,6 +156,22 @@ public class BookmarkServiceImpl implements BookmarkService {
      */
     private String getThemeId(String bookmarkKey) {
         return bookmarkKey.split("$")[1];
+    }
+
+    /**
+     * sorting redis 북마크 수 업데이트
+     */
+    private void updateBookmarkCount(String themeId, double count) {
+
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
+        Double themeExists = zSetOperations.score("BOOKMARK", themeId);
+
+        // 테마 북마크 수가 없으면 새로 추가, 있으면 count(1 또는 -1)만큼 증가
+        if (themeExists == null) {
+            zSetOperations.add("BOOKMARK", themeId, count);
+        } else {
+            zSetOperations.incrementScore("BOOKMARK", themeId, count);
+        }
     }
 
 }

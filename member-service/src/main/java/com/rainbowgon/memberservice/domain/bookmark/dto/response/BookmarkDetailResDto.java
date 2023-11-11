@@ -1,5 +1,6 @@
 package com.rainbowgon.memberservice.domain.bookmark.dto.response;
 
+import com.rainbowgon.memberservice.global.client.dto.input.ThemeDetailInDto;
 import lombok.*;
 
 @Getter
@@ -29,12 +30,27 @@ public class BookmarkDetailResDto { // 마이페이지에서 보여지는 북마
     private Double ratingScore; // 평균 별점
 
     /* 북마크 정보 */
-    private Long bookmarkId; // 북마크 ID
     private Integer bookmarkCount; // 북마크 수
 
-
-    public static BookmarkDetailResDto of() { // 테마 정보, 리뷰 정보, 북마크 정보
+    public static BookmarkDetailResDto from(ThemeDetailInDto theme) { // 테마 정보, 리뷰 정보, 북마크 정보
         return BookmarkDetailResDto.builder()
+                .themeId(theme.getThemeId())
+                .poster(theme.getPoster())
+                .title(theme.getTitle())
+                .venue(theme.getVenue())
+                .location(theme.getLocation())
+                .genre(theme.getGenre())
+                .maxHeadcount(theme.getMaxHeadcount())
+                .minHeadcount(theme.getMinHeadcount())
+                .price(theme.getPrice())
+                .timeLimit(theme.getTimeLimit())
+                .level(theme.getLevel())
+                .activity(theme.getActivity())
+                .lockRatio(theme.getLockRatio())
+                .horror(theme.getHorror())
+                .reviewCount(theme.getReviewCount())
+                .ratingScore(theme.getRatingScore())
+                .bookmarkCount(theme.getBookmarkCount())
                 .build();
     }
 
