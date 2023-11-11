@@ -11,30 +11,30 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.UUID;
 
 @Slf4j
 @Component
 public class JwtTokenProvider {
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
-
+    @Value("${spring.jwt.expire.access-token}")
+    private static long ACCESS_TOKEN_EXPIRE_TIME; // 30분
+    @Value("${spring.jwt.expire.refresh-token}")
+    private static long REFRESH_TOKEN_EXPIRE_TIME; // 7일
     @Value("${spring.jwt.secret}")
     private String JWT_SECRET_KEY;
 
-    public String generateAccessToken(UUID memberId) {
-        return generateToken(memberId, ACCESS_TOKEN_EXPIRE_TIME);
+    public String generateAccessToken(Long profileId) {
+        return generateToken(profileId, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
-    public String generateRefreshToken(UUID memberId) {
-        return generateToken(memberId, REFRESH_TOKEN_EXPIRE_TIME);
+    public String generateRefreshToken(Long profileId) {
+        return generateToken(profileId, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
-    private String generateToken(UUID memberId, long expireTime) {
+    private String generateToken(Long profileId, long expireTime) {
 
         Claims claims = Jwts.claims();
-        claims.put("memberId", memberId.toString());
+        claims.put("profileId", profileId);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -57,15 +57,12 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String getMemberId(String token) {
-        return extractAllClaims(token).get("memberId", String.class);
+    public Long getProfileId(String token) {
+        return extractAllClaims(token).get("profileId", Long.class);
     }
 
     public Boolean validateToken(String token) {
-
         Date expiration = extractAllClaims(token).getExpiration();
-        log.info("[JwtTokenProvider] Token Expiration = " + expiration);
-
         return expiration.before(new Date());
     }
 

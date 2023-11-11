@@ -1,24 +1,21 @@
 package com.rainbowgon.memberservice.domain.member.service;
 
 
+import com.rainbowgon.memberservice.domain.bookmark.service.BookmarkService;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
-import com.rainbowgon.memberservice.domain.member.entity.Token;
 import com.rainbowgon.memberservice.domain.member.repository.MemberRepository;
-import com.rainbowgon.memberservice.domain.member.repository.TokenRedisRepository;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.global.error.exception.MemberBadPhoneNumberException;
 import com.rainbowgon.memberservice.global.error.exception.MemberNotFoundException;
-import com.rainbowgon.memberservice.global.security.JwtTokenProvider;
 import com.rainbowgon.memberservice.global.security.dto.JwtTokenDto;
 import com.rainbowgon.memberservice.global.util.CoolSmsSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,13 +29,9 @@ import java.util.regex.Pattern;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final ProfileService profileService;
+    private final BookmarkService bookmarkService;
     private final CoolSmsSender coolSmsSender;
-    private final TokenRedisRepository tokenRedisRepository;
-
-    @Value("${spring.jwt.expire.refresh-token}")
-    private long REFRESH_TOKEN_EXPIRE_TIME;
 
     @Transactional
     @Override
@@ -57,28 +50,9 @@ public class MemberServiceImpl implements MemberService {
                         .birthDate(createReqDto.getBirthDate())
                         .build());
 
-        // 생성한 멤버 객체로 프로필 객체 생성
-        ProfileSimpleResDto profile =
-                profileService.createProfile(member, createReqDto.getNickname(), createReqDto.getProfileImage());
-
-        // accessToken과 refreshToken 생성
-        JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
-                .accessToken(jwtTokenProvider.generateAccessToken(member.getId()))
-                .refreshToken(jwtTokenProvider.generateRefreshToken(member.getId()))
-                .build();
-
-        // redis에 accessToken, refreshToken, fcmToken 저장
-        tokenRedisRepository.save(
-                Token.builder()
-                        .profileId(profile.getProfileId())
-                        .memberId(String.valueOf(member.getId()))
-                        .accessToken(jwtTokenDto.getAccessToken())
-                        .refreshToken(jwtTokenDto.getRefreshToken())
-                        .fcmToken(createReqDto.getFcmToken())
-                        .expiration(REFRESH_TOKEN_EXPIRE_TIME)
-                        .build());
-
-        return jwtTokenDto;
+        // 생성한 멤버 객체로 프로필 객체 생성 후 토큰 반환
+        return profileService.createProfile(member, createReqDto.getFcmToken(),
+                                            createReqDto.getNickname(), createReqDto.getProfileImage());
     }
 
     @Override
@@ -138,6 +112,9 @@ public class MemberServiceImpl implements MemberService {
 
         // 회원 삭제
         memberRepository.deleteById(memberId);
+
+        // 회원의 북마크 내역 삭제 요청 보내기
+        bookmarkService.deleteBookmark(memberId);
     }
 
     /**

@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String accessToken = getToken(request);
 
         if (accessToken != null) {
-            String memberId = tokenProvider.getMemberId(accessToken); // 토큰에 담긴 회원 id 정보
+            String memberId = tokenProvider.getProfileId(accessToken); // 토큰에 담긴 회원 id 정보
             UserDetails authentication = customUserDetailsService.loadUserByUsername(memberId); // 토큰에 담긴
             // 정보로 불러온 회원 정보
 
