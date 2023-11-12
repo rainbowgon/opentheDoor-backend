@@ -15,10 +15,12 @@ public class SenderController {
     private final FCMInitializer fcmInitializer;
     private final FCMService fcmService;
 
-    @GetMapping
+    @GetMapping("/test")
     public String test() {
         fcmInitializer.initialize();
-        fcmService.sendMessage("모바일 토큰", "스프링에서 간 알림", "스프링에서 간 알림");
+        fcmService.sendMessage("cydOvdiQSn6nGbC9KdMvuW:APA91bFw_dqqHDQ3S8kCdZUejr-Eq3jH9NyE2BFndxBnDirE2D" +
+                                       "-QwXPtgikS_BooMMTzQ7gKAYndET42_E6YMtk9YWmALu11URgIAwA9Z1oENnXqjWpFvguEAR0d6L1TowRHkYYSdQaP", "스프링에서 간 알림", "스프링에서 간 알림");
+        System.out.println("테스트 성공");
 
         return "작업 서버 FCM 테스트 성공";
     }

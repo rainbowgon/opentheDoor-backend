@@ -11,11 +11,11 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WaitingInDto {
 
-    private Long profileId;
+    private Long memberId;
     private String fcmToken;
     private String themeId;
-    private String themeName;
-    private LocalDate reservationDate;
-    private LocalTime reservationTime;
+    private String title;
+    private LocalDate targetDate;
+    private LocalTime targetTime;
 
 }

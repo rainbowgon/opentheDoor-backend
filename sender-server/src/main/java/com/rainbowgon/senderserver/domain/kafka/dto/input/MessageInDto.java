@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MessageInDto {
 
-    private Long profileId;
+    private Long memberId;
     private String fcmToken;
     private String themeId;
     private String title;
@@ -20,7 +20,7 @@ public class MessageInDto {
 
     public NotificationLog toEntity() {
         return NotificationLog.builder()
-                .profileId(profileId)
+                .memberId(memberId)
                 .themeId(themeId)
                 .title(title)
                 .body(body)

@@ -10,11 +10,11 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookmarkInDto {
 
-    private Long profileId;
+    private Long memberId;
     private String fcmToken;
     private String themeId;
-    private String themeName;
-    private String venueName;
+    private String title;
+    private String venue;
     private LocalTime openTime;
 
 }
