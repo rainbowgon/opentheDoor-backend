@@ -27,4 +27,6 @@ public interface ThemeService {
                                  Integer headcount, List<String> region,
                                  Integer page, Integer size);
 
+    void setRanks();
+    List<ThemeSimpleResDto> getRanks();
 }

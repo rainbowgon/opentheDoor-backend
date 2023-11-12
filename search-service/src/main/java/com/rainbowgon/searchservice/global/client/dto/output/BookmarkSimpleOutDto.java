@@ -10,13 +10,13 @@ import lombok.*;
 public class BookmarkSimpleOutDto {
 
     /* 테마 정보 */
-    private String id; // 테마 ID
+    private String themeId; // 테마 ID
     private String title; // 테마명
     private String venue; // 지점명
 
     public static BookmarkSimpleOutDto from(Theme theme) {
         return BookmarkSimpleOutDto.builder()
-                .id(theme.getId())
+                .themeId(theme.getThemeId())
                 .title(theme.getTitle())
                 .venue(theme.getVenue())
                 .build();

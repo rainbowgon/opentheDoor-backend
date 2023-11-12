@@ -53,6 +53,19 @@ public class ThemeController {
         return JsonResponse.ok("성공적으로 정렬 검색이 완료되었습니다.", searchList);
     }
 
+    @GetMapping("/test/setRanks")
+    public String triggerSetRanks() {
+        themeService.setRanks();
+        return "Ranking updated successfully.";
+    }
+    @GetMapping("/rankings")
+    public ResponseEntity<ResponseWrapper<List<ThemeSimpleResDto>>> getRankedThemes() {
+        List<ThemeSimpleResDto> rankingList = themeService.getRanks();
+
+
+        return JsonResponse.ok("성공적으로 인기 테마를 불러왔습니다.", rankingList);
+    }
+
     @GetMapping("/{theme-id}")
     public ResponseEntity<ResponseWrapper<ThemeDetailResDto>> selectTheme(
             @PathVariable("theme-id") String themeId) {

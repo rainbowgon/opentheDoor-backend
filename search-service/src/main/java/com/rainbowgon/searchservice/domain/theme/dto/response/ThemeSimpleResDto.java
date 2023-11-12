@@ -24,7 +24,7 @@ public class ThemeSimpleResDto {
 
     public static ThemeSimpleResDto from(Theme theme) {
         return ThemeSimpleResDto.builder()
-                .id(theme.getId())
+                .id(theme.getThemeId())
                 .venue(theme.getVenue())
                 .title(theme.getTitle())
                 .poster(theme.getPoster())

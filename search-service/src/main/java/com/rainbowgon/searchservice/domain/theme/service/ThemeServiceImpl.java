@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,7 +114,7 @@ public class ThemeServiceImpl implements ThemeService {
             filteredThemes = new HashSet<>(allSortedThemeIds);
         }
 
-// 수동 페이지네이션 적용
+        // 수동 페이지네이션 적용
         int start = page * size;
         int end = Math.min((page + 1) * size, filteredThemes.size());
         List<ThemeSimpleResDto> content = filteredThemes.stream()
@@ -136,7 +137,7 @@ public class ThemeServiceImpl implements ThemeService {
 
         //검색 결과로 나온 테마의 조회 수
         Double viewScore =
-                Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getId())).orElse(0.0);
+                Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getThemeId())).orElse(0.0);
 
         Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
 
@@ -153,7 +154,7 @@ public class ThemeServiceImpl implements ThemeService {
     //ZSet Score 값을 get하는 함수
     @NotNull
     private Double getScore(Theme theme, String key) {
-        return Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(key, theme.getId()))
+        return Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(key, theme.getThemeId()))
                 .orElse(0.0);
     }
 
@@ -236,7 +237,6 @@ public class ThemeServiceImpl implements ThemeService {
             sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, start, end);
         }
 
-        System.out.println(sortedThemeIds.size());
         if ((region != null && !region.isEmpty()) || (headcount != null && headcount > 0)) {
             sortedThemeIds = sortedThemeIds.stream()
                     .filter(theme -> {
@@ -267,6 +267,52 @@ public class ThemeServiceImpl implements ThemeService {
         int totalElements = content.size();
 
         return new PageImpl<>(content, PageRequest.of(page, size), totalElements);
+    }
+
+    @Scheduled(cron = "0 0 0 * * SUN") // 매주 일요일 자정에 실행
+    @Override
+    public void setRanks() {
+        List<Theme> themeList = search("");
+        String rankingKey = "RANKING";
+
+        boolean keyExists = cacheRedisThemeTemplate.hasKey(rankingKey);
+        if (keyExists) {
+            // 키가 존재하면 삭제합니다.
+            cacheRedisThemeTemplate.delete(rankingKey);
+        }
+// 이제 존재하지 않으므로, 새로운 데이터를 추가합니다.
+        for (Theme theme : themeList) {
+            Double bookmarkScore = getScore(theme, "BOOKMARK");
+            Double reviewScore = getScore(theme, "REVIEW");
+            Double ratingScore = getScore(theme, "RATING");
+
+            // 검색 결과로 나온 테마의 조회 수
+            Double viewScore =
+                    Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getThemeId())).orElse(0.0);
+
+            Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
+
+            Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2, -Math.log(interest + 1));
+
+            cacheRedisThemeTemplate.opsForZSet().add(rankingKey, theme, finalRatingScore);
+        }
+        cacheRedisThemeTemplate.expire(rankingKey, Duration.ofDays(7).plusHours(1));
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ThemeSimpleResDto> getRanks() {
+            String rankingKey = "RANKING";
+            // POPULAR 키로 정렬된 데이터에서 상위 10개를 불러오는 로직
+            Set<Theme> rankedThemes = cacheRedisThemeTemplate.opsForZSet().reverseRange(rankingKey, 0, 9);
+
+            // Theme 객체를 ThemeSimpleResDto로 변환
+            List<ThemeSimpleResDto> ranks = rankedThemes.stream()
+                    .map(theme -> ThemeSimpleResDto.from(theme))
+                    .collect(Collectors.toList());
+
+        return ranks;
     }
 
 }
