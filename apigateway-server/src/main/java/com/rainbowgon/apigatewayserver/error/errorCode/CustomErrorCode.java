@@ -1,7 +1,6 @@
 package com.rainbowgon.apigatewayserver.error.errorCode;
 
 import com.rainbowgon.apigatewayserver.error.dto.ErrorReason;
-import com.rainbowgon.apigatewayserver.error.dto.ErrorResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public enum CustomErrorCode implements BaseErrorCode {
 
     NO_AUTHORIZATION(FORBIDDEN, "AUTH-403-1", "Request Header에 Authorization이 존재하지 않습니다."),
-    TOKEN_EXPIRED(UNAUTHORIZED, "AUTH-401-1", "만료된 토큰입니다."),
+    TOKEN_EXPIRED(UNAUTHORIZED, "AUTH-401-1", "토큰이 만료되었습니다."),
+    INVALID_TOKEN(UNAUTHORIZED, "AUTH-401-2", "토큰이 유효하지 않습니다."),
     ;
 
 

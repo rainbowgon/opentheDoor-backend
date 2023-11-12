@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rainbowgon.apigatewayserver.error.dto.ErrorReason;
 import com.rainbowgon.apigatewayserver.error.dto.ErrorResponse;
 import com.rainbowgon.apigatewayserver.error.errorCode.BaseErrorCode;
+import com.rainbowgon.apigatewayserver.error.exception.ExpiredTokenException;
+import com.rainbowgon.apigatewayserver.error.exception.InvalidTokenException;
 import com.rainbowgon.apigatewayserver.error.exception.NoAuthorizationException;
 import com.rainbowgon.apigatewayserver.error.exception._CustomException;
+import com.rainbowgon.apigatewayserver.redis.Token;
 import com.rainbowgon.apigatewayserver.redis.TokenRedisRepository;
 import com.rainbowgon.apigatewayserver.security.JwtTokenDecoder;
 import lombok.extern.slf4j.Slf4j;
@@ -54,20 +57,29 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, NoAuthorizationException.EXCEPTION);
             }
-            String accessToken = getToken(request);
-            log.info("Custom Auth Filter ... accessToken = {}", accessToken);
 
-            // token 유효성 확인
-            if (accessToken != null) {
-                String profileId = jwtTokenDecoder.getProfileId(accessToken);
-                log.info("Custom Auth Filter ... profileId = {}", profileId);
+            String accessToken = getToken(request);
+            if (accessToken == null) {
+                return onError(exchange, NoAuthorizationException.EXCEPTION);
             }
 
-            // 만료기간 확인,
+            log.info("Custom Auth Filter ... accessToken = {}", accessToken);
 
+            // token 유효성 검사
+            if (jwtTokenDecoder.validateToken(accessToken)) {
+                return onError(exchange, ExpiredTokenException.EXCEPTION);
+            }
 
-            // token에서 추출한 profileId로 memberId 가져오기
+            // 토큰에서 profileId 뽑아내기
+            Long profileId = jwtTokenDecoder.getProfileId(accessToken);
+            log.info("Custom Auth Filter ... profileId = {}", profileId);
 
+            // redis에서 profileId로 memberId 가져오기
+            Token tokenDto = tokenRedisRepository.findById(profileId).orElseThrow(InvalidTokenException::new);
+            String memberId = tokenDto.getMemberId();
+
+            // 헤더에 memberId 추가
+            request.mutate().header("memberId", memberId).build();
 
             return chain.filter(exchange);
         };
@@ -80,12 +92,7 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
 
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
-
-        // 각 서비스의 응답을 그대로 반환
-        if (response.isCommitted()) {
-            return response.setComplete();
-        }
-
+		
         // custom exception 가져오기
         BaseErrorCode code = customException.getErrorCode();
         ErrorReason errorReason = code.getErrorReason();
