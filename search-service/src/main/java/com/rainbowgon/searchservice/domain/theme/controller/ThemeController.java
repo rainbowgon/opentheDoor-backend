@@ -60,19 +60,6 @@ public class ThemeController {
 
         return JsonResponse.ok("성공적으로 조회가 완료되었습니다.", searchTheme);
     }
-
-    @GetMapping("/review/{theme-id}")
-    public ResponseEntity<?> review(@PathVariable("theme-id") String themeId) {
-        themeService.reviewCnt(themeId);
-
-        return JsonResponse.ok("리뷰 완료되었습니다.");
-    }
-
-    @GetMapping("/bookmark/{theme-id}")
-    public ResponseEntity<?> bookmark(@PathVariable("theme-id") String themeId) {
-        themeService.bookmarkCnt(themeId);
-
-        return JsonResponse.ok("북마크 완료되었습니다.");
-    }
+    
 
 }

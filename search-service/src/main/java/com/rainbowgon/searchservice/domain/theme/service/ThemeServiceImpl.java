@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -122,7 +121,7 @@ public class ThemeServiceImpl implements ThemeService {
                 .limit(size)
                 .map(ThemeSimpleResDto::from)
                 .collect(Collectors.toList());
-        
+
 
         // Page 객체를 생성하고 반환합니다.
         return new PageImpl<>(content, PageRequest.of(page, size), filteredThemes.size());
@@ -268,49 +267,6 @@ public class ThemeServiceImpl implements ThemeService {
         int totalElements = content.size();
 
         return new PageImpl<>(content, PageRequest.of(page, size), totalElements);
-    }
-
-
-    public void bookmarkCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
-
-        Boolean themeExists = zSetOperations.score("BOOKMARK", themeId) != null;
-
-        if (themeExists) {
-            // If the member exists, increment its score by 1
-            zSetOperations.incrementScore("BOOKMARK", themeId, 1);
-
-        } else {
-            // If the member does not exist, add it to the ZSET with a score of 1
-            zSetOperations.add("BOOKMARK", themeId, 1);
-        }
-
-    }
-
-    public void reviewCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
-        Boolean themeExists = zSetOperations.score("REVIEW", themeId) != null;
-
-        if (themeExists) {
-            // If the member exists, increment its score by 1
-            zSetOperations.incrementScore("REVIEW", themeId, 1);
-        } else {
-            // If the member does not exist, add it to the ZSET with a score of 1
-            zSetOperations.add("REVIEW", themeId, 1);
-        }
-    }
-
-    public void recommendCnt(String themeId) {
-        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
-        Boolean themeExists = zSetOperations.score("RECOMMEND", themeId) != null;
-
-        if (themeExists) {
-            // If the member exists, increment its score by 1
-            zSetOperations.incrementScore("RECOMMEND", themeId, 1);
-        } else {
-            // If the member does not exist, add it to the ZSET with a score of 1
-            zSetOperations.add("RECOMMEND", themeId, 1);
-        }
     }
 
 }
