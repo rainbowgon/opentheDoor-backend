@@ -6,9 +6,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rainbowgon.memberservice.global.error.dto.ErrorReason;
 import com.rainbowgon.memberservice.global.error.dto.ErrorResponse;
 import com.rainbowgon.memberservice.global.error.errorCode.BaseErrorCode;
+import com.rainbowgon.memberservice.global.error.exception.AuthTokenExpiredException;
 import com.rainbowgon.memberservice.global.error.exception.CustomException;
+import com.rainbowgon.memberservice.global.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -18,21 +25,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public class ExceptionHandlerFilter extends OncePerRequestFilter {
+@RequiredArgsConstructor
+public class CustomExceptionFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         try {
-            log.info("[ExceptionHandlerFilter] doFilterInteral 로직 start");
             filterChain.doFilter(request, response);
         } catch (CustomException e) {
             setErrorResponse(e, request.getRequestURL().toString(), response);
         }
     }
 
-    private void setErrorResponse(CustomException customException, String requestUrl,
-                                  HttpServletResponse response) {
+    private void setErrorResponse(CustomException customException, String requestUrl, HttpServletResponse response) {
 
         BaseErrorCode code = customException.getErrorCode();
         ErrorReason errorReason = code.getErrorReason();
