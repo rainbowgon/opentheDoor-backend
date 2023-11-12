@@ -23,7 +23,7 @@ public class BookmarkSimpleResDto { // 홈 화면에서 보여지는 북마크 �
                 .title(theme.getTitle())
                 .venue(theme.getVenue())
                 .ratingScore(theme.getRatingScore())
-                .reviewCnt(theme.getReviewCnt())
+                .reviewCnt(theme.getReviewCount())
                 .build();
     }
 }

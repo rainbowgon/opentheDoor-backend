@@ -13,5 +13,5 @@ public class ThemeSimpleInDto {
     private String title; // 테마명
     private String venue; // 지점명
     private Double ratingScore; // 평균 별점
-    private Integer reviewCnt; // 리뷰 수(별점 수)
+    private Integer reviewCount; // 리뷰 수(별점 수)
 }
