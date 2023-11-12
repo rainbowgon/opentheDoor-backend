@@ -33,6 +33,7 @@ public class ReservationBaseInfoResDto {
         return ReservationBaseInfoResDto.builder()
                 .bookerName(memberDto.getBookerName())
                 .bookerPhoneNumber(memberDto.getBookerPhoneNumber())
+                .timeSlotList(null)
                 .themeId(themeId)
                 .poster(themeDto.getPoster())
                 .title(themeDto.getTitle())
