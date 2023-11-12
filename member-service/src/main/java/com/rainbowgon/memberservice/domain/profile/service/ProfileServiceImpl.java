@@ -1,14 +1,19 @@
 package com.rainbowgon.memberservice.domain.profile.service;
 
 import com.rainbowgon.memberservice.domain.member.entity.Member;
+import com.rainbowgon.memberservice.domain.member.entity.Token;
+import com.rainbowgon.memberservice.domain.member.repository.TokenRedisRepository;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.entity.Profile;
 import com.rainbowgon.memberservice.domain.profile.repository.ProfileRepository;
 import com.rainbowgon.memberservice.global.entity.NotificationStatus;
 import com.rainbowgon.memberservice.global.error.exception.ProfileNotFoundException;
 import com.rainbowgon.memberservice.global.error.exception.ProfileUnauthorizedException;
+import com.rainbowgon.memberservice.global.security.JwtTokenProvider;
+import com.rainbowgon.memberservice.global.security.dto.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,11 +25,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final ProfileRepository profileRepository;
+    private final TokenRedisRepository tokenRedisRepository;
+
+    @Value("${spring.jwt.expire.refresh-token}")
+    private static long REFRESH_TOKEN_EXPIRE_TIME; // 7일
 
     @Transactional
     @Override
-    public ProfileSimpleResDto createProfile(Member member, String nickname, String profileImage) {
+    public JwtTokenDto createProfile(Member member, String fcmToken, String nickname, String profileImage) {
 
         // 프로필 생성
         Profile profile = profileRepository.save(
@@ -34,7 +44,24 @@ public class ProfileServiceImpl implements ProfileService {
                         .profileImage(profileImage)
                         .build());
 
-        return ProfileSimpleResDto.from(profile);
+        // accessToken, refreshToken 생성
+        JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
+                .accessToken(jwtTokenProvider.generateAccessToken(profile.getId()))
+                .refreshToken(jwtTokenProvider.generateRefreshToken(profile.getId()))
+                .build();
+
+        // accessToken, refreshToken, fcmToken redis 저장
+        tokenRedisRepository.save(
+                Token.builder()
+                        .profileId(profile.getId())
+                        .memberId(String.valueOf(member.getId()))
+                        .accessToken(jwtTokenDto.getAccessToken())
+                        .refreshToken(jwtTokenDto.getRefreshToken())
+                        .fcmToken(fcmToken)
+                        .expiration(REFRESH_TOKEN_EXPIRE_TIME)
+                        .build());
+
+        return jwtTokenDto;
     }
 
     @Override
@@ -44,7 +71,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Transactional
     @Override
-    public Boolean updateProfile(UUID memberId, Long profileId, String nickname, MultipartFile profileImage) {
+    public void updateProfile(UUID memberId, Long profileId, String nickname, MultipartFile profileImage) {
 
         // 프로필 객체 찾기
         Profile profile = profileRepository.findById(profileId).orElseThrow(ProfileNotFoundException::new);
@@ -61,8 +88,6 @@ public class ProfileServiceImpl implements ProfileService {
             String profileImageUrl = null;
             profile.updateProfileImage(profileImageUrl);
         }
-
-        return true;
     }
 
     @Transactional
@@ -92,7 +117,6 @@ public class ProfileServiceImpl implements ProfileService {
 
         // 현재 북마크 알림 설정 상태 가져오기
         NotificationStatus status = profile.getBookmarkNotificationStatus();
-        log.info("[ProfileServiceImpl] 현재 북마크 알림 세팅값 = " + status);
 
         // 현재 상태와 반대 상태로 변경하기
         profile.updateBookmarkNotificationStatus(
@@ -104,8 +128,15 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     @Override
     public void deleteProfile(UUID memberId) {
-        profileRepository.deleteByMemberId(memberId);
-        // TODO redis에서 해당 회원의 북마크 내역 삭제
+
+        // 프로필 객체 가져오기
+        Profile profile = getProfileByMemberId(memberId);
+
+        // 프로필 객체 삭제
+        profileRepository.delete(profile);
+
+        // redis token 정보 삭제
+        tokenRedisRepository.deleteById(profile.getId());
     }
 
     /**

@@ -14,10 +14,10 @@ public interface MemberService {
     JwtTokenDto createMember(MemberCreateReqDto createRequestDto);
 
     String sendMessage(MemberPhoneReqDto memberPhoneReqDto);
-    
+
     MemberInfoResDto selectMemberInfo(UUID memberId);
 
-    Boolean updateMemberInfo(UUID memberId, MemberUpdateReqDto memberUpdateReqDto, MultipartFile profileImage);
+    void updateMemberInfo(UUID memberId, MemberUpdateReqDto memberUpdateReqDto, MultipartFile profileImage);
 
     void deleteMember(UUID memberId);
 

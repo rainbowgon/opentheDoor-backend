@@ -5,15 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    Optional<Review> findTopByThemeIdOrderByCreatedAtDesc(Long themeId);
+    Optional<Review> findTopByThemeIdOrderByCreatedAtDesc(String themeId);
 
-    Optional<Review> findByThemeIdAndProfileId(Long themeId, Long profileId);
+    Optional<Review> findByThemeIdAndMemberId(String themeId, UUID memberId);
 
-    List<Review> findAllByThemeId(Long themeId);
+    List<Review> findAllByThemeId(String themeId);
 
-    List<Review> findAllByProfileId(Long profileId);
+    List<Review> findAllByMemberId(UUID memberId);
 
 }
