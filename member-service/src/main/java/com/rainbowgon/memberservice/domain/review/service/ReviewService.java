@@ -3,7 +3,6 @@ package com.rainbowgon.memberservice.domain.review.service;
 
 import com.rainbowgon.memberservice.domain.review.dto.request.ReviewCreateReqDto;
 import com.rainbowgon.memberservice.domain.review.dto.request.ReviewUpdateReqDto;
-import com.rainbowgon.memberservice.domain.review.dto.response.MyReviewDetailResDto;
 import com.rainbowgon.memberservice.domain.review.dto.response.ReviewDetailResDto;
 import com.rainbowgon.memberservice.domain.review.dto.response.ThemeHistoryResDto;
 
@@ -12,20 +11,20 @@ import java.util.UUID;
 
 public interface ReviewService {
 
-    MyReviewDetailResDto createReview(UUID memberId, ReviewCreateReqDto reviewCreateReqDto);
+    ReviewDetailResDto createReview(UUID memberId, ReviewCreateReqDto reviewCreateReqDto);
 
-    MyReviewDetailResDto updateReview(UUID memberId, ReviewUpdateReqDto reviewUpdateReqDto);
+    ReviewDetailResDto updateReview(UUID memberId, ReviewUpdateReqDto reviewUpdateReqDto);
 
-    ReviewDetailResDto selectThemeReview(Long themeId);
+    ReviewDetailResDto selectThemeReview(String themeId);
 
-    List<ReviewDetailResDto> selectThemeReviewList(Long themeId);
+    List<ReviewDetailResDto> selectThemeReviewList(String themeId);
 
-    MyReviewDetailResDto selectMyThemeReview(UUID memberId, Long themeId);
+    ReviewDetailResDto selectMyThemeReview(UUID memberId, String themeId);
 
     void deleteReview(UUID memberId, Long reviewId);
 
-    List<MyReviewDetailResDto> selectMyReviewList(UUID memberId);
+    List<ReviewDetailResDto> selectMyReviewList(UUID memberId);
 
-    List<ThemeHistoryResDto> selectThemeHistory(Long profileId);
+    List<ThemeHistoryResDto> selectMyThemeHistory(UUID memberId);
 
 }

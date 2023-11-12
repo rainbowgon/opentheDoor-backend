@@ -1,6 +1,6 @@
 package com.rainbowgon.memberservice.domain.review.entity;
 
-import com.rainbowgon.memberservice.domain.profile.entity.Profile;
+import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.review.dto.request.ReviewUpdateReqDto;
 import com.rainbowgon.memberservice.global.entity.BaseEntity;
 import lombok.AccessLevel;
@@ -14,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -27,17 +28,16 @@ public class Review extends BaseEntity {
     @Column(name = "review_id", columnDefinition = "INT UNSIGNED")
     private Long id;
 
-    @ManyToOne(targetEntity = Profile.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id", insertable = false, updatable = false)
-    private Profile profile;
+    @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private Member member;
 
-    @Column(name = "profile_id")
+    @Column(name = "member_id")
     @NotNull
-    private Long profileId;
+    private UUID memberId;
 
-    @Column(columnDefinition = "INT UNSIGNED")
     @NotNull
-    private Long themeId;
+    private String themeId;
 
     @Column(columnDefinition = "INT UNSIGNED")
     private Long reservationId;
@@ -70,10 +70,10 @@ public class Review extends BaseEntity {
     private Integer performedHeadcount;
 
     @Builder
-    public Review(Long profileId, Long themeId, Long reservationId, Double rating, EscapeStatus isEscaped,
+    public Review(UUID memberId, String themeId, Long reservationId, Double rating, EscapeStatus isEscaped,
                   Integer myLevel, Integer hintCount, String content, SpoilStatus isSpoiler,
                   LocalDate performedDate, LocalTime performedTime, Integer performedHeadcount) {
-        this.profileId = profileId;
+        this.memberId = memberId;
         this.themeId = themeId;
         this.reservationId = reservationId;
         this.rating = rating;
