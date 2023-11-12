@@ -1,5 +1,6 @@
 package com.rainbowgon.reservationservice.domain.reservation.service;
 
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
 import com.rainbowgon.reservationservice.domain.reservation.repository.ReservationRepository;
 import com.rainbowgon.reservationservice.global.client.MemberServiceClient;
 import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
@@ -22,6 +23,6 @@ public class ReservationServiceImpl implements ReservationService {
         ThemeBriefInfoInDto themeInfoForReservation =
                 searchServiceClient.getThemeInfoForReservation(themeId);
 
-
+        
     }
 }

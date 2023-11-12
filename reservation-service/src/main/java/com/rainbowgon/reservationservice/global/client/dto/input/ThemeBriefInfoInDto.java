@@ -1,6 +1,6 @@
 package com.rainbowgon.reservationservice.global.client.dto.input;
 
-import com.rainbowgon.reservationservice.domain.reservation.dto.PriceDto;
+import com.rainbowgon.reservationservice.domain.reservation.vo.PriceVO;
 import lombok.Getter;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class ThemeBriefInfoInDto {
     String venue;
     String location;
     List<String> genre;
-    List<PriceDto> priceList;
+    List<PriceVO> priceList;
     String siteToS;
     String venueToS;
 
