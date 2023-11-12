@@ -22,8 +22,8 @@ public class NotificationController {
     @GetMapping
     public ResponseEntity<ResponseWrapper<List<NotificationListResDto>>> selectNotificationList() {
 
-        Long profileId = 1L;
-        List<NotificationListResDto> notificationList = notificationService.selectNotificationList(profileId);
+        Long memberId = 1L;
+        List<NotificationListResDto> notificationList = notificationService.selectNotificationList(memberId);
         return JsonResponse.ok("회원 전체 알림 리스트를 성공적으로 가져왔습니다.", notificationList);
     }
 
@@ -38,8 +38,8 @@ public class NotificationController {
     @PatchMapping
     public ResponseEntity<ResponseWrapper<Nullable>> checkAllNotification() {
 
-        Long profileId = 2L;
-        notificationService.checkAllNotification(profileId);
+        Long memberId = 2L;
+        notificationService.checkAllNotification(memberId);
         return JsonResponse.ok("알림 전체를 확인 완료로 변경했습니다.");
     }
 

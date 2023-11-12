@@ -23,7 +23,7 @@ public class MessageOutDto {
 
     public static MessageOutDto from(BookmarkInDto bookmarkInDto, String title, String body) {
         return MessageOutDto.builder()
-                .profileId(bookmarkInDto.getProfileId())
+                .profileId(bookmarkInDto.getMemberId())
                 .fcmToken(bookmarkInDto.getFcmToken())
                 .themeId(bookmarkInDto.getThemeId())
                 .title(title)
@@ -34,7 +34,7 @@ public class MessageOutDto {
 
     public static MessageOutDto from(ReservationInDto reservationInDto, String title, String body) {
         return MessageOutDto.builder()
-                .profileId(reservationInDto.getProfileId())
+                .profileId(reservationInDto.getMemberId())
                 .fcmToken(reservationInDto.getFcmToken())
                 .themeId(reservationInDto.getThemeId())
                 .title(title)
@@ -45,7 +45,7 @@ public class MessageOutDto {
 
     public static MessageOutDto from(WaitingInDto waitingInDto, String title, String body) {
         return MessageOutDto.builder()
-                .profileId(waitingInDto.getProfileId())
+                .profileId(waitingInDto.getMemberId())
                 .fcmToken(waitingInDto.getFcmToken())
                 .themeId(waitingInDto.getThemeId())
                 .title(title)

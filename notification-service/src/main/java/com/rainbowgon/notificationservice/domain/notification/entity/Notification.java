@@ -13,7 +13,7 @@ public class Notification {
     @Id
     private Long notificationId;
     @Indexed
-    private Long profileId;
+    private Long memberId;
     private String themeId;
     private String title;
     private String body;
@@ -21,10 +21,10 @@ public class Notification {
     private ViewStatus viewStatus;
 
     @Builder
-    public Notification(Long notificationId, Long profileId, String themeId, String title, String body,
+    public Notification(Long notificationId, Long memberId, String themeId, String title, String body,
                         NotificationType notificationType, ViewStatus viewStatus) {
         this.notificationId = notificationId;
-        this.profileId = profileId;
+        this.memberId = memberId;
         this.themeId = themeId;
         this.title = title;
         this.body = body;

@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
     @CreatedDate
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(updatable = false)
+    @Column(updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
