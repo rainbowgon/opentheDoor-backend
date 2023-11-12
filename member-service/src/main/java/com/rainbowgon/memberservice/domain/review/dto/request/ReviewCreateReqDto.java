@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewCreateReqDto {
 
-    private Long themeId;
+    private String themeId;
     private Double rating;
     private EscapeStatus isEscaped;
     private Integer myLevel;

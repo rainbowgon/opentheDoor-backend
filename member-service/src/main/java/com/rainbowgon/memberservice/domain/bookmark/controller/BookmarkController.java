@@ -9,9 +9,9 @@ import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,7 +27,7 @@ public class BookmarkController {
      */
     @PutMapping
     public ResponseEntity<ResponseWrapper<Nullable>> updateBookmarkList(
-            @AuthenticationPrincipal String memberId,
+            @RequestHeader("memberId") String memberId,
             @RequestBody BookmarkUpdateReqDto bookmarkUpdateReqDto) {
 
         bookmarkService.updateBookmarkList(UUID.fromString(memberId), bookmarkUpdateReqDto);
@@ -41,13 +41,13 @@ public class BookmarkController {
      * -> 테마 ID, 테마 포스터, 제목, 지점명, 평균 별점, 리뷰 수
      */
     @GetMapping
-    public ResponseEntity<ResponseWrapper<BookmarkSimpleResDto>> selectSimpleBookmarkList(
-            @AuthenticationPrincipal String memberId) {
+    public ResponseEntity<ResponseWrapper<List<BookmarkSimpleResDto>>> selectSimpleBookmarkList(
+            @RequestHeader("memberId") String memberId) {
 
-        BookmarkSimpleResDto bookmarkSimpleResDto =
-                bookmarkService.selectSimpleBookmarkList(UUID.fromString(memberId));
+        List<BookmarkSimpleResDto> bookmarkList = bookmarkService.selectSimpleBookmarkList(UUID.fromString(memberId));
 
-        return JsonResponse.ok("홈 화면용 북마크 목록을 성공적으로 조회했습니다.", bookmarkSimpleResDto);
+        // TODO pageInfo 추가
+        return JsonResponse.ok("홈 화면의 북마크 목록을 성공적으로 조회했습니다.", bookmarkList);
     }
 
     /**
@@ -56,13 +56,13 @@ public class BookmarkController {
      * -> 테마와 관련된 모든 데이터
      */
     @GetMapping("/detail")
-    public ResponseEntity<ResponseWrapper<BookmarkDetailResDto>> selectDetailBookmarkList(
-            @AuthenticationPrincipal String memberId) {
+    public ResponseEntity<ResponseWrapper<List<BookmarkDetailResDto>>> selectDetailBookmarkList(
+            @RequestHeader("memberId") String memberId) {
 
-        BookmarkDetailResDto bookmarkDetailResDto =
-                bookmarkService.selectDetailBookmarkList(UUID.fromString(memberId));
+        List<BookmarkDetailResDto> bookmarkList = bookmarkService.selectDetailBookmarkList(UUID.fromString(memberId));
 
-        return JsonResponse.ok("마이페이지용 북마크 목록을 성공적으로 조회했습니다.", bookmarkDetailResDto);
+        // TODO pageInfo 추가
+        return JsonResponse.ok("마이페이지의 북마크 목록을 성공적으로 조회했습니다.", bookmarkList);
     }
 
     /**
@@ -70,12 +70,12 @@ public class BookmarkController {
      */
     @PatchMapping("/notifications/{theme-id}")
     public ResponseEntity<ResponseWrapper<String>> updateNotificationStatus(
-            @AuthenticationPrincipal String memberId,
+            @RequestHeader("memberId") String memberId,
             @PathVariable("theme-id") String themeId) {
 
         String status = bookmarkService.updateNotificationStatus(UUID.fromString(memberId), themeId);
 
-        return JsonResponse.ok("오픈 알림 설정이 변경되었습니다.", status);
+        return JsonResponse.ok("선택한 테마의 오픈 알림 설정이 변경되었습니다.", status);
     }
 
 

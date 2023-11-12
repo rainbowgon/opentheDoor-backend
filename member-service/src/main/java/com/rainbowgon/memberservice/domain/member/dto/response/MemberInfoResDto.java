@@ -18,7 +18,6 @@ public class MemberInfoResDto { // 개인정보 수정 화면에 뿌려줄 데�
     private String name;
     private String phoneNumber;
     private String nickname;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 

@@ -1,18 +1,21 @@
 package com.rainbowgon.memberservice.domain.review.service;
 
-import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
-import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.domain.review.dto.request.ReviewCreateReqDto;
 import com.rainbowgon.memberservice.domain.review.dto.request.ReviewUpdateReqDto;
-import com.rainbowgon.memberservice.domain.review.dto.response.MyReviewDetailResDto;
 import com.rainbowgon.memberservice.domain.review.dto.response.ReviewDetailResDto;
 import com.rainbowgon.memberservice.domain.review.dto.response.ThemeHistoryResDto;
 import com.rainbowgon.memberservice.domain.review.entity.Review;
 import com.rainbowgon.memberservice.domain.review.repository.ReviewRepository;
+import com.rainbowgon.memberservice.global.client.ReservationServiceClient;
+import com.rainbowgon.memberservice.global.client.SearchServiceClient;
+import com.rainbowgon.memberservice.global.error.exception.RedisErrorException;
 import com.rainbowgon.memberservice.global.error.exception.ReviewNotFoundException;
 import com.rainbowgon.memberservice.global.error.exception.ReviewUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,23 +30,24 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ProfileService profileService;
+    private final SearchServiceClient searchServiceClient;
+    private final ReservationServiceClient reservationServiceClient;
+    
+    @Qualifier("sortingRedisStringTemplate")
+    private final RedisTemplate<String, String> sortingRedisStringTemplate;
 
     @Transactional
     @Override
-    public MyReviewDetailResDto createReview(UUID memberId, ReviewCreateReqDto reviewCreateReqDto) {
+    public ReviewDetailResDto createReview(UUID memberId, ReviewCreateReqDto reviewCreateReqDto) {
 
         // TODO 예약 내역이 있는 리뷰인지 확인 (인증 뱃지)
         // 예약 내역 있으면, 예약 날짜/시간이랑 입력값이랑 비교?
         Long reservationId = null;
 
-        // 요청 회원의 프로필 ID 가져오기
-        Long profileId = getProfileId(memberId);
-
         // 리뷰 생성
         Review review = reviewRepository.save(
                 Review.builder()
-                        .profileId(profileId)
+                        .memberId(memberId)
                         .themeId(reviewCreateReqDto.getThemeId())
                         .reservationId(reservationId)
                         .rating(reviewCreateReqDto.getRating())
@@ -57,33 +61,36 @@ public class ReviewServiceImpl implements ReviewService {
                         .performedHeadcount(reviewCreateReqDto.getPerformedHeadcount())
                         .build());
 
-        // TODO redis에 리뷰 수, 평균 별점 업데이트
+        // sorting redis 반영
+        createSortingRedis(review.getThemeId(), review.getRating());
 
-        return MyReviewDetailResDto.from(review);
+        return ReviewDetailResDto.from(review);
     }
 
     @Transactional
     @Override
-    public MyReviewDetailResDto updateReview(UUID memberId, ReviewUpdateReqDto reviewUpdateReqDto) {
+    public ReviewDetailResDto updateReview(UUID memberId, ReviewUpdateReqDto reviewUpdateReqDto) {
 
         // 리뷰 객체 가져오기
-        Review review = reviewRepository.findById(reviewUpdateReqDto.getReviewId()).orElseThrow(ReviewNotFoundException::new);
+        Review review =
+                reviewRepository.findById(reviewUpdateReqDto.getReviewId()).orElseThrow(ReviewNotFoundException::new);
 
         // 유효한 요청인지 확인
-        checkValidAccess(getProfileId(memberId), review.getProfileId());
+        checkValidAccess(memberId, review.getMemberId());
+
+        // sorting redis 업데이트
+        updateSortingRedis(review.getThemeId(), review.getRating(), reviewUpdateReqDto.getRating());
 
         // 리뷰 업데이트
         review.updateReview(reviewUpdateReqDto);
 
-        // TODO redis에 평균 별점 업데이트
-
-        return MyReviewDetailResDto.from(review);
+        return ReviewDetailResDto.from(review);
     }
 
     @Override
-    public ReviewDetailResDto selectThemeReview(Long themeId) {
+    public ReviewDetailResDto selectThemeReview(String themeId) {
 
-        // 테마 ID로 리뷰 1건 조회
+        // 테마 ID로 최신 리뷰 1건 조회
         Optional<Review> review = reviewRepository.findTopByThemeIdOrderByCreatedAtDesc(themeId);
 
         // 해당 테마에 리뷰가 1건도 없으면 null 반환
@@ -91,60 +98,52 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDetailResDto> selectThemeReviewList(Long themeId) {
+    public List<ReviewDetailResDto> selectThemeReviewList(String themeId) {
 
         // 테마 ID로 리뷰 전체 조회
         List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
 
-        // TODO pageInfo, 무한스크롤
+        // TODO pagination
 
         return reviewList.stream().map(ReviewDetailResDto::from).collect(Collectors.toList());
     }
 
     @Override
-    public MyReviewDetailResDto selectMyThemeReview(UUID memberId, Long themeId) {
+    public ReviewDetailResDto selectMyThemeReview(UUID memberId, String themeId) {
 
-        // 요청 회원의 프로필 ID 가져오기
-        Long profileId = getProfileId(memberId);
-
-        // 테마 ID와 프로필 ID로 리뷰 조회
-        Optional<Review> review = reviewRepository.findByThemeIdAndProfileId(themeId, profileId);
+        // 테마 ID와 회원 ID로 리뷰 조회
+        Optional<Review> review = reviewRepository.findByThemeIdAndMemberId(themeId, memberId);
 
         // 해당 테마에 요청 회원이 작성한 리뷰가 없으면 null 반환
-        return review.map(MyReviewDetailResDto::from).orElse(null);
+        return review.map(ReviewDetailResDto::from).orElse(null);
     }
 
     @Transactional
     @Override
     public void deleteReview(UUID memberId, Long reviewId) {
 
-        // 요청 회원의 프로필 ID 가져오기
-        Long profileId = getProfileId(memberId);
-
         // 리뷰 객체 가져오기
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
 
         // 유효한 요청인지 확인
-        checkValidAccess(getProfileId(memberId), review.getProfileId());
+        checkValidAccess(memberId, review.getMemberId());
+
+        // sorting redis 반영
+        deleteSortingRedis(review.getThemeId(), review.getRating());
 
         // 리뷰 삭제
         reviewRepository.delete(review);
-
-        // TODO redis에 리뷰 수, 평균 별점 업데이트
     }
 
     @Override
-    public List<MyReviewDetailResDto> selectMyReviewList(UUID memberId) {
+    public List<ReviewDetailResDto> selectMyReviewList(UUID memberId) {
 
-        // 요청 회원의 프로필 ID 가져오기
-        Long profileId = getProfileId(memberId);
+        // 회원 ID로 리뷰 목록 조회
+        List<Review> reviewList = reviewRepository.findAllByMemberId(memberId);
 
-        // 프로필 ID로 리뷰 목록 조회
-        List<Review> reviewList = reviewRepository.findAllByProfileId(profileId);
+        // TODO pagination
 
-        // TODO pageInfo, 무한스크롤
-
-        return reviewList.stream().map(MyReviewDetailResDto::from).collect(Collectors.toList());
+        return reviewList.stream().map(ReviewDetailResDto::from).collect(Collectors.toList());
     }
 
     /**
@@ -155,35 +154,94 @@ public class ReviewServiceImpl implements ReviewService {
      * 4. 예약 내역도 없고, 리뷰도 없는 경우 -> 우리 서비스에서 확인 불가
      */
     @Override
-    public List<ThemeHistoryResDto> selectThemeHistory(Long profileId) {
+    public List<ThemeHistoryResDto> selectMyThemeHistory(UUID memberId) {
 
-        // TODO 프로필 ID로 예약 서버에서 데이터(예약 ID, 테마 ID) 가져오기
-        List<Long> themeIdList = null;
+        // TODO 회원 ID로 예약 서버에서 데이터(예약 ID, 테마 ID) 가져오기
 
-        // 프로필 ID로 리뷰 목록 조회
-        List<Review> reviewList = reviewRepository.findAllByProfileId(profileId);
+        // 회원 ID로 리뷰 목록 조회
+        List<Review> reviewList = reviewRepository.findAllByMemberId(memberId);
+        List<String> themeIdList = reviewList.stream().map(Review::getThemeId).collect(Collectors.toList());
 
-        // 중복 제거 (1번 경우)
-
-        // TODO 테마 ID로 검색 서버에서 테마 데이터(포스터, 테마명) 가져오기
+        // 테마 ID로 검색 서버에서 테마 데이터(포스터, 테마명) 가져오기
+        // 23.11.12) 요청 보낸 id 순서대로 응답이 온다는 보장은 없지만 일단 진행...하려고 했지만 복잡해서 보류
+//        searchServiceClient.getBookmarkThemeSimpleInfo(themeIdList).stream()
+//                .map(themeSimpleInDto -> ThemeHistoryResDto.of(themeSimpleInDto);
 
         return null;
     }
 
     /**
-     * 회원 ID(uuid)로 프로필 아이디 조회
+     * 요청 회원의 ID와 리뷰의 회원 ID가 같은지 확인
      */
-    private Long getProfileId(UUID memberId) {
-        ProfileSimpleResDto profile = profileService.selectProfileByMember(memberId);
-        return profile.getProfileId();
+    private void checkValidAccess(UUID memberId, UUID reviewMemberId) {
+        if (!memberId.equals(reviewMemberId)) {
+            throw ReviewUnauthorizedException.EXCEPTION;
+        }
     }
 
     /**
-     * 요청 회원의 프로필 ID와 리뷰의 프로필 ID가 같은지 확인
+     * 리뷰 생성 시 sorting redis 업데이트
+     * - REVIEW count += 1
+     * - RATING 재계산
      */
-    private void checkValidAccess(Long requestProfileId, Long reviewProfileId) {
-        if (!requestProfileId.equals(reviewProfileId)) {
-            throw ReviewUnauthorizedException.EXCEPTION;
+    private void createSortingRedis(String themeId, Double rating) {
+
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
+        Double ratingScore = zSetOperations.score("RATING", themeId);
+
+        if (ratingScore == null) {
+            zSetOperations.add("REVIEW", themeId, 1);
+            zSetOperations.add("RATING", themeId, rating);
+        } else {
+            // 기존 리뷰가 있으면, 리뷰 수 + 1
+            zSetOperations.incrementScore("REVIEW", themeId, 1);
+            Double reviewCount = zSetOperations.score("REVIEW", themeId);
+            // 평균 별점 재계산
+            double delta = (rating - ratingScore) / reviewCount;
+            zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0 / 10.0));
         }
+    }
+
+    /**
+     * 리뷰 수정 시 sorting redis 업데이트
+     * - 별점 달라졌을 경우, RATING 재계산
+     */
+    private void updateSortingRedis(String themeId, Double originRating, Double newRating) {
+
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
+        Double ratingScore = zSetOperations.score("RATING", themeId);
+
+        // 해당 테마의 평균 별점 데이터가 없으면 레디스 에러
+        if (ratingScore == null) {
+            throw RedisErrorException.EXCEPTION;
+        }
+
+        // 평균 별점 재계산
+        Double reviewCount = zSetOperations.score("REVIEW", themeId);
+        double delta = (newRating - originRating) / reviewCount;
+        zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0 / 10.0));
+    }
+
+    /**
+     * 리뷰 삭제 시 sorting redis 업데이트
+     * - REVIEW count -= 1
+     * - RATING 재계산
+     */
+    private void deleteSortingRedis(String themeId, Double rating) {
+
+        ZSetOperations<String, String> zSetOperations = sortingRedisStringTemplate.opsForZSet();
+        Double ratingScore = zSetOperations.score("RATING", themeId);
+
+        // 해당 테마의 평균 별점 데이터가 없으면 레디스 에러
+        if (ratingScore == null) {
+            throw RedisErrorException.EXCEPTION;
+        }
+
+        // 리뷰 수 -1
+        zSetOperations.incrementScore("REVIEW", themeId, -1);
+        Double reviewCount = zSetOperations.score("REVIEW", themeId);
+        // 평균 별점 재계산
+        double delta = (ratingScore - rating) / reviewCount;
+        zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0 / 10.0));
     }
 }

@@ -6,8 +6,8 @@ import com.rainbowgon.memberservice.global.response.JsonResponse;
 import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +25,7 @@ public class ProfileController {
      */
     @PatchMapping("/notifications")
     public ResponseEntity<ResponseWrapper<NotificationStatus>> updateNotificationStatus(
-            @AuthenticationPrincipal String memberId) {
+            @RequestHeader("memberId") String memberId) {
 
         NotificationStatus status = profileService.updateNotificationStatus(UUID.fromString(memberId));
 
@@ -37,10 +37,9 @@ public class ProfileController {
      */
     @PatchMapping("/notifications/bookmarks")
     public ResponseEntity<ResponseWrapper<NotificationStatus>> updateBookmarkNotificationStatus(
-            @AuthenticationPrincipal String memberId) {
+            @RequestHeader("memberId") String memberId) {
 
-        NotificationStatus status =
-                profileService.updateBookmarkNotificationStatus(UUID.fromString(memberId));
+        NotificationStatus status = profileService.updateBookmarkNotificationStatus(UUID.fromString(memberId));
 
         return JsonResponse.ok("북마크 알림 설정이 변경되었습니다.", status);
     }

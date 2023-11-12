@@ -44,7 +44,6 @@ public class Profile extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private NotificationStatus bookmarkNotificationStatus = NotificationStatus.ON; // 북마크 시 자동 알림 on/off
 
-
     @Builder
     public Profile(Member member, String nickname, String profileImage) {
         this.member = member;
