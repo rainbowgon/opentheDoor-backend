@@ -1,18 +1,19 @@
 package com.rainbowgon.reservationservice.global.client.dto.input;
 
+import com.rainbowgon.reservationservice.domain.reservation.dto.PriceDto;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class ThemeBreifInfoInDto {
+public class ThemeBriefInfoInDto {
 
     String poster;
     String title;
     String venue;
     String location;
     List<String> genre;
-    List<PriceVO> priceList;
+    List<PriceDto> priceList;
     String siteToS;
     String venueToS;
 
