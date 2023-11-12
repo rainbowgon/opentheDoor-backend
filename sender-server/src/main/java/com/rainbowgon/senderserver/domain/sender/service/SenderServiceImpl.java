@@ -1,6 +1,5 @@
 package com.rainbowgon.senderserver.domain.sender.service;
 
-import com.rainbowgon.senderserver.domain.fcm.service.FCMInitializer;
 import com.rainbowgon.senderserver.domain.fcm.service.FCMService;
 import com.rainbowgon.senderserver.domain.kafka.dto.input.MessageInDto;
 import com.rainbowgon.senderserver.domain.sender.entity.Notification;
@@ -17,7 +16,6 @@ import javax.transaction.Transactional;
 @Slf4j
 public class SenderServiceImpl implements SenderService {
 
-    private final FCMInitializer fcmInitializer;
     private final FCMService fcmService;
     private final SenderRDBRepository senderRDBRepository;
     private final SenderRedisRepository senderRedisRepository;
@@ -26,7 +24,6 @@ public class SenderServiceImpl implements SenderService {
     @Transactional
     public void sendAndInsertMessage(MessageInDto messageInDto) {
 
-        fcmInitializer.initialize();
         if (fcmService.sendMessage(messageInDto.getFcmToken(), messageInDto.getTitle(),
                                    messageInDto.getBody())) {
 
