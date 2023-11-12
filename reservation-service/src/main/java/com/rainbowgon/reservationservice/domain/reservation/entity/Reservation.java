@@ -39,8 +39,7 @@ public class Reservation extends BaseEntity {
     @Column(columnDefinition = "CHAR(11)")
     private String bookerPhoneNumber;
 
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long themeId; // 테마 ID
+    private String themeId; // 테마 ID
 
     @Column(columnDefinition = "INT UNSIGNED")
     private Long bookerId; // 프로필 ID
