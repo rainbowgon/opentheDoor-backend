@@ -15,11 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CustomException.class) // Business Exception
-    public ResponseEntity<ErrorResponse> handleBusinessException(CustomException e,
-                                                                 HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleBusinessException(CustomException e, HttpServletRequest request) {
         BaseErrorCode code = e.getErrorCode();
         ErrorReason errorReason = code.getErrorReason();
         return ResponseEntity.status(errorReason.getStatus())

@@ -1,9 +1,7 @@
 package com.rainbowgon.memberservice.global.config;
 
-import com.rainbowgon.memberservice.global.security.CustomUserDetailsService;
 import com.rainbowgon.memberservice.global.security.JwtTokenProvider;
-import com.rainbowgon.memberservice.global.security.filter.ExceptionHandlerFilter;
-import com.rainbowgon.memberservice.global.security.filter.JwtFilter;
+import com.rainbowgon.memberservice.global.security.filter.CustomExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfigure {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -43,12 +40,9 @@ public class SecurityConfigure {
                 .anyRequest().authenticated();
 
         httpSecurity
-                .addFilterBefore(new JwtFilter(jwtTokenProvider, customUserDetailsService),
-                                 UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExceptionHandlerFilter(), JwtFilter.class);
+                .addFilterBefore(new CustomExceptionFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
-
     }
 
 

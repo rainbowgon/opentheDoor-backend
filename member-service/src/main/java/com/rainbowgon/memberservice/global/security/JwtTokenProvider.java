@@ -44,26 +44,9 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey(JWT_SECRET_KEY))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
     private Key getSigningKey(String secretKey) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public Long getProfileId(String token) {
-        return extractAllClaims(token).get("profileId", Long.class);
-    }
-
-    public Boolean validateToken(String token) {
-        Date expiration = extractAllClaims(token).getExpiration();
-        return expiration.before(new Date());
     }
 
 }
