@@ -31,7 +31,7 @@ public class Reservation extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(12)")
-    private VerifiedStatus isVerified;
+    private MemberVerifiedStatus isMemberVerified;
 
     @Column(columnDefinition = "VARCHAR(20)")
     private String bookerName;

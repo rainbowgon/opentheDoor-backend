@@ -1,5 +1,5 @@
 package com.rainbowgon.reservationservice.domain.reservation.entity;
 
-public enum VerifiedStatus {
+public enum MemberVerifiedStatus {
     VERIFIED, NOT_VERIFIED
 }
