@@ -13,7 +13,7 @@ public class NotificationOutDto {
     private String profileId;
     private String fcmToken;
     private String themeId;
-    private String themeName;
-    private String venueName;
+    private String title;
+    private String venue;
     private LocalTime openTime;
 }
