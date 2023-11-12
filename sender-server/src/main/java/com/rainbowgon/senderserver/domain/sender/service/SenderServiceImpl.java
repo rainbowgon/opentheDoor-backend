@@ -24,11 +24,11 @@ public class SenderServiceImpl implements SenderService {
     @Transactional
     public void sendAndInsertMessage(MessageInDto messageInDto) {
 
-        if (fcmService.sendMessage(messageInDto.getFcmToken(), messageInDto.getTitle(),
-                                   messageInDto.getBody())) {
+//        if (fcmService.sendMessage(messageInDto.getFcmToken(), messageInDto.getTitle(),
+//                                   messageInDto.getBody())) {
+        senderRedisRepository.save(
+                Notification.from(senderRDBRepository.save(messageInDto.toEntity())));
 
-            senderRedisRepository.save(
-                    Notification.from(senderRDBRepository.save(messageInDto.toEntity())));
-        }
+//        }
     }
 }
