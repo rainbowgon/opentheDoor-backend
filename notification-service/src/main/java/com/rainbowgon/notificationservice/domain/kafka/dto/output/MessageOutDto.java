@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 public class MessageOutDto {
 
-    private Long profileId;
+    private Long memberId;
     private String fcmToken;
     private String themeId;
     private String title;
@@ -23,7 +23,7 @@ public class MessageOutDto {
 
     public static MessageOutDto from(BookmarkInDto bookmarkInDto, String title, String body) {
         return MessageOutDto.builder()
-                .profileId(bookmarkInDto.getMemberId())
+                .memberId(bookmarkInDto.getMemberId())
                 .fcmToken(bookmarkInDto.getFcmToken())
                 .themeId(bookmarkInDto.getThemeId())
                 .title(title)
@@ -34,7 +34,7 @@ public class MessageOutDto {
 
     public static MessageOutDto from(ReservationInDto reservationInDto, String title, String body) {
         return MessageOutDto.builder()
-                .profileId(reservationInDto.getMemberId())
+                .memberId(reservationInDto.getMemberId())
                 .fcmToken(reservationInDto.getFcmToken())
                 .themeId(reservationInDto.getThemeId())
                 .title(title)
@@ -45,7 +45,7 @@ public class MessageOutDto {
 
     public static MessageOutDto from(WaitingInDto waitingInDto, String title, String body) {
         return MessageOutDto.builder()
-                .profileId(waitingInDto.getMemberId())
+                .memberId(waitingInDto.getMemberId())
                 .fcmToken(waitingInDto.getFcmToken())
                 .themeId(waitingInDto.getThemeId())
                 .title(title)
