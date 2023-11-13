@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.global.config;
+package com.rainbowgon.memberservice.global.config.redis;
 
 import com.rainbowgon.memberservice.global.jwt.dto.Token;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,7 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableRedisRepositories
-public class TokenRedisConfigure {
+public class TokenRedisConfig {
 
     @Value("${spring.redis.token.host}")
     private String host;
