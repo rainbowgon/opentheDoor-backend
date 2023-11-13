@@ -46,6 +46,9 @@ spring:
       port: 6379
 
   logging:
-    level:
-      org.hibernate.sql: debug
-      org.hibernate.type: trace
+    #    level:
+    #      org.hibernate.sql: debug
+    #      org.hibernate.type: trace
+    logging:
+      level:
+        com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver: WARN

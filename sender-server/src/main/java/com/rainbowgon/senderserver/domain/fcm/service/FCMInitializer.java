@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ public class FCMInitializer {
     @Value("${fcm.certification}")
     private String credential;
 
+    @PostConstruct
     public void initialize() {
 
         try {
