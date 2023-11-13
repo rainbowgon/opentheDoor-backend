@@ -9,6 +9,8 @@ import com.rainbowgon.memberservice.global.error.exception.ProfileNotFoundExcept
 import com.rainbowgon.memberservice.global.error.exception.ProfileUnauthorizedException;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenProvider;
 import com.rainbowgon.memberservice.global.jwt.dto.JwtTokenDto;
+import com.rainbowgon.memberservice.global.jwt.dto.Token;
+import com.rainbowgon.memberservice.global.jwt.repository.TokenRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
