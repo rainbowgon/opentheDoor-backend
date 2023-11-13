@@ -29,17 +29,8 @@ public class FCMInitializer {
             ClassPathResource resource = new ClassPathResource(credential);
             InputStream stream = resource.getInputStream();
 
-            System.out.println("===============log start==============");
-            // 파일을 1글자씩 읽어오기
-            int i = 0;
-            while ((i = stream.read()) != -1) {
-                System.out.print((char) i);
-            }
-            System.out.println("===============log end==============");
-
-            InputStream jsonStream = resource.getInputStream();
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(jsonStream))
+                    .setCredentials(GoogleCredentials.fromStream(stream))
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
@@ -47,14 +38,10 @@ public class FCMInitializer {
                 log.info("FirebaseApp initialization complete");
             }
         } catch (FileNotFoundException e) {
-            System.out.println("==============================111==");
             e.printStackTrace();
-            System.out.println("==============================111==");
             throw FCMFileNotFoundException.EXCEPTION;
         } catch (IOException e) {
-            System.out.println("==============================222==");
             e.printStackTrace();
-            System.out.println("==============================222==");
             throw FCMInitializerFailException.EXCEPTION;
         }
 
