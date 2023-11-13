@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.global.config.redis;
+package com.rainbowgon.memberservice.global.redis;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,20 +11,19 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class BookmarkRedisConfig {
+public class ThemeSortingRedisConfig {
 
-    @Value("${spring.redis.bookmark.host}")
+    @Value("${spring.redis.sorting.host}")
     private String host;
 
-    @Value("${spring.redis.bookmark.port}")
+    @Value("${spring.redis.sorting.port}")
     private int port;
 
 //    @Value("${redis.password}")
 //    private String password;
 
-    // Redis 저장소와 연결
-    @Bean(name = "bookmarkRedisConnectionFactory")
-    public RedisConnectionFactory bookmarkRedisConnectionFactory() {
+    @Bean(name = "sortingRedisConnectionFactory")
+    public RedisConnectionFactory sortingRedisConnectionFactory() {
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
@@ -34,13 +33,12 @@ public class BookmarkRedisConfig {
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
-    // RedisTemplate bean 생성
-    @Bean(name = "bookmarkRedisStringTemplate")
-    public RedisTemplate<String, String> bookmarkRedisStringTemplate(
-            @Qualifier("bookmarkRedisConnectionFactory") RedisConnectionFactory bookmarkRedisConnectionFactory) {
+    @Bean(name = "sortingRedisStringTemplate")
+    public RedisTemplate<String, String> sortingRedisStringTemplate(
+            @Qualifier("sortingRedisConnectionFactory") RedisConnectionFactory sortingRedisConnectionFactory) {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(bookmarkRedisConnectionFactory);
+        redisTemplate.setConnectionFactory(sortingRedisConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());

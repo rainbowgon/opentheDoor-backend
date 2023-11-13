@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.global.config.redis;
+package com.rainbowgon.memberservice.global.redis;
 
 import com.rainbowgon.memberservice.global.jwt.dto.Token;
 import org.springframework.beans.factory.annotation.Qualifier;
