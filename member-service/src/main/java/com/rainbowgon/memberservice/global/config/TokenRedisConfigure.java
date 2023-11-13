@@ -1,6 +1,6 @@
 package com.rainbowgon.memberservice.global.config;
 
-import com.rainbowgon.memberservice.global.security.dto.Token;
+import com.rainbowgon.memberservice.global.jwt.dto.Token;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

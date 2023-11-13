@@ -1,7 +1,7 @@
 package com.rainbowgon.memberservice.domain.bookmark.service;
 
+import com.rainbowgon.memberservice.global.jwt.repository.TokenRedisRepository;
 import com.rainbowgon.memberservice.global.security.dto.Token;
-import com.rainbowgon.memberservice.global.security.repository.TokenRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
