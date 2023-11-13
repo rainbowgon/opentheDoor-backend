@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class CorsConfig {
 
-    private static final String ALLOWED_HEADERS = "*";
+    private static final String ALLOWED_HEADERS = "*, memberId";
     private static final String ALLOWED_METHODS = "GET, PUT, POST, DELETE, OPTIONS, PATCH";
     private static final String EXPOSE_HEADERS = "*, Authorization";
     private static final String MAX_AGE = "7200"; // 2 hours (2 * 60 * 60)
@@ -37,7 +37,7 @@ public class CorsConfig {
                 headers.add("Access-Control-Allow-Headers", ALLOWED_HEADERS);
                 headers.add("Access-Control-Expose-Headers", EXPOSE_HEADERS);
                 headers.setAccessControlAllowCredentials(true);
-                
+
                 if (request.getMethod() == HttpMethod.OPTIONS) {
                     response.setStatusCode(HttpStatus.OK);
                     return Mono.empty();
