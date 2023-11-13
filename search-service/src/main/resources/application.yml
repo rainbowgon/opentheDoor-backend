@@ -1,0 +1,12 @@
+elasticsearch:
+  host: localhost
+  port: 9200
+
+spring:
+  redis:
+    cache:
+      host: localhost
+      port: 6379
+    sorting:
+      host: localhost
+      port: 6376

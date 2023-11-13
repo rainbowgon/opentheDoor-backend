@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.17'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.rainbowgon'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '11'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2021.0.8") // springboot 2.7.17과 호환되는 가장 최신 버전
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2:1.4.200'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // eureka에 등록하기 위한 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    // config server의 관리를 받기 위한 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    // bootstrap.yml 파일을 사용하기 위한 설정 -> application.yml 파일보다 먼저 설정됨
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    // health check와 bus refresh를 위한 설정
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // rabbitmq를 사용하기 위한 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+    // feign을 사용하기 위한 설정
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
