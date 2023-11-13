@@ -1,6 +1,0 @@
-spring:
-  cloud:
-    config:
-      uri: http://10.0.2.98:80
-      name: notification-service
-      profile: prod
