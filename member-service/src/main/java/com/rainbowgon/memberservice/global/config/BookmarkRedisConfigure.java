@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -24,7 +23,6 @@ public class BookmarkRedisConfigure {
 //    private String password;
 
     // Redis 저장소와 연결
-    @Primary
     @Bean(name = "bookmarkRedisConnectionFactory")
     public RedisConnectionFactory bookmarkRedisConnectionFactory() {
 

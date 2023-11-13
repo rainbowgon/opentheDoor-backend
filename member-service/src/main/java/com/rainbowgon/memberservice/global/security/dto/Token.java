@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.domain.member.entity;
+package com.rainbowgon.memberservice.global.security.dto;
 
 import lombok.Builder;
 import lombok.Getter;
