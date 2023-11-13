@@ -3,12 +3,12 @@ package com.rainbowgon.memberservice.global.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
@@ -16,10 +16,8 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${spring.jwt.expire.access-token}")
-    private static long ACCESS_TOKEN_EXPIRE_TIME; // 30분
-    @Value("${spring.jwt.expire.refresh-token}")
-    private static long REFRESH_TOKEN_EXPIRE_TIME; // 7일
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24; // 1일
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
     @Value("${spring.jwt.secret}")
     private String JWT_SECRET_KEY;
 
@@ -48,7 +46,7 @@ public class JwtTokenProvider {
     }
 
     private Key getSigningKey(String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

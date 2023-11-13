@@ -13,7 +13,6 @@ import com.rainbowgon.memberservice.global.security.JwtTokenProvider;
 import com.rainbowgon.memberservice.global.security.dto.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,9 +27,8 @@ public class ProfileServiceImpl implements ProfileService {
     private final JwtTokenProvider jwtTokenProvider;
     private final ProfileRepository profileRepository;
     private final TokenRedisRepository tokenRedisRepository;
-
-    @Value("${spring.jwt.expire.refresh-token}")
-    private static long REFRESH_TOKEN_EXPIRE_TIME; // 7일
+    
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
 
     @Transactional
     @Override
