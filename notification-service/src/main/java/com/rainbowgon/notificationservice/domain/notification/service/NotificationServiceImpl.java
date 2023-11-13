@@ -7,6 +7,7 @@ import com.rainbowgon.notificationservice.domain.notification.repository.Notific
 import com.rainbowgon.notificationservice.global.client.dto.input.BookmarkInDto;
 import com.rainbowgon.notificationservice.global.client.dto.input.ReservationInDto;
 import com.rainbowgon.notificationservice.global.client.dto.input.WaitingInDto;
+import com.rainbowgon.notificationservice.global.util.KeyManager;
 import com.rainbowgon.notificationservice.global.util.MessageFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void checkOneNotification(Long notificationId) {
 
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
-        String key = "notification:" + notificationId;
+        String key = KeyManager.makeRedisKey("notification:", notificationId);
         Map<String, String> map = hashOperations.entries(key);
 
         hashOperations.put(key, "viewStatus", String.valueOf(ViewStatus.VIEWED));
@@ -51,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         SetOperations<String, String> setOperations = redisTemplate.opsForSet();
-        String key = "notification:memberId:" + memberId;
+        String key = KeyManager.makeRedisKey("notification:memberId:", memberId);
         Set<String> set = setOperations.members(key);
 
         set.stream().forEach(notificationId -> hashOperations.put("notification:" + notificationId,

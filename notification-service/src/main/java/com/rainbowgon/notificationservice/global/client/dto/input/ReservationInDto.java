@@ -18,6 +18,6 @@ public class ReservationInDto {
     private String title;
     private LocalDate targetDate;
     private LocalTime targetTime;
-    private NotificationType reservationNotificationType;
+    private NotificationType reservationType;
 
 }

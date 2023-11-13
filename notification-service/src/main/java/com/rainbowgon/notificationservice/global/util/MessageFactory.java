@@ -24,7 +24,7 @@ public class MessageFactory {
     public static MessageOutDto makeReservationMessage(ReservationInDto reservationInDto) {
 
         String reservationStatus =
-                reservationInDto.getReservationNotificationType() == NotificationType.RESERVATION ?
+                reservationInDto.getReservationType() == NotificationType.RESERVATION ?
                         "완료" : "취소";
 
         String title = String.format("%s 예약 %s 알림", reservationInDto.getTitle(),
