@@ -16,10 +16,8 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${spring.jwt.expire.access-token}")
-    private static long ACCESS_TOKEN_EXPIRE_TIME; // 30분
-    @Value("${spring.jwt.expire.refresh-token}")
-    private static long REFRESH_TOKEN_EXPIRE_TIME; // 7일
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24; // 1일
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
     @Value("${spring.jwt.secret}")
     private String JWT_SECRET_KEY;
 
@@ -32,6 +30,9 @@ public class JwtTokenProvider {
     }
 
     private String generateToken(Long profileId, long expireTime) {
+
+        log.info("[JwtTokenProvider] generateToken ... profileId = {}", profileId);
+        log.info("[JwtTokenProvider] generateToken ... expireTime = {}", expireTime);
 
         Claims claims = Jwts.claims();
         claims.put("profileId", profileId);

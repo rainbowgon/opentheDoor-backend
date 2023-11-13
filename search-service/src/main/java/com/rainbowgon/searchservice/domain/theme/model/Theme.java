@@ -1,10 +1,13 @@
 package com.rainbowgon.searchservice.domain.theme.model;
 
+import com.rainbowgon.searchservice.domain.theme.model.entry.PriceEntry;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -14,7 +17,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class Theme {
 
     @Id
-    private String id;
+    private String themeId;
 
     @Field(type = FieldType.Text, name = "venue")
     private String venue;
@@ -28,8 +31,8 @@ public class Theme {
     @Field(type = FieldType.Text, name = "location")
     private String location;
 
-    @Field(type = FieldType.Text, name = "reservationNotice", index = false)
-    private String reservationNotice;
+    @Field(type = FieldType.Text, name = "venueToS", index = false)
+    private String venueToS;
     // 검색에 사용되지 않을 필드는 index = false를 설정합니다.
     @Field(type = FieldType.Keyword, name = "poster", index = false)
     private String poster;
@@ -53,8 +56,8 @@ public class Theme {
     @Field(type = FieldType.Integer, name = "timeLimit", index = false)
     private Integer timeLimit;
 
-    @Field(type = FieldType.Integer, name = "price", index = false)
-    private Integer price;
+    @Field(type = FieldType.Nested, name = "priceList", index = false)
+    private List<PriceEntry> priceList;
 
     @Field(type = FieldType.Double, name = "activity", index = false)
     private Double activity;

@@ -1,6 +1,5 @@
 fcm:
-  certification: fcm/openthedoor-firebase-adminsdk.json
-  certification2: fcm/fcm-token.json
+  certification: fcm/openthedoor-930e4-firebase-adminsdk-t332b-aa9888ba26.json
 
 
 server:

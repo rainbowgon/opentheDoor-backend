@@ -26,6 +26,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -75,11 +76,15 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
             log.info("Custom Auth Filter ... profileId = {}", profileId);
 
             // redis에서 profileId로 memberId 가져오기
-            Token tokenDto = tokenRedisRepository.findById(profileId).orElseThrow(InvalidTokenException::new);
-            String memberId = tokenDto.getMemberId();
+            Optional<Token> tokenDto = tokenRedisRepository.findById(profileId);
+            if (tokenDto.isEmpty()) {
+                return onError(exchange, InvalidTokenException.EXCEPTION);
+            }
+            String memberId = tokenDto.get().getMemberId();
+            log.info("Custom Auth Filter ... memberId = {}", memberId);
 
             // 헤더에 memberId 추가
-            request.mutate().header("memberId", memberId).build();
+            exchange.getRequest().mutate().header("memberId", memberId).build();
 
             return chain.filter(exchange);
         };
@@ -92,7 +97,7 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
 
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
-		
+
         // custom exception 가져오기
         BaseErrorCode code = customException.getErrorCode();
         ErrorReason errorReason = code.getErrorReason();
