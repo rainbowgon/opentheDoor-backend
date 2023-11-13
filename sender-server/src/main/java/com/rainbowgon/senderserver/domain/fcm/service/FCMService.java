@@ -13,7 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class FCMService {
 
+    private final FCMInitializer fcmInitializer;
+
     public boolean sendMessage(String token, String title, String body) {
+        fcmInitializer.initialize();
+
         Message message = Message.builder()
                 .setToken(token)
                 .putData("title", title)
