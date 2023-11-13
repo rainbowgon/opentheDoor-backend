@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.global.security;
+package com.rainbowgon.memberservice.global.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
