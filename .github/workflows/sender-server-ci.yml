@@ -29,7 +29,7 @@ jobs:
         run: mkdir -p src/main/resources/fcm
 
       - name: Copy FCM token
-        run: echo "${{ secrets.FCM_TOKEN }}" > src/main/resources/fcm/openthedoor-firebase-adminsdk.json
+        run: echo "${{ secrets.FCM_TOKEN }}" > src/main/resources/fcm/openthedoor-930e4-firebase-adminsdk-t332b-aa9888ba26.json
 
       - name: Grant Permission for gradlew
         run: chmod +x ./gradlew
