@@ -9,9 +9,9 @@ import com.rainbowgon.memberservice.domain.member.dto.response.oauth.OAuthProfil
 import com.rainbowgon.memberservice.domain.member.service.KakaoLoginService;
 import com.rainbowgon.memberservice.domain.member.service.MemberService;
 import com.rainbowgon.memberservice.global.client.NotificationServiceClient;
+import com.rainbowgon.memberservice.global.jwt.dto.JwtTokenDto;
 import com.rainbowgon.memberservice.global.response.JsonResponse;
 import com.rainbowgon.memberservice.global.response.ResponseWrapper;
-import com.rainbowgon.memberservice.global.security.dto.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

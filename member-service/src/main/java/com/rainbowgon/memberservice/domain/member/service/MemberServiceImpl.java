@@ -12,7 +12,7 @@ import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleRes
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.global.error.exception.MemberBadPhoneNumberException;
 import com.rainbowgon.memberservice.global.error.exception.MemberNotFoundException;
-import com.rainbowgon.memberservice.global.security.dto.JwtTokenDto;
+import com.rainbowgon.memberservice.global.jwt.dto.JwtTokenDto;
 import com.rainbowgon.memberservice.global.util.CoolSmsSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.global.config;
+package com.rainbowgon.memberservice.global.redis;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class ThemeSortingRedisConfigure {
+public class ThemeSortingRedisConfig {
 
     @Value("${spring.redis.sorting.host}")
     private String host;
