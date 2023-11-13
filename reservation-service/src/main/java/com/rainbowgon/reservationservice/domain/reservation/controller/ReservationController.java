@@ -1,9 +1,10 @@
 package com.rainbowgon.reservationservice.domain.reservation.controller;
 
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
 import com.rainbowgon.reservationservice.domain.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -11,4 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservationController {
 
     private final ReservationService reservationService;
+
+    @GetMapping("/{theme-id}/verified")
+    public ResponseEntity<?> getReservationBaseVerifiedInfo(
+            @RequestHeader String memberId, @PathVariable("theme-id") String themeId) {
+
+        ReservationBaseInfoResDto reservationBaseInfoResDto =
+                reservationService.getReservationBaseInfo(memberId, themeId);
+
+        return ResponseEntity.ok(reservationBaseInfoResDto);
+    }
 }
