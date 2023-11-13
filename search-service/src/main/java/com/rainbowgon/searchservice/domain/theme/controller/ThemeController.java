@@ -24,9 +24,12 @@ public class ThemeController {
             @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(required = false, defaultValue = "37.5013") Double latitude,
             @RequestParam(required = false, defaultValue = "127.0396781") Double longitude,
+            @RequestParam(required = false) Integer headcount,
+            @RequestParam(required = false) List<String> region,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
-        Page<ThemeSimpleResDto> searchList = themeService.searchThemes(keyword, latitude, longitude, page,
+        Page<ThemeSimpleResDto> searchList = themeService.searchThemes(keyword, latitude, longitude,
+                                                                       headcount, region, page,
                                                                        size);
 
         return JsonResponse.ok("성공적으로 검색이 완료되었습니다.", searchList);
@@ -38,13 +41,30 @@ public class ThemeController {
             @RequestParam(required = false, defaultValue = "RECOMMEND") String sortBy,
             @RequestParam(required = false, defaultValue = "37.5013") Double latitude,
             @RequestParam(required = false, defaultValue = "127.0396781") Double longitude,
+            @RequestParam(required = false) Integer headcount,
+            @RequestParam(required = false) List<String> region,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
-        Page<ThemeSimpleResDto> searchList = themeService.sort(keyword, sortBy, latitude, longitude, page,
+        Page<ThemeSimpleResDto> searchList = themeService.sort(keyword, sortBy, latitude, longitude,
+                                                               headcount, region, page,
                                                                size);
 
 
         return JsonResponse.ok("성공적으로 정렬 검색이 완료되었습니다.", searchList);
+    }
+
+    @GetMapping("/test/setRanks")
+    public String triggerSetRanks() {
+        themeService.setRanks();
+        return "테스트를 위한 랭킹 생성";
+    }
+
+    @GetMapping("/rankings")
+    public ResponseEntity<ResponseWrapper<List<ThemeSimpleResDto>>> getRankedThemes() {
+        List<ThemeSimpleResDto> rankingList = themeService.getRanks();
+
+
+        return JsonResponse.ok("성공적으로 인기 테마를 불러왔습니다.", rankingList);
     }
 
     @GetMapping("/{theme-id}")
@@ -55,18 +75,5 @@ public class ThemeController {
         return JsonResponse.ok("성공적으로 조회가 완료되었습니다.", searchTheme);
     }
 
-    @GetMapping("/review/{theme-id}")
-    public ResponseEntity<?> review(@PathVariable("theme-id") String themeId) {
-        themeService.reviewCnt(themeId);
-
-        return JsonResponse.ok("리뷰 완료되었습니다.");
-    }
-
-    @GetMapping("/bookmark/{theme-id}")
-    public ResponseEntity<?> bookmark(@PathVariable("theme-id") String themeId) {
-        themeService.bookmarkCnt(themeId);
-
-        return JsonResponse.ok("북마크 완료되었습니다.");
-    }
 
 }
