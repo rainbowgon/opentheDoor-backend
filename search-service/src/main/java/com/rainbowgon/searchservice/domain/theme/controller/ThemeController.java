@@ -56,8 +56,9 @@ public class ThemeController {
     @GetMapping("/test/setRanks")
     public String triggerSetRanks() {
         themeService.setRanks();
-        return "Ranking updated successfully.";
+        return "테스트를 위한 랭킹 생성";
     }
+
     @GetMapping("/rankings")
     public ResponseEntity<ResponseWrapper<List<ThemeSimpleResDto>>> getRankedThemes() {
         List<ThemeSimpleResDto> rankingList = themeService.getRanks();
@@ -73,6 +74,6 @@ public class ThemeController {
 
         return JsonResponse.ok("성공적으로 조회가 완료되었습니다.", searchTheme);
     }
-    
+
 
 }

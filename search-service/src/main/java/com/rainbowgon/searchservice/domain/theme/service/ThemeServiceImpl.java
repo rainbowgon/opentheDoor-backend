@@ -80,7 +80,7 @@ public class ThemeServiceImpl implements ThemeService {
                 Double distanceScore = calculateDistance(theme.getLatitude(), theme.getLongitude(), latitude,
                                                          longitude);
                 cacheRedisThemeTemplate.opsForZSet().add(distanceKey, theme, distanceScore);
-                cacheRedisThemeTemplate.expire(recommendKey, Duration.ofMinutes(20));
+                cacheRedisThemeTemplate.expire(distanceKey, Duration.ofMinutes(20));
                 createZSET(sortingKey, reviewKey, recommendKey, theme);
             }
         }
@@ -286,13 +286,25 @@ public class ThemeServiceImpl implements ThemeService {
             Double reviewScore = getScore(theme, "REVIEW");
             Double ratingScore = getScore(theme, "RATING");
 
+            String lastViewKey = "LASTVIEW:" + theme.getThemeId();
+            // Redis에서 지난 조회 수를 가져옵니다. 값이 없다면 0으로 초기화합니다.
+            Double lastViewScore =
+                    Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(lastViewKey)).orElse(0.0);
+
             // 검색 결과로 나온 테마의 조회 수
-            Double viewScore =
+            Double currentViewScore =
                     Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getThemeId())).orElse(0.0);
 
-            Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
+            Double viewScore = lastViewScore + currentViewScore;
 
-            Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2, -Math.log(interest + 1));
+            sortingRedisDoubleTemplate.opsForValue().set(lastViewKey, viewScore);
+
+            sortingRedisDoubleTemplate.opsForValue().set(theme.getThemeId(), 0.0);
+
+            Double interest = 0.4 * reviewScore + 0.3 * currentViewScore + 0.3 * bookmarkScore;
+
+            Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2,
+                                                                                   -Math.log(interest + 1));
 
             cacheRedisThemeTemplate.opsForZSet().add(rankingKey, theme, finalRatingScore);
         }
@@ -303,14 +315,14 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     @Transactional(readOnly = true)
     public List<ThemeSimpleResDto> getRanks() {
-            String rankingKey = "RANKING";
-            // POPULAR 키로 정렬된 데이터에서 상위 10개를 불러오는 로직
-            Set<Theme> rankedThemes = cacheRedisThemeTemplate.opsForZSet().reverseRange(rankingKey, 0, 9);
+        String rankingKey = "RANKING";
+        // POPULAR 키로 정렬된 데이터에서 상위 10개를 불러오는 로직
+        Set<Theme> rankedThemes = cacheRedisThemeTemplate.opsForZSet().reverseRange(rankingKey, 0, 9);
 
-            // Theme 객체를 ThemeSimpleResDto로 변환
-            List<ThemeSimpleResDto> ranks = rankedThemes.stream()
-                    .map(theme -> ThemeSimpleResDto.from(theme))
-                    .collect(Collectors.toList());
+        // Theme 객체를 ThemeSimpleResDto로 변환
+        List<ThemeSimpleResDto> ranks = rankedThemes.stream()
+                .map(theme -> ThemeSimpleResDto.from(theme))
+                .collect(Collectors.toList());
 
         return ranks;
     }

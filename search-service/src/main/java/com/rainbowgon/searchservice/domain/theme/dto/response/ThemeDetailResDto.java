@@ -1,7 +1,10 @@
 package com.rainbowgon.searchservice.domain.theme.dto.response;
 
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
+import com.rainbowgon.searchservice.domain.theme.model.entry.PriceEntry;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -21,7 +24,7 @@ public class ThemeDetailResDto {
     private String[] genre; // 장르
     private Integer maxHeadcount; // 최대 인원 수
     private Integer minHeadcount; // 최소 인원 수
-    private Integer price; // 가격
+    private List<PriceEntry> priceList; // 가격
     private Integer timeLimit; // 소요 시간 (분 단위)
     private Double level; // 난이도
     private Double activity; // 활동성
@@ -39,9 +42,14 @@ public class ThemeDetailResDto {
                 .explanation(theme.getExplanation())
                 .location(theme.getLocation())
                 .tel(theme.getTel())
+                .priceList(theme.getPriceList())
                 .poster(theme.getPoster())
                 .genre(theme.getGenre())
                 .level(theme.getLevel())
+                .activity(theme.getActivity())
+                .lockRatio(theme.getLockRatio())
+                .horror(theme.getHorror())
+                .timeLimit(theme.getTimeLimit())
                 .minHeadcount(theme.getMinHeadcount())
                 .maxHeadcount(theme.getMaxHeadcount())
                 .venueTos(theme.getVenueToS())
