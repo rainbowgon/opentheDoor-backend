@@ -43,7 +43,7 @@ public class MemberController {
 
         return ResponseEntity.ok(OAuthProfileResDto.fromKakao(kakaoProfileResDto));
     }
-    
+
 
     /**
      * 회원가입
@@ -75,6 +75,7 @@ public class MemberController {
     public ResponseEntity<ResponseWrapper<MemberInfoResDto>> selectMemberInfo(
             @RequestHeader("memberId") String memberId) {
 
+        log.info("[MemberController] selectMemberInfo ... memberId = {}", memberId);
         MemberInfoResDto memberInfoResDto = memberService.selectMemberInfo(UUID.fromString(memberId));
 
         return JsonResponse.ok("개인 정보가 성공적으로 조회되었습니다.", memberInfoResDto);
