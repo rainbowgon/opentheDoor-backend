@@ -81,6 +81,7 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
                 return onError(exchange, InvalidTokenException.EXCEPTION);
             }
             String memberId = tokenDto.get().getMemberId();
+            log.info("Custom Auth Filter ... memberId = {}", memberId);
 
             // 헤더에 memberId 추가
             request.mutate().header("memberId", memberId).build();
