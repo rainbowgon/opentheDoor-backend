@@ -84,7 +84,7 @@ public class CustomAuthFilter extends AbstractGatewayFilterFactory<CustomAuthFil
             log.info("Custom Auth Filter ... memberId = {}", memberId);
 
             // 헤더에 memberId 추가
-            request.mutate().header("memberId", memberId).build();
+            exchange.getRequest().mutate().header("memberId", memberId).build();
 
             return chain.filter(exchange);
         };
