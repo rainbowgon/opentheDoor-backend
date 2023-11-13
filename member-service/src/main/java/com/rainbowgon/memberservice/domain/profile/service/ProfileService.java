@@ -3,7 +3,7 @@ package com.rainbowgon.memberservice.domain.profile.service;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.global.entity.NotificationStatus;
-import com.rainbowgon.memberservice.global.security.dto.JwtTokenDto;
+import com.rainbowgon.memberservice.global.jwt.dto.JwtTokenDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
