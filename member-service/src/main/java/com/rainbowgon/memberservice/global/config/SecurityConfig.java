@@ -1,6 +1,5 @@
 package com.rainbowgon.memberservice.global.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,14 +7,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final CorsFilter corsFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -39,10 +34,8 @@ public class SecurityConfig {
                 .antMatchers("/profiles/clients/**").permitAll() // 서버 간 통신
                 .antMatchers("/reviews/clients/**").permitAll() // 서버 간 통신
                 .antMatchers("/members/test/**").permitAll() // 서버 간 통신 테스트
-                .anyRequest().authenticated()
-                .and()
-                .addFilter(corsFilter);
-        
+                .anyRequest().authenticated();
+
         return httpSecurity.build();
     }
 
