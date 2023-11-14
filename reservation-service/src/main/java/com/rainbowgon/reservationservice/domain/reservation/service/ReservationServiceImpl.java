@@ -100,6 +100,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<ReservationBriefResDto> getAllReservationHistory(String memberId) {
+        List<Reservation> reservationList = reservationRepository.findAllByMemberId(memberId);
         return null;
     }
 
