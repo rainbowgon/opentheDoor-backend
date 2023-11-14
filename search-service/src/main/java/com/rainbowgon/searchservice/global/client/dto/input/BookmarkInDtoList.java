@@ -1,4 +1,4 @@
-package com.rainbowgon.searchservice.domain.theme.dto.request;
+package com.rainbowgon.searchservice.global.client.dto.input;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,7 +8,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ThemeCheckReqDtoList {
+public class BookmarkInDtoList {
 
     private List<String> themeList;
+
 }

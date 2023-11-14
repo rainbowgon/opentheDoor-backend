@@ -1,9 +1,9 @@
 package com.rainbowgon.searchservice.domain.theme.service;
 
-import com.rainbowgon.searchservice.domain.theme.dto.request.ThemeCheckReqDtoList;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
+import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import org.springframework.data.domain.Page;
@@ -19,14 +19,15 @@ public interface ThemeService {
 
     ThemeDetailResDto selectOneThemeById(String themeId);
 
-    List<BookmarkDetailOutDto> selectDetailThemesById(ThemeCheckReqDtoList themeIdList);
+    List<BookmarkDetailOutDto> selectDetailThemesById(BookmarkInDtoList themeIdList);
 
-    List<BookmarkSimpleOutDto> selectSimpleThemesById(ThemeCheckReqDtoList themeIdList);
+    List<BookmarkSimpleOutDto> selectSimpleThemesById(BookmarkInDtoList themeIdList);
 
     Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Double latitude, Double longitude,
                                  Integer headcount, List<String> region,
                                  Integer page, Integer size);
 
     void setRanks();
+
     List<ThemeSimpleResDto> getRanks();
 }
