@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class ReviewDetailResDto { // 다른 사람이 작성한 리뷰 객체 (테마 상세페이지 용)
+public class ReviewDetailResDto {
 
     private Long reviewId;
     private Double rating;
@@ -25,6 +25,7 @@ public class ReviewDetailResDto { // 다른 사람이 작성한 리뷰 객체 (�
     @JsonFormat(pattern = "hh:mm")
     private LocalTime performedTime;
     private Integer performedHeadcount;
+    private Boolean isVerified; // 리뷰 인증 여부(예약 정보가 있는 리뷰면 true)
 
     public static ReviewDetailResDto from(Review review) {
         return ReviewDetailResDto.builder()
@@ -37,6 +38,7 @@ public class ReviewDetailResDto { // 다른 사람이 작성한 리뷰 객체 (�
                 .performedDate(review.getPerformedDate())
                 .performedTime(review.getPerformedTime())
                 .performedHeadcount(review.getPerformedHeadcount())
+                .isVerified(review.getReservationId() != null)
                 .build();
     }
 }

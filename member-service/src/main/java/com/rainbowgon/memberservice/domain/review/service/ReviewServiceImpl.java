@@ -32,7 +32,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final SearchServiceClient searchServiceClient;
     private final ReservationServiceClient reservationServiceClient;
-    
+
     @Qualifier("sortingRedisStringTemplate")
     private final RedisTemplate<String, String> sortingRedisStringTemplate;
 
@@ -40,8 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewDetailResDto createReview(UUID memberId, ReviewCreateReqDto reviewCreateReqDto) {
 
-        // TODO 예약 내역이 있는 리뷰인지 확인 (인증 뱃지)
-        // 예약 내역 있으면, 예약 날짜/시간이랑 입력값이랑 비교?
+        // TODO 프론트랑 의논해서 createReqDto에서 같이 받기
         Long reservationId = null;
 
         // 리뷰 생성
@@ -113,6 +112,16 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 테마 ID와 회원 ID로 리뷰 조회
         Optional<Review> review = reviewRepository.findByThemeIdAndMemberId(themeId, memberId);
+
+        // 리뷰 없으면 예약 내역 확인
+//        if (review.isEmpty()) {
+//            // TODO 예약 내역이 있는지 확인 (인증 뱃지)
+//            ReservationInDto reservationInfo = reservationServiceClient.getMemberReservationInfo(
+//                    ReservationOutDto.builder()
+//                            .memberId(memberId.toString())
+//                            .themeId(themeId)
+//                            .build());
+//        }
 
         // 해당 테마에 요청 회원이 작성한 리뷰가 없으면 null 반환
         return review.map(ReviewDetailResDto::from).orElse(null);
