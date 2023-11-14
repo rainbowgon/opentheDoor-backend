@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -32,7 +33,8 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member;
 
-    @Column(name = "member_id")
+    @Column(name = "member_id", columnDefinition = "CHAR(36)")
+    @Type(type = "uuid-char")
     @NotNull
     private UUID memberId;
 
