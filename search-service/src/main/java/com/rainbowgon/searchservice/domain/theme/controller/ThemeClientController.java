@@ -4,8 +4,6 @@ import com.rainbowgon.searchservice.domain.theme.dto.request.ThemeCheckReqDtoLis
 import com.rainbowgon.searchservice.domain.theme.service.ThemeService;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
-import com.rainbowgon.searchservice.global.response.JsonResponse;
-import com.rainbowgon.searchservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/themes/clients")
+@RequestMapping("/clients/themes")
 public class ThemeClientController {
 
     private final ThemeService themeService;

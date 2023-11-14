@@ -120,7 +120,10 @@ public class ThemeServiceImpl implements ThemeService {
         List<ThemeSimpleResDto> content = filteredThemes.stream()
                 .skip(start)
                 .limit(size)
-                .map(ThemeSimpleResDto::from)
+                .map(theme -> ThemeSimpleResDto.from(theme, getScore(theme, "BOOKMARK").intValue(),
+                                                     getScore(theme, "REVIEW").intValue(), getScore(theme,
+                                                                                                    "RATING"
+                        )))
                 .collect(Collectors.toList());
 
 
@@ -183,8 +186,11 @@ public class ThemeServiceImpl implements ThemeService {
         ValueOperations<String, Double> valueOperations = sortingRedisDoubleTemplate.opsForValue();
         Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
         valueOperations.increment(themeId, 1);
+        Double bookmarkCount = getScore(theme, "BOOKMARK");
+        Double reviewCount = getScore(theme, "REVIEW");
+        Double ratingScore = getScore(theme, "RATING");
 
-        return ThemeDetailResDto.from(theme);
+        return ThemeDetailResDto.from(theme, bookmarkCount.intValue(), reviewCount.intValue(), ratingScore);
     }
 
     @Override
@@ -231,10 +237,10 @@ public class ThemeServiceImpl implements ThemeService {
 
         // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
         if (!sortBy.equals("DISTANCE")) {
-            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, start,
-                                                                               end);
+            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, 0,
+                                                                               -1);
         } else {
-            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, start, end);
+            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, 0, -1);
         }
 
         if ((region != null && !region.isEmpty()) || (headcount != null && headcount > 0)) {
@@ -261,12 +267,14 @@ public class ThemeServiceImpl implements ThemeService {
 
 
         List<ThemeSimpleResDto> content = sortedThemeIds.stream()
-                .map(ThemeSimpleResDto::from)
+                .map(theme -> ThemeSimpleResDto.from(theme, getScore(theme, "BOOKMARK").intValue(),
+                                                     getScore(theme, "REVIEW").intValue(), getScore(theme,
+                                                                                                    "RATING"
+                        )))
                 .collect(Collectors.toList());
 
-        int totalElements = content.size();
 
-        return new PageImpl<>(content, PageRequest.of(page, size), totalElements);
+        return new PageImpl<>(content, PageRequest.of(page, size), sortedThemeIds.size());
     }
 
     @Scheduled(cron = "0 0 0 * * SUN") // 매주 일요일 자정에 실행
@@ -321,8 +329,10 @@ public class ThemeServiceImpl implements ThemeService {
 
         // Theme 객체를 ThemeSimpleResDto로 변환
         List<ThemeSimpleResDto> ranks = rankedThemes.stream()
-                .map(theme -> ThemeSimpleResDto.from(theme))
-                .collect(Collectors.toList());
+                .map(theme -> ThemeSimpleResDto.from(theme, getScore(theme, "BOOKMARK").intValue(),
+                                                     getScore(theme, "REVIEW").intValue(), getScore(theme,
+                                                                                                    "RATING"
+                        ))).collect(Collectors.toList());
 
         return ranks;
     }
