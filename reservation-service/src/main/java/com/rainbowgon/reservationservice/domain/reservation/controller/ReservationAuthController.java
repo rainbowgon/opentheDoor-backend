@@ -53,4 +53,11 @@ public class ReservationAuthController {
 
         return JsonResponse.ok("회원의 예약 내역 리스트를 가져왔습니다.", historyList);
     }
+
+    @GetMapping("/reserved/{reservation-id}")
+    public ResponseEntity<?> getReservationDetail(
+            @RequestHeader String memberId, @PathVariable("reservation-id") Long reservationId) {
+
+
+    }
 }
