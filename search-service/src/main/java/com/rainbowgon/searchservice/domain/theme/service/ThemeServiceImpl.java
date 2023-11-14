@@ -1,10 +1,10 @@
 package com.rainbowgon.searchservice.domain.theme.service;
 
-import com.rainbowgon.searchservice.domain.theme.dto.request.ThemeCheckReqDtoList;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
+import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
@@ -195,7 +195,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookmarkDetailOutDto> selectDetailThemesById(ThemeCheckReqDtoList themeIdList) {
+    public List<BookmarkDetailOutDto> selectDetailThemesById(BookmarkInDtoList themeIdList) {
         List<BookmarkDetailOutDto> themeDetailResDtoList = new ArrayList<>();
         for (String themeId : themeIdList.getThemeList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
@@ -206,7 +206,7 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookmarkSimpleOutDto> selectSimpleThemesById(ThemeCheckReqDtoList themeIdList) {
+    public List<BookmarkSimpleOutDto> selectSimpleThemesById(BookmarkInDtoList themeIdList) {
         List<BookmarkSimpleOutDto> themeDetailResDtoList = new ArrayList<>();
         for (String themeId : themeIdList.getThemeList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);

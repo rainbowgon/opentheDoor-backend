@@ -1,7 +1,7 @@
 package com.rainbowgon.searchservice.domain.theme.controller;
 
-import com.rainbowgon.searchservice.domain.theme.dto.request.ThemeCheckReqDtoList;
 import com.rainbowgon.searchservice.domain.theme.service.ThemeService;
+import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +22,18 @@ public class ThemeClientController {
 
     @GetMapping("/detail-lists")
     public ResponseEntity<List<BookmarkDetailOutDto>> selectDetailThemes(
-            @RequestBody ThemeCheckReqDtoList themeCheckReqDtoList) {
+            @RequestBody BookmarkInDtoList bookmarkInDtoList) {
         List<BookmarkDetailOutDto> BookmarkDetailOutDtoList =
-                themeService.selectDetailThemesById(themeCheckReqDtoList);
+                themeService.selectDetailThemesById(bookmarkInDtoList);
 
         return ResponseEntity.ok(BookmarkDetailOutDtoList);
     }
 
     @GetMapping("/simple-lists")
     public ResponseEntity<List<BookmarkSimpleOutDto>> selectSimpleThemes(
-            @RequestBody ThemeCheckReqDtoList themeCheckReqDtoList) {
+            @RequestBody BookmarkInDtoList bookmarkInDtoList) {
         List<BookmarkSimpleOutDto> BookmarkSimpleOutDtoList =
-                themeService.selectSimpleThemesById(themeCheckReqDtoList);
+                themeService.selectSimpleThemesById(bookmarkInDtoList);
 
         return ResponseEntity.ok(BookmarkSimpleOutDtoList);
     }
