@@ -8,6 +8,7 @@ import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.global.client.SearchServiceClient;
 import com.rainbowgon.memberservice.global.client.dto.input.ThemeDetailInDto;
 import com.rainbowgon.memberservice.global.client.dto.input.ThemeSimpleInDto;
+import com.rainbowgon.memberservice.global.client.dto.output.ThemeListOutDto;
 import com.rainbowgon.memberservice.global.error.exception.BookmarkNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +82,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         // search-service -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(아이디, 포스터, 테마명, 지점명, 평균 별점, 리뷰 수) 가져오기
         List<String> themeIdList = bookmarkKeyList.stream().map(this::getThemeId).collect(Collectors.toList());
-        List<ThemeSimpleInDto> themeList = searchServiceClient.getBookmarkThemeSimpleInfo(themeIdList);
+
+        List<ThemeSimpleInDto> themeList =
+                searchServiceClient.getBookmarkThemeSimpleInfo(ThemeListOutDto.builder().themeIdList(themeIdList).build());
 
         return themeList.stream().map(BookmarkSimpleResDto::from).collect(Collectors.toList());
     }
@@ -99,7 +102,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         // search-service -> 북마크 목록의 테마 ID를 통해 각각의 테마 정보(전체 + 평균 별점, 리뷰 수, 북마크 수) 가져오기
         List<String> themeIdList = bookmarkKeyList.stream().map(this::getThemeId).collect(Collectors.toList());
-        List<ThemeDetailInDto> themeList = searchServiceClient.getBookmarkThemeDetailInfo(themeIdList);
+        
+        List<ThemeDetailInDto> themeList =
+                searchServiceClient.getBookmarkThemeDetailInfo(ThemeListOutDto.builder().themeIdList(themeIdList).build());
 
         return themeList.stream().map(BookmarkDetailResDto::from).collect(Collectors.toList());
     }
