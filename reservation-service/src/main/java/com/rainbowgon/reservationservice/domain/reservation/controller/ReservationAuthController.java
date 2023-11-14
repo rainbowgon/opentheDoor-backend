@@ -1,10 +1,7 @@
 package com.rainbowgon.reservationservice.domain.reservation.controller;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
-import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
-import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBriefResDto;
-import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationResultResDto;
-import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationSuccess;
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.*;
 import com.rainbowgon.reservationservice.domain.reservation.service.ReservationService;
 import com.rainbowgon.reservationservice.global.response.JsonResponse;
 import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
@@ -52,5 +49,15 @@ public class ReservationAuthController {
         List<ReservationBriefResDto> historyList = reservationService.getAllReservationHistory(memberId);
 
         return JsonResponse.ok("회원의 예약 내역 리스트를 가져왔습니다.", historyList);
+    }
+
+    @GetMapping("/reserved/{reservation-id}")
+    public ResponseEntity<?> getReservationDetail(
+            @RequestHeader String memberId, @PathVariable("reservation-id") Long reservationId) {
+
+        ReservationDetailResDto reservationDetailResDto =
+                reservationService.getReservationDetail(memberId, reservationId);
+
+        return JsonResponse.ok("회원의 예약 상세 정보를 가져왔습니다.", reservationDetailResDto);
     }
 }
