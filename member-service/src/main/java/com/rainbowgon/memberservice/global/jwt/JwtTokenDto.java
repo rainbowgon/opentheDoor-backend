@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.global.jwt.dto;
+package com.rainbowgon.memberservice.global.jwt;
 
 import lombok.Builder;
 import lombok.Getter;

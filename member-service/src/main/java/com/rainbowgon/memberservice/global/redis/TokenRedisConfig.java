@@ -1,6 +1,6 @@
 package com.rainbowgon.memberservice.global.redis;
 
-import com.rainbowgon.memberservice.global.jwt.dto.Token;
+import com.rainbowgon.memberservice.global.redis.dto.Token;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
