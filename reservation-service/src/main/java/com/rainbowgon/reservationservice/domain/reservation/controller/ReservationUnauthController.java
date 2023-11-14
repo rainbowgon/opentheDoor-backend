@@ -1,7 +1,9 @@
 package com.rainbowgon.reservationservice.domain.reservation.controller;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.request.UnauthReservationDetailReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationDetailResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationResultResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationSuccess;
 import com.rainbowgon.reservationservice.domain.reservation.service.ReservationService;
@@ -40,5 +42,14 @@ public class ReservationUnauthController {
         }
 
         return JsonResponse.ok("성공적으로 예약되었습니다.", reservationResultResDto);
+    }
+
+    @PostMapping("/reserved")
+    public ResponseEntity<?> getReservationDetail(
+            @RequestBody UnauthReservationDetailReqDto unauthReservationDetailReqDto) {
+        ReservationDetailResDto reservationDetailResDto =
+                reservationService.getReservationDetail(unauthReservationDetailReqDto);
+
+        return JsonResponse.ok("비회원의 예약 상세 정보를 가져왔습니다.", reservationDetailResDto);
     }
 }
