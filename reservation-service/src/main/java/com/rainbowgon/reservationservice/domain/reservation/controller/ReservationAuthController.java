@@ -63,9 +63,10 @@ public class ReservationAuthController {
     }
 
     @PostMapping("/waiting")
-    public ResponseEntity<?> waitCancelledReservation(
+    public ResponseEntity<?> waitEmptyTimeSlot(
             @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
 
+        reservationService.waitEmptyTimeSlot(waitingReqDto);
 
         return JsonResponse.ok("예약 대기 신청을 완료했습니다.");
     }
