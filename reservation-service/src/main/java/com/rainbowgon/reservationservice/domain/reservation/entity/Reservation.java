@@ -31,7 +31,7 @@ public class Reservation extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(12)")
-    private MemberVerifiedStatus isMemberVerified;
+    private MemberVerifiedStatus isMemberVerified; // 회원인지, 비회원인지
 
     @Column(columnDefinition = "VARCHAR(20)")
     private String bookerName;
@@ -41,6 +41,6 @@ public class Reservation extends BaseEntity {
 
     private String themeId; // 테마 ID
 
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long bookerId; // 프로필 ID
+    @Column(columnDefinition = "CHAR(36)")
+    private Long memberID; // 멤버 ID / 비회원인 경우, null
 }
