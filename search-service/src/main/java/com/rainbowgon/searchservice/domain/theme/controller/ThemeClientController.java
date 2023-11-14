@@ -6,10 +6,7 @@ import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDt
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,5 +33,15 @@ public class ThemeClientController {
                 themeService.selectSimpleThemesById(bookmarkInDtoList);
 
         return ResponseEntity.ok(BookmarkSimpleOutDtoList);
+    }
+
+    @GetMapping("/{theme-id}/{headcount}")
+    public ResponseEntity<Integer> selectSimpleThemes(
+            @PathVariable("theme-id") String themeId,
+            @PathVariable("headcount") Integer headcount
+    ) {
+        Integer price = themeService.getPrice(themeId, headcount);
+
+        return ResponseEntity.ok(price);
     }
 }

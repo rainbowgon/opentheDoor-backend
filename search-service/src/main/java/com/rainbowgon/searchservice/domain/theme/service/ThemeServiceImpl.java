@@ -3,10 +3,12 @@ package com.rainbowgon.searchservice.domain.theme.service;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeDetailResDto;
 import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
+import com.rainbowgon.searchservice.domain.theme.model.entry.PriceEntry;
 import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
+import com.rainbowgon.searchservice.global.error.exception.PriceNotFoundException;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
 import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
 import lombok.RequiredArgsConstructor;
@@ -337,4 +339,16 @@ public class ThemeServiceImpl implements ThemeService {
         return ranks;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getPrice(String themeId, Integer headcount) {
+        Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+
+        for (PriceEntry priceEntry : theme.getPriceList()) {
+            if (priceEntry.getHeadcount().equals(headcount)) {
+                return priceEntry.getPrice();
+            }
+        }
+        throw new PriceNotFoundException();
+    }
 }
