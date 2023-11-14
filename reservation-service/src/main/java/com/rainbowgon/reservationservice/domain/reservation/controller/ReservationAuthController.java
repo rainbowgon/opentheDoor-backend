@@ -2,6 +2,7 @@ package com.rainbowgon.reservationservice.domain.reservation.controller;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBriefResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationResultResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationSuccess;
 import com.rainbowgon.reservationservice.domain.reservation.service.ReservationService;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +44,10 @@ public class ReservationAuthController {
         }
 
         return JsonResponse.ok("성공적으로 예약되었습니다.", reservationResultResDto);
+    }
+
+    @GetMapping("/reserved")
+    public ResponseEntity<?> getAllReservationHistory(@RequestHeader String memberId) {
+        List<ReservationBriefResDto> historyList = reservationService.getAllReservationHistory(memberId);
     }
 }
