@@ -23,4 +23,10 @@ public class ReservationAuthController {
 
         return JsonResponse.ok("회원의 테마 예약 페이지 정보를 가져왔습니다.", reservationBaseInfoResDto);
     }
+
+    @PostMapping("/{theme-id}")
+    public ResponseEntity<?> makeReservation(
+            @RequestHeader String memberId, @RequestBody ReservationReqDto reservationReqDto) {
+
+    }
 }
