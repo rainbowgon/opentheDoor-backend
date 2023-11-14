@@ -8,11 +8,7 @@ import com.rainbowgon.memberservice.domain.member.dto.response.oauth.KakaoProfil
 import com.rainbowgon.memberservice.domain.member.dto.response.oauth.OAuthProfileResDto;
 import com.rainbowgon.memberservice.domain.member.service.KakaoLoginService;
 import com.rainbowgon.memberservice.domain.member.service.MemberService;
-import com.rainbowgon.memberservice.global.client.NotificationServiceClient;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
-import com.rainbowgon.memberservice.global.redis.service.BookmarkRedisService;
-import com.rainbowgon.memberservice.global.redis.service.SortingRedisService;
-import com.rainbowgon.memberservice.global.redis.service.TokenRedisService;
 import com.rainbowgon.memberservice.global.response.JsonResponse;
 import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +28,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final KakaoLoginService kakaoLoginService;
-    private final NotificationServiceClient notificationServiceClient;
-
-    private final BookmarkRedisService bookmarkRedisService;
-    private final SortingRedisService sortingRedisService;
-    private final TokenRedisService tokenRedisService;
 
 
     /**
@@ -113,53 +104,6 @@ public class MemberController {
         memberService.deleteMember(UUID.fromString(memberId));
 
         return JsonResponse.ok("회원이 성공적으로 삭제되었습니다.");
-    }
-
-    /**
-     * 통신 테스트를 위한 API
-     */
-    @GetMapping("/test")
-    public ResponseEntity<String> testNotificationService() {
-
-        String testResponse = notificationServiceClient.testNotificationService();
-
-        return ResponseEntity.ok("notification-service에서 받은 응답 : " + testResponse);
-    }
-
-    /**
-     * redis server 조회를 위한 API
-     */
-    @GetMapping("/redis")
-    public ResponseEntity<String> selectAllRedis() {
-
-        Integer bookmarkKeys = bookmarkRedisService.keysAll();
-        Integer sortingKeys = sortingRedisService.keysAll();
-        Integer tokenKeys = tokenRedisService.keysAll();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("bookmark redis keys : ").append(bookmarkKeys).append("\n");
-        sb.append("sorting redis keys : ").append(sortingKeys).append("\n");
-        sb.append("token redis keys : ").append(tokenKeys).append("\n");
-
-        return ResponseEntity.ok(sb.toString());
-    }
-
-    /**
-     * redis server 삭제를 위한 API
-     */
-    @DeleteMapping("/redis")
-    public ResponseEntity<String> deleteAllRedis() {
-
-        Boolean isBookmarkRedisDeleted = bookmarkRedisService.flushAll();
-        Boolean isSortingRedisDeleted = sortingRedisService.flushAll();
-        Boolean isTokenRedisDeleted = tokenRedisService.flushAll();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("bookmark redis deleted : ").append(isBookmarkRedisDeleted).append("\n");
-        sb.append("sorting redis deleted : ").append(isSortingRedisDeleted).append("\n");
-        sb.append("token redis deleted : ").append(isTokenRedisDeleted).append("\n");
-
-        return ResponseEntity.ok(sb.toString());
     }
 
 }
