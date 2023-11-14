@@ -1,4 +1,4 @@
-package com.rainbowgon.reservationservice.global.redis;
+package com.rainbowgon.reservationservice.global.config.redis;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
