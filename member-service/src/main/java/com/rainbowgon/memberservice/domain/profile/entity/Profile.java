@@ -27,6 +27,7 @@ public class Profile extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @NotNull
     private Member member;
 
     @Column(columnDefinition = "VARCHAR(10)")

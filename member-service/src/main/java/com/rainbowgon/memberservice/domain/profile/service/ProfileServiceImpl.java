@@ -129,6 +129,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         // 프로필 객체 가져오기
         Profile profile = getProfileByMemberId(memberId);
+        log.info("[ProfileServiceImpl] deleteProfile ... profileId = {}", profile.getId());
 
         // 프로필 객체 삭제
         profileRepository.delete(profile);

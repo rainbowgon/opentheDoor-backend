@@ -14,7 +14,7 @@ public class BookmarkSimpleResDto { // 홈 화면에서 보여지는 북마크 �
     private String title; // 테마명
     private String venue; // 지점명
     private Double ratingScore; // 평균 별점
-    private Integer reviewCnt; // 리뷰 수(별점 수)
+    private Integer reviewCount; // 리뷰 수(별점 수)
 
     public static BookmarkSimpleResDto from(ThemeSimpleInDto theme) {
         return BookmarkSimpleResDto.builder()
@@ -23,7 +23,7 @@ public class BookmarkSimpleResDto { // 홈 화면에서 보여지는 북마크 �
                 .title(theme.getTitle())
                 .venue(theme.getVenue())
                 .ratingScore(theme.getRatingScore())
-                .reviewCnt(theme.getReviewCount())
+                .reviewCount(theme.getReviewCount())
                 .build();
     }
 }
