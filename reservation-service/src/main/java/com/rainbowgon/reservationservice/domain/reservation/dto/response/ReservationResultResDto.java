@@ -11,6 +11,7 @@ public class ReservationResultResDto {
     private ReservationSuccess isSucceed;
     private Long reservationId;
     private Long reservationNumber;
+    private Integer totalPrice;
 
     public static ReservationResultResDto fail() {
         return ReservationResultResDto.builder()
@@ -20,11 +21,13 @@ public class ReservationResultResDto {
                 .build();
     }
 
-    public static ReservationResultResDto success(Long reservationId, Long reservationNumber) {
+    public static ReservationResultResDto success(Long reservationId, Long reservationNumber,
+                                                  Integer totalPrice) {
         return ReservationResultResDto.builder()
                 .isSucceed(ReservationSuccess.SUCCESS)
                 .reservationId(reservationId)
                 .reservationNumber(reservationNumber)
+                .totalPrice(totalPrice)
                 .build();
     }
 }
