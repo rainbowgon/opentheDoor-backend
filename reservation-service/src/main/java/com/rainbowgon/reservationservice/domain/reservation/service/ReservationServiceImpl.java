@@ -143,6 +143,12 @@ public class ReservationServiceImpl implements ReservationService {
         // TODO 레디스에 예약 대기 정보 저장
     }
 
+    @Override
+    public void cancelWaiting(String memberId, WaitingReqDto waitingReqDto) {
+
+        // TODO 레디스에 예약 대기 정보 삭제
+    }
+
     // TODO 예약 기능 동작
     private boolean actReservation(ReservationReqDto reservationReqDto) {
 

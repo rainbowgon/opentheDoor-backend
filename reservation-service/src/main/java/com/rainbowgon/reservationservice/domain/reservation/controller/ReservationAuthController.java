@@ -71,4 +71,13 @@ public class ReservationAuthController {
 
         return JsonResponse.ok("예약 대기 신청을 완료했습니다.");
     }
+
+    @PostMapping("/waiting/cancel")
+    public ResponseEntity<ResponseWrapper<Nullable>> cancelWaiting(
+            @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
+
+        reservationService.cancelWaiting(memberId, waitingReqDto);
+
+        return JsonResponse.ok("예약 대기 신청을 취소했습니다.");
+    }
 }
