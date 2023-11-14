@@ -155,7 +155,7 @@ public class BookmarkServiceImpl implements BookmarkService {
      * redis 북마크 key에서 테마 ID 뽑아내기
      */
     private String getThemeId(String bookmarkKey) {
-        return bookmarkKey.split("$")[1];
+        return bookmarkKey.split("\\$")[1];
     }
 
     /**
