@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/reservations")
-public class ReservationController {
+@RequestMapping("/reservations/auth")
+public class ReservationAuthController {
 
     private final ReservationService reservationService;
 
-    @GetMapping("/{theme-id}/verified")
+    @GetMapping("/{theme-id}")
     public ResponseEntity<?> getReservationBaseVerifiedInfo(
             @RequestHeader String memberId, @PathVariable("theme-id") String themeId) {
 
