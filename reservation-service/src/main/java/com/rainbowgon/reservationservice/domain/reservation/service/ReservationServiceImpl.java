@@ -125,7 +125,15 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationDetailResDto getReservationDetail(UnauthReservationDetailReqDto unauthReservationDetailReqDto) {
-        return null;
+        Reservation reservation =
+                reservationRepository.findByBookerNameAndBookerPhoneNumberAndReservationNumber(
+                        unauthReservationDetailReqDto.getBookerName(),
+                        unauthReservationDetailReqDto.getBookerPhoneNumber(),
+                        unauthReservationDetailReqDto.getReservationNumber());
+
+        ThemeBriefInfoInDto themeBriefInfo = searchServiceClient.getThemeBriefInfo(reservation.getThemeId());
+
+        return ReservationDetailResDto.from(reservation, themeBriefInfo);
     }
 
     // TODO 예약 기능 동작
