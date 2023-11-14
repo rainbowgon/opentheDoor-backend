@@ -2,6 +2,7 @@ package com.rainbowgon.reservationservice.domain.reservation.entity;
 
 import com.rainbowgon.reservationservice.global.entity.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -46,4 +47,20 @@ public class Reservation extends BaseEntity {
 
     @Column(columnDefinition = "CHAR(36)")
     private String memberId; // 멤버 ID / 비회원인 경우, null
+
+    @Builder
+    public Reservation(Long reservationNumber, LocalDate targetDate, LocalTime targetTime,
+                       Integer headcount, Integer totalPrice, MemberVerifiedStatus isMemberVerified,
+                       String bookerName, String bookerPhoneNumber, String themeId, String memberId) {
+        this.reservationNumber = reservationNumber;
+        this.targetDate = targetDate;
+        this.targetTime = targetTime;
+        this.headcount = headcount;
+        this.totalPrice = totalPrice;
+        this.isMemberVerified = isMemberVerified;
+        this.bookerName = bookerName;
+        this.bookerPhoneNumber = bookerPhoneNumber;
+        this.themeId = themeId;
+        this.memberId = memberId;
+    }
 }
