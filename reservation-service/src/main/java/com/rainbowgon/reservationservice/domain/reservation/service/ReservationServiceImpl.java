@@ -2,6 +2,7 @@ package com.rainbowgon.reservationservice.domain.reservation.service;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBriefResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationResultResDto;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import com.rainbowgon.reservationservice.domain.reservation.repository.ReservationRepository;
@@ -13,6 +14,8 @@ import com.rainbowgon.reservationservice.global.error.exception.BookerInfoInvali
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +96,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         return ReservationResultResDto.success(reservation.getId(), reservation.getReservationNumber(),
                                                totalPrice);
+    }
+
+    @Override
+    public List<ReservationBriefResDto> getAllReservationHistory(String memberId) {
+        return null;
     }
 
     // TODO 예약 기능 동작
