@@ -1,6 +1,7 @@
 package com.rainbowgon.reservationservice.domain.reservation.controller;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.request.WaitingReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.*;
 import com.rainbowgon.reservationservice.domain.reservation.service.ReservationService;
 import com.rainbowgon.reservationservice.global.response.JsonResponse;
@@ -59,5 +60,13 @@ public class ReservationAuthController {
                 reservationService.getReservationDetail(memberId, reservationId);
 
         return JsonResponse.ok("회원의 예약 상세 정보를 가져왔습니다.", reservationDetailResDto);
+    }
+
+    @PostMapping("/waiting")
+    public ResponseEntity<?> waitCancelledReservation(
+            @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
+
+
+        return JsonResponse.ok("예약 대기 신청을 완료했습니다.");
     }
 }
