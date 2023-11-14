@@ -5,4 +5,6 @@ import com.rainbowgon.reservationservice.domain.reservation.dto.response.Reserva
 public interface ReservationService {
 
     ReservationBaseInfoResDto getReservationBaseInfo(String memberId, String themeId);
+
+    ReservationBaseInfoResDto getReservationBaseInfo(String themeId);
 }
