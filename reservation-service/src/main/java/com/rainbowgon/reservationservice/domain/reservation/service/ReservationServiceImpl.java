@@ -2,6 +2,7 @@ package com.rainbowgon.reservationservice.domain.reservation.service;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBriefResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationResultResDto;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import com.rainbowgon.reservationservice.domain.reservation.repository.ReservationRepository;
@@ -13,6 +14,9 @@ import com.rainbowgon.reservationservice.global.error.exception.BookerInfoInvali
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +97,17 @@ public class ReservationServiceImpl implements ReservationService {
 
         return ReservationResultResDto.success(reservation.getId(), reservation.getReservationNumber(),
                                                totalPrice);
+    }
+
+    // TODO Pagination
+    @Override
+    @Transactional
+    public List<ReservationBriefResDto> getAllReservationHistory(String memberId) {
+        return reservationRepository.findAllByMemberId(memberId).stream().map(reservation -> {
+            ThemeBriefInfoInDto themeBriefInfo =
+                    searchServiceClient.getThemeBriefInfo(reservation.getThemeId());
+            return ReservationBriefResDto.from(reservation, themeBriefInfo);
+        }).collect(Collectors.toList());
     }
 
     // TODO 예약 기능 동작
