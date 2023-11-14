@@ -1,6 +1,7 @@
 package com.rainbowgon.reservationservice.domain.reservation.service;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.request.UnauthReservationDetailReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBriefResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationDetailResDto;
@@ -120,6 +121,11 @@ public class ReservationServiceImpl implements ReservationService {
         ThemeBriefInfoInDto themeBriefInfo = searchServiceClient.getThemeBriefInfo(reservation.getThemeId());
 
         return ReservationDetailResDto.from(reservation, themeBriefInfo);
+    }
+
+    @Override
+    public ReservationDetailResDto getReservationDetail(UnauthReservationDetailReqDto unauthReservationDetailReqDto) {
+        return null;
     }
 
     // TODO 예약 기능 동작
