@@ -20,7 +20,7 @@ public class KafkaConsumer {
     private final SenderService senderService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @KafkaListener(topics = "notification", groupId = "rainbowgon")
+    @KafkaListener(topics = "notification", groupId = "${kafka.consumer.groupId}")
     public void getMessage(String message) throws IOException {
 
         log.info("consumed message : {}", message);
