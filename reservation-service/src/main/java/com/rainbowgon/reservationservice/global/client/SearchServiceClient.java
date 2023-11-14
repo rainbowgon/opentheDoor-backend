@@ -10,6 +10,11 @@ public interface SearchServiceClient {
 
     // TODO URL 수정하기
     @GetMapping("/{theme-id}")
-    ThemeBriefInfoInDto getThemeInfoForReservation(@PathVariable("theme-id") String themeId);
+    ThemeBriefInfoInDto getThemeBriefInfo(@PathVariable("theme-id") String themeId);
+
+    // TODO URL 수정하기
+    // 테마 ID와 인원수를 전달하여 총 금액 받기
+    @GetMapping()
+    Integer getTotalPrice(String themeId, Integer headcount);
 
 }

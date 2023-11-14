@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface MemberServiceClient {
 
     @GetMapping("")
-    MemberBriefInfoInDto getMemberInfoForReservation(@PathVariable String memberId);
+    MemberBriefInfoInDto getMemberBriefInfo(@PathVariable String memberId);
 
 }
