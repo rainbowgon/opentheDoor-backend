@@ -8,6 +8,6 @@ import lombok.*;
 @Builder
 public class ReservationOutDto {
 
-    private String bookerName;
-    private String bookerPhoneNumber;
+    private String memberId;
+    private String themeId;
 }

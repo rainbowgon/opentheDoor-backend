@@ -1,7 +1,7 @@
 package com.rainbowgon.memberservice.domain.member.controller;
 
+import com.rainbowgon.memberservice.domain.member.dto.response.BookerInfoResDto;
 import com.rainbowgon.memberservice.domain.member.service.MemberService;
-import com.rainbowgon.memberservice.global.client.dto.output.ReservationOutDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +23,9 @@ public class MemberClientController {
      * memberId로 회원 이름과 전화번호 조회
      */
     @GetMapping("/booker/{member-id}")
-    public ResponseEntity<ReservationOutDto> selectBookerInfo(@PathVariable("member-id") String memberId) {
+    public ResponseEntity<BookerInfoResDto> selectBookerInfo(@PathVariable("member-id") String memberId) {
 
-        ReservationOutDto bookerInfo = memberService.selectBookerInfo(memberId);
+        BookerInfoResDto bookerInfo = memberService.selectBookerInfo(memberId);
 
         return ResponseEntity.ok(bookerInfo);
     }

@@ -5,12 +5,12 @@ import com.rainbowgon.memberservice.domain.bookmark.service.BookmarkService;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
+import com.rainbowgon.memberservice.domain.member.dto.response.BookerInfoResDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.member.repository.MemberRepository;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
-import com.rainbowgon.memberservice.global.client.dto.output.ReservationOutDto;
 import com.rainbowgon.memberservice.global.error.exception.MemberBadPhoneNumberException;
 import com.rainbowgon.memberservice.global.error.exception.MemberNotFoundException;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
@@ -120,16 +120,14 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * reservation-service와 feign 통신
+     * memberId로 name, phoneNumber 조회
      */
     @Override
-    public ReservationOutDto selectBookerInfo(String memberId) {
+    public BookerInfoResDto selectBookerInfo(String memberId) {
 
         Member member = memberRepository.findById(UUID.fromString(memberId)).orElseThrow(MemberNotFoundException::new);
-        
-        return ReservationOutDto.builder()
-                .bookerName(member.getName())
-                .bookerPhoneNumber(member.getPhoneNumber())
-                .build();
+
+        return BookerInfoResDto.of(member.getName(), member.getPhoneNumber());
     }
 
     /**

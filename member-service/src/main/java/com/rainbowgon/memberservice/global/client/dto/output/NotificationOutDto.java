@@ -10,7 +10,7 @@ import java.time.LocalTime;
 @Builder
 public class NotificationOutDto {
 
-    private String profileId;
+    private String memberId;
     private String fcmToken;
     private String themeId;
     private String title;
