@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReservationInDto {
 
-    private Long memberId;
+    private String memberId;
     private String fcmToken;
     private String themeId;
     private String title;

@@ -19,7 +19,9 @@ public class NotificationLog extends BaseEntity {
     @Column(name = "notification_id", columnDefinition = "INT UNSIGNED")
     private Long id;
 
-    private Long memberId;
+    @Column(columnDefinition = "CHAR(36)")
+    private String memberId;
+
     private String themeId;
     private String title;
     private String body;
@@ -29,7 +31,7 @@ public class NotificationLog extends BaseEntity {
     private NotificationType notificationType;
 
     @Builder
-    public NotificationLog(Long memberId, String themeId, String title, String body,
+    public NotificationLog(String memberId, String themeId, String title, String body,
                            NotificationType notificationType) {
         this.memberId = memberId;
         this.themeId = themeId;

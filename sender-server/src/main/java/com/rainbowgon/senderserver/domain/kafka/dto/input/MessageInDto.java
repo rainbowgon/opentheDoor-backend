@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MessageInDto {
 
-    private Long memberId;
+    private String memberId;
     private String fcmToken;
     private String themeId;
     private String title;
