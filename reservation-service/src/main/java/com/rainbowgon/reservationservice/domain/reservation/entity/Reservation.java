@@ -26,12 +26,15 @@ public class Reservation extends BaseEntity {
 
     private LocalTime targetTime;
 
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long headcount;
+    @Column(columnDefinition = "MEDIUMINT UNSIGNED")
+    private Integer headcount;
+
+    @Column(columnDefinition = "MEDIUMINT UNSIGNED")
+    private Integer totalPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(12)")
-    private VerifiedStatus isVerified;
+    private MemberVerifiedStatus isMemberVerified; // 회원인지, 비회원인지
 
     @Column(columnDefinition = "VARCHAR(20)")
     private String bookerName;
@@ -39,9 +42,8 @@ public class Reservation extends BaseEntity {
     @Column(columnDefinition = "CHAR(11)")
     private String bookerPhoneNumber;
 
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long themeId; // 테마 ID
+    private String themeId; // 테마 ID
 
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long bookerId; // 프로필 ID
+    @Column(columnDefinition = "CHAR(36)")
+    private String memberId; // 멤버 ID / 비회원인 경우, null
 }

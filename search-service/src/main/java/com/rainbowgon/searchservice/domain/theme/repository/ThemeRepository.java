@@ -35,6 +35,13 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
                     "            }," +
                     "            {" +
                     "                \"wildcard\": {" +
+                    "                    \"location\": {" +
+                    "                        \"value\": \"*?0*\"" +
+                    "                    }" +
+                    "                }" +
+                    "            }," +
+                    "            {" +
+                    "                \"wildcard\": {" +
                     "                    \"genre\": {" +
                     "                        \"value\": \"*?0*\"" +
                     "                    }" +
@@ -44,5 +51,5 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
                     "    }" +
                     "}")
     List<Theme> searchByKeyword(String keyword);
-    
+
 }
