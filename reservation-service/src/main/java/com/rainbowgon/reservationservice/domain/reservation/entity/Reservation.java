@@ -45,5 +45,5 @@ public class Reservation extends BaseEntity {
     private String themeId; // 테마 ID
 
     @Column(columnDefinition = "CHAR(36)")
-    private String memberID; // 멤버 ID / 비회원인 경우, null
+    private String memberId; // 멤버 ID / 비회원인 경우, null
 }
