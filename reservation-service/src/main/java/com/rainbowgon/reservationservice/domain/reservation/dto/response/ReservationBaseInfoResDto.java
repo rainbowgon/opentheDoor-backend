@@ -47,4 +47,24 @@ public class ReservationBaseInfoResDto {
 
     }
 
+    // TODO timeSlotList 넣기
+    public static ReservationBaseInfoResDto from(String themeId,
+                                                 ThemeBriefInfoInDto themeDto) {
+        return ReservationBaseInfoResDto.builder()
+                .bookerName(null)
+                .bookerPhoneNumber(null)
+                .timeSlotList(null)
+                .themeId(themeId)
+                .poster(themeDto.getPoster())
+                .title(themeDto.getTitle())
+                .venue(themeDto.getVenue())
+                .location(themeDto.getLocation())
+                .genre(themeDto.getGenre())
+                .priceList(themeDto.getPriceList())
+                .siteToS(themeDto.getSiteToS())
+                .venueToS(themeDto.getVenueToS())
+                .build();
+
+    }
+
 }
