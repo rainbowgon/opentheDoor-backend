@@ -35,7 +35,7 @@ public class FCMInitializer {
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
-                log.info("FirebaseApp initialization complete");
+                log.info("FirebaseApp initialization 완료");
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

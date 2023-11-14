@@ -13,7 +13,8 @@ public class Notification {
     @Id
     private Long notificationId;
     @Indexed
-    private Long memberId;
+    private String memberId;
+
     private String themeId;
     private String title;
     private String body;
@@ -21,7 +22,7 @@ public class Notification {
     private ViewStatus viewStatus = ViewStatus.NOT_VIEWED;
 
     @Builder
-    public Notification(Long notificationId, Long memberId, String themeId, String title, String body,
+    public Notification(Long notificationId, String memberId, String themeId, String title, String body,
                         NotificationType notificationType) {
         this.notificationId = notificationId;
         this.memberId = memberId;
