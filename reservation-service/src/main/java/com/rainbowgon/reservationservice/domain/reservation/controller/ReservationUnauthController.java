@@ -45,7 +45,11 @@ public class ReservationUnauthController {
     }
 
     @PostMapping("/reserved")
-    public ResponseEntity<> getReservationDetail(@RequestBody UnauthReservationDetailReqDto unauthReservationDetailReqDto) {
-        ReservationDetailResDto reservationDetailResDto = reservationService.getReservationDetail(unauthReservationDetailReqDto);
+    public ResponseEntity<?> getReservationDetail(
+            @RequestBody UnauthReservationDetailReqDto unauthReservationDetailReqDto) {
+        ReservationDetailResDto reservationDetailResDto =
+                reservationService.getReservationDetail(unauthReservationDetailReqDto);
+
+        return JsonResponse.ok("비회원의 예약 상세 정보를 가져왔습니다.", reservationDetailResDto);
     }
 }
