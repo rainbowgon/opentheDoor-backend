@@ -85,6 +85,11 @@ public class ThemeServiceImpl implements ThemeService {
                 cacheRedisThemeTemplate.expire(distanceKey, Duration.ofMinutes(20));
                 createZSET(sortingKey, reviewKey, recommendKey, theme);
 
+                System.out.println("===================================================================");
+                System.out.println(getScore(theme, "BOOKMARK"));
+                System.out.println(getScore(theme, "REVIEW"));
+                System.out.println(getScore(theme, "RECOMMEND"));
+                System.out.println("===================================================================");
             }
         }
 
@@ -120,10 +125,7 @@ public class ThemeServiceImpl implements ThemeService {
         // 수동 페이지네이션 적용
         int start = page * size;
         int end = Math.min((page + 1) * size, filteredThemes.size());
-        System.out.println("===================================================================");
-        System.out.println(cacheRedisThemeTemplate.keys("*"));
-        System.out.println(sortingRedisStringTemplate.keys("*"));
-        System.out.println("===================================================================");
+
 
         List<ThemeSimpleResDto> content = filteredThemes.stream()
                 .skip(start)
