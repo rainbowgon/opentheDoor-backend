@@ -48,6 +48,9 @@ public class ReservationAuthController {
 
     @GetMapping("/reserved")
     public ResponseEntity<?> getAllReservationHistory(@RequestHeader String memberId) {
+
         List<ReservationBriefResDto> historyList = reservationService.getAllReservationHistory(memberId);
+
+        return JsonResponse.ok("회원의 예약 내역 리스트를 가져왔습니다.", historyList);
     }
 }

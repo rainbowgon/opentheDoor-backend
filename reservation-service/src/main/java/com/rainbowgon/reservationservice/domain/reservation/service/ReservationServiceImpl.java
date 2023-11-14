@@ -99,7 +99,9 @@ public class ReservationServiceImpl implements ReservationService {
                                                totalPrice);
     }
 
+    // TODO Pagination
     @Override
+    @Transactional
     public List<ReservationBriefResDto> getAllReservationHistory(String memberId) {
         return reservationRepository.findAllByMemberId(memberId).stream().map(reservation -> {
             ThemeBriefInfoInDto themeBriefInfo =
