@@ -8,6 +8,7 @@ import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
+import com.rainbowgon.searchservice.global.client.dto.output.ReservationDetailOutDto;
 import com.rainbowgon.searchservice.global.error.exception.PriceNotFoundException;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
 import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
@@ -358,5 +359,15 @@ public class ThemeServiceImpl implements ThemeService {
             }
         }
         throw new PriceNotFoundException();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReservationDetailOutDto getThemeForReservation(String themeId) {
+        Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+
+        ReservationDetailOutDto reservationDetailOutDto = ReservationDetailOutDto.from(theme);
+
+        return reservationDetailOutDto;
     }
 }

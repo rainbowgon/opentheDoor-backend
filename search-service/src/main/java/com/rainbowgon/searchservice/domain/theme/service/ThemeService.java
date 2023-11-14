@@ -6,6 +6,7 @@ import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
+import com.rainbowgon.searchservice.global.client.dto.output.ReservationDetailOutDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -32,4 +33,6 @@ public interface ThemeService {
     List<ThemeSimpleResDto> getRanks();
 
     Integer getPrice(String themeId, Integer headcount);
+
+    ReservationDetailOutDto getThemeForReservation(String themeId);
 }
