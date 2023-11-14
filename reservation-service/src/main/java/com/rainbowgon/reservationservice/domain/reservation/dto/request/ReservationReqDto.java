@@ -13,7 +13,6 @@ public class ReservationReqDto {
     private LocalDate targetDate;
     private LocalTime targetTime;
     private Integer headcount;
-    private Integer totalPrice;
     private String bookerName;
     private String bookerPhoneNumber;
     private String themeId;
@@ -23,7 +22,6 @@ public class ReservationReqDto {
                 .targetDate(targetDate)
                 .targetTime(targetTime)
                 .headcount(headcount)
-                .totalPrice(totalPrice)
                 .isMemberVerified(MemberVerifiedStatus.VERIFIED)
                 .bookerName(bookerName)
                 .bookerPhoneNumber(bookerPhoneNumber)
