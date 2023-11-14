@@ -6,8 +6,9 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class ReservationSuccessResDto {
+public class ReservationResultResDto {
 
+    private ReservationSuccess isSucceed;
     private Long reservationId;
     private Long reservationNumber;
 }
