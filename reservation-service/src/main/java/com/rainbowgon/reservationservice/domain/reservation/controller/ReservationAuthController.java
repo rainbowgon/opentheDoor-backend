@@ -1,5 +1,6 @@
 package com.rainbowgon.reservationservice.domain.reservation.controller;
 
+import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
 import com.rainbowgon.reservationservice.domain.reservation.service.ReservationService;
 import com.rainbowgon.reservationservice.global.response.JsonResponse;
