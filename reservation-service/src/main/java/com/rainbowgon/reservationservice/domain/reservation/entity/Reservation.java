@@ -26,8 +26,11 @@ public class Reservation extends BaseEntity {
 
     private LocalTime targetTime;
 
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long headcount;
+    @Column(columnDefinition = "MEDIUMINT UNSIGNED")
+    private Integer headcount;
+
+    @Column(columnDefinition = "MEDIUMINT UNSIGNED")
+    private Integer totalPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(12)")
@@ -42,5 +45,5 @@ public class Reservation extends BaseEntity {
     private String themeId; // 테마 ID
 
     @Column(columnDefinition = "CHAR(36)")
-    private Long memberID; // 멤버 ID / 비회원인 경우, null
+    private String memberID; // 멤버 ID / 비회원인 경우, null
 }
