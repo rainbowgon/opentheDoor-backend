@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -100,8 +101,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<ReservationBriefResDto> getAllReservationHistory(String memberId) {
-        List<Reservation> reservationList = reservationRepository.findAllByMemberId(memberId);
-        return null;
+        return reservationRepository.findAllByMemberId(memberId).stream().map(reservation -> {
+            ThemeBriefInfoInDto themeBriefInfo =
+                    searchServiceClient.getThemeBriefInfo(reservation.getThemeId());
+            return ReservationBriefResDto.from(reservation, themeBriefInfo);
+        }).collect(Collectors.toList());
     }
 
     // TODO 예약 기능 동작
