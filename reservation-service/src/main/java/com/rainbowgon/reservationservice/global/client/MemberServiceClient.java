@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "member-service")
 public interface MemberServiceClient {
 
-    @GetMapping("")
-    MemberBriefInfoInDto getMemberBriefInfo(@PathVariable String memberId);
+    @GetMapping("/clients/members/booker/{member-id}")
+    MemberBriefInfoInDto getMemberBriefInfo(@PathVariable("member-id") String memberId);
 
 }
