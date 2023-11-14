@@ -11,9 +11,9 @@ import java.util.List;
 @FeignClient(name = "search-service")
 public interface SearchServiceClient {
 
-    @GetMapping("/clients/themes/info")
+    @GetMapping("/clients/themes/detail-lists")
     List<ThemeDetailInDto> getBookmarkThemeDetailInfo(@RequestBody List<String> themeIdList);
 
-    @GetMapping("/clients/themes/")
+    @GetMapping("/clients/themes/simple-lists")
     List<ThemeSimpleInDto> getBookmarkThemeSimpleInfo(@RequestBody List<String> themeIdList);
 }
