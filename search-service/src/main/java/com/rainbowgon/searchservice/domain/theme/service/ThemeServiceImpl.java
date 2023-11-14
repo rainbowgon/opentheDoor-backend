@@ -208,7 +208,7 @@ public class ThemeServiceImpl implements ThemeService {
     @Transactional(readOnly = true)
     public List<BookmarkDetailOutDto> selectDetailThemesById(BookmarkInDtoList themeIdList) {
         List<BookmarkDetailOutDto> themeDetailResDtoList = new ArrayList<>();
-        for (String themeId : themeIdList.getThemeList()) {
+        for (String themeId : themeIdList.getThemeIdList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
             themeDetailResDtoList.add(BookmarkDetailOutDto.from(theme));
         }
@@ -217,13 +217,13 @@ public class ThemeServiceImpl implements ThemeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookmarkSimpleOutDto> selectSimpleThemesById(BookmarkInDtoList themeIdList) {
-        List<BookmarkSimpleOutDto> themeDetailResDtoList = new ArrayList<>();
-        for (String themeId : themeIdList.getThemeList()) {
+    public List<BookmarkSimpleOutDto> selectSimpleThemesById(BookmarkInDtoList bookmarkInDtoList) {
+        List<BookmarkSimpleOutDto> themeSimpleResDtoList = new ArrayList<>();
+        for (String themeId : bookmarkInDtoList.getThemeIdList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-            themeDetailResDtoList.add(BookmarkSimpleOutDto.from(theme));
+            themeSimpleResDtoList.add(BookmarkSimpleOutDto.from(theme));
         }
-        return themeDetailResDtoList;
+        return themeSimpleResDtoList;
     }
 
     @Override

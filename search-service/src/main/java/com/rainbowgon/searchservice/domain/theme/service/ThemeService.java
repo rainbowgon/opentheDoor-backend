@@ -20,9 +20,9 @@ public interface ThemeService {
 
     ThemeDetailResDto selectOneThemeById(String themeId);
 
-    List<BookmarkDetailOutDto> selectDetailThemesById(BookmarkInDtoList themeIdList);
+    List<BookmarkDetailOutDto> selectDetailThemesById(BookmarkInDtoList bookmarkInDtoList);
 
-    List<BookmarkSimpleOutDto> selectSimpleThemesById(BookmarkInDtoList themeIdList);
+    List<BookmarkSimpleOutDto> selectSimpleThemesById(BookmarkInDtoList bookmarkInDtoList);
 
     Page<ThemeSimpleResDto> sort(String keyword, String sortBy, Double latitude, Double longitude,
                                  Integer headcount, List<String> region,
