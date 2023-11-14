@@ -3,6 +3,7 @@ package com.rainbowgon.reservationservice.domain.reservation.service;
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBriefResDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationDetailResDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationResultResDto;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import com.rainbowgon.reservationservice.domain.reservation.repository.ReservationRepository;
@@ -11,6 +12,7 @@ import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
 import com.rainbowgon.reservationservice.global.client.dto.input.MemberBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.error.exception.BookerInfoInvalidException;
+import com.rainbowgon.reservationservice.global.error.exception.ReservationNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +110,16 @@ public class ReservationServiceImpl implements ReservationService {
                     searchServiceClient.getThemeBriefInfo(reservation.getThemeId());
             return ReservationBriefResDto.from(reservation, themeBriefInfo);
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public ReservationDetailResDto getReservationDetail(String memberId, Long reservationId) {
+        Reservation reservation =
+                reservationRepository.findByIdAndMemberId(reservationId, memberId).orElseThrow(ReservationNotFoundException::new);
+
+        ThemeBriefInfoInDto themeBriefInfo = searchServiceClient.getThemeBriefInfo(reservation.getThemeId());
+
+        return ReservationDetailResDto.from(reservation, themeBriefInfo);
     }
 
     // TODO 예약 기능 동작
