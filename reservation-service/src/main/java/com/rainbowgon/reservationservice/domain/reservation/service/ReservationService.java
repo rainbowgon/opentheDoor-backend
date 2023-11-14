@@ -11,4 +11,7 @@ public interface ReservationService {
     ReservationBaseInfoResDto getReservationBaseInfo(String themeId);
 
     ReservationResultResDto makeReservation(String memberId, ReservationReqDto reservationReqDto);
+
+    ReservationResultResDto makeReservation(ReservationReqDto reservationReqDto);
+
 }

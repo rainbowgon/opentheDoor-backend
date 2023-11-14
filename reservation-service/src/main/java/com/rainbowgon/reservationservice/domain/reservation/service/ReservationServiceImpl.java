@@ -57,7 +57,7 @@ public class ReservationServiceImpl implements ReservationService {
         validateBookerInfo(memberId, reservationReqDto);
 
         // TODO 예약 기능 동작
-        boolean isSucceed = actReservation(memberId);
+        boolean isSucceed = actReservation(reservationReqDto);
 
         if (!isSucceed) {
             return ReservationResultResDto.fail();
@@ -74,8 +74,29 @@ public class ReservationServiceImpl implements ReservationService {
                                                totalPrice);
     }
 
+    @Override
+    @Transactional
+    public ReservationResultResDto makeReservation(ReservationReqDto reservationReqDto) {
+
+        boolean isSucceed = actReservation(reservationReqDto);
+
+        if (!isSucceed) {
+            return ReservationResultResDto.fail();
+        }
+
+        Integer totalPrice = searchServiceClient.getTotalPrice(reservationReqDto.getThemeId(),
+                                                               reservationReqDto.getHeadcount());
+
+        Reservation reservation = reservationReqDto.toUnauthEntity(totalPrice);
+        reservationRepository.save(reservation);
+        reservation.updateReservationNumber();
+
+        return ReservationResultResDto.success(reservation.getId(), reservation.getReservationNumber(),
+                                               totalPrice);
+    }
+
     // TODO 예약 기능 동작
-    private boolean actReservation(String memberId) {
+    private boolean actReservation(ReservationReqDto reservationReqDto) {
 
         return true;
     }

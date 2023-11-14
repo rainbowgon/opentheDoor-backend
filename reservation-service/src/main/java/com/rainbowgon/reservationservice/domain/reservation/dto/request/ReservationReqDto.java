@@ -34,4 +34,17 @@ public class ReservationReqDto {
                 .build();
     }
 
+    public Reservation toUnauthEntity(Integer totalPrice) {
+        return Reservation.builder()
+                .targetDate(targetDate)
+                .targetTime(targetTime)
+                .headcount(headcount)
+                .totalPrice(totalPrice)
+                .isMemberVerified(MemberVerifiedStatus.NOT_VERIFIED)
+                .bookerName(bookerName)
+                .bookerPhoneNumber(bookerPhoneNumber)
+                .themeId(themeId)
+                .memberId(null)
+                .build();
+    }
 }
