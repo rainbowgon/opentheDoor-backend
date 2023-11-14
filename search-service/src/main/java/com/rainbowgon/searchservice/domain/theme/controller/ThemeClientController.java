@@ -17,7 +17,7 @@ public class ThemeClientController {
 
     private final ThemeService themeService;
 
-    @GetMapping("/detail-lists")
+    @PostMapping("/detail-lists")
     public ResponseEntity<List<BookmarkDetailOutDto>> selectDetailThemes(
             @RequestBody BookmarkInDtoList bookmarkInDtoList) {
         List<BookmarkDetailOutDto> BookmarkDetailOutDtoList =
@@ -26,7 +26,7 @@ public class ThemeClientController {
         return ResponseEntity.ok(BookmarkDetailOutDtoList);
     }
 
-    @GetMapping("/simple-lists")
+    @PostMapping("/simple-lists")
     public ResponseEntity<List<BookmarkSimpleOutDto>> selectSimpleThemes(
             @RequestBody BookmarkInDtoList bookmarkInDtoList) {
         List<BookmarkSimpleOutDto> BookmarkSimpleOutDtoList =

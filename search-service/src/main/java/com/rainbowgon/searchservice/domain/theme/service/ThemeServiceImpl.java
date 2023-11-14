@@ -122,6 +122,7 @@ public class ThemeServiceImpl implements ThemeService {
         int end = Math.min((page + 1) * size, filteredThemes.size());
         System.out.println("===================================================================");
         System.out.println(cacheRedisThemeTemplate.keys("*"));
+        System.out.println(sortingRedisStringTemplate.keys("*"));
         System.out.println("===================================================================");
 
         List<ThemeSimpleResDto> content = filteredThemes.stream()
