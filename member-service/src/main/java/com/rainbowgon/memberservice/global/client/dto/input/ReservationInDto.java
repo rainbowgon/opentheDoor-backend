@@ -12,8 +12,6 @@ import java.time.LocalTime;
 public class ReservationInDto {
 
     private Long reservationId; // 예약 ID
-    private Long reservationNumber; // 예약 번호
-    private String themeId; // 테마 ID
     private LocalDate targetDate; // 예약 날짜
     private LocalTime targetTime; // 예약 시간
     private Integer headcount; // 인원

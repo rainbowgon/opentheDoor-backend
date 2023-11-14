@@ -5,6 +5,7 @@ import com.rainbowgon.memberservice.domain.bookmark.service.BookmarkService;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
+import com.rainbowgon.memberservice.domain.member.dto.response.BookerInfoResDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.member.repository.MemberRepository;
@@ -115,6 +116,18 @@ public class MemberServiceImpl implements MemberService {
 
         // 회원의 북마크 내역 삭제 요청 보내기
         bookmarkService.deleteBookmark(memberId);
+    }
+
+    /**
+     * reservation-service와 feign 통신
+     * memberId로 name, phoneNumber 조회
+     */
+    @Override
+    public BookerInfoResDto selectBookerInfo(String memberId) {
+
+        Member member = memberRepository.findById(UUID.fromString(memberId)).orElseThrow(MemberNotFoundException::new);
+
+        return BookerInfoResDto.of(member.getName(), member.getPhoneNumber());
     }
 
     /**

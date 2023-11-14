@@ -11,10 +11,10 @@ import java.util.List;
 @FeignClient(name = "notification-service")
 public interface NotificationServiceClient {
 
-    @PostMapping("/notifications/clients/bookmark")
+    @PostMapping("/clients/notifications/bookmark")
     void sendBookmarkNotification(@RequestBody List<NotificationOutDto> notificationOutDtoList);
 
-    @GetMapping("/notifications/clients/test")
+    @GetMapping("/clients/notifications/test")
     String testNotificationService();
 
 }

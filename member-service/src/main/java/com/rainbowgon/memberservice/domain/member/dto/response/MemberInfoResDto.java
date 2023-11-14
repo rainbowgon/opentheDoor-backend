@@ -31,4 +31,5 @@ public class MemberInfoResDto { // 개인정보 수정 화면에 뿌려줄 데�
                 .birthDate(member.getBirthDate())
                 .build();
     }
+
 }
