@@ -24,8 +24,12 @@ public class ThemeSimpleResDto {
     private Integer timeLimit; // 소요 시간 (분 단위)
     private Double latitude; // 위도
     private Double longitude; // 경도
+    private Double ratingScore; // 테마 평균 별점
+    private Integer reviewCount; // 테마 리뷰 수
+    private Integer bookmarkCount; // 북마크 리뷰 수
 
-    public static ThemeSimpleResDto from(Theme theme) {
+    public static ThemeSimpleResDto from(Theme theme, Integer bookmarkCount, Integer reviewCount,
+                                         Double ratingScore) {
         return ThemeSimpleResDto.builder()
                 .themeId(theme.getThemeId())
                 .venue(theme.getVenue())
@@ -37,6 +41,9 @@ public class ThemeSimpleResDto {
                 .maxHeadcount(theme.getMaxHeadcount())
                 .latitude(theme.getLatitude())
                 .longitude(theme.getLongitude())
+                .bookmarkCount(bookmarkCount)
+                .reviewCount(reviewCount)
+                .ratingScore(ratingScore)
                 .build();
     }
 

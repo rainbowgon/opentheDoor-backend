@@ -32,9 +32,12 @@ public class ThemeDetailResDto {
     private Double horror; // 공포도
     private Double latitude; // 위도
     private Double longitude; // 경도
+    private Double ratingScore; // 테마 평균 별점
+    private Integer reviewCount; // 테마 리뷰 수
+    private Integer bookmarkCount; // 북마크 리뷰 수
 
-
-    public static ThemeDetailResDto from(Theme theme) {
+    public static ThemeDetailResDto from(Theme theme, Integer bookmarkCount, Integer reviewCount,
+                                         Double ratingScore) {
         return ThemeDetailResDto.builder()
                 .themeId(theme.getThemeId())
                 .venue(theme.getVenue())
@@ -55,6 +58,9 @@ public class ThemeDetailResDto {
                 .venueTos(theme.getVenueToS())
                 .latitude(theme.getLatitude())
                 .longitude(theme.getLongitude())
+                .bookmarkCount(bookmarkCount)
+                .reviewCount(reviewCount)
+                .ratingScore(ratingScore)
                 .build();
     }
 }
