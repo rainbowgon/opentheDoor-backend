@@ -9,6 +9,7 @@ import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,10 +64,10 @@ public class ReservationAuthController {
     }
 
     @PostMapping("/waiting")
-    public ResponseEntity<?> waitEmptyTimeSlot(
+    public ResponseEntity<ResponseWrapper<Nullable>> waitEmptyTimeSlot(
             @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
 
-        reservationService.waitEmptyTimeSlot(waitingReqDto);
+        reservationService.waitEmptyTimeSlot(memberId, waitingReqDto);
 
         return JsonResponse.ok("예약 대기 신청을 완료했습니다.");
     }

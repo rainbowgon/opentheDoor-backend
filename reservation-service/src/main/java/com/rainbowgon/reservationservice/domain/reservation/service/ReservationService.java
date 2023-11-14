@@ -26,5 +26,5 @@ public interface ReservationService {
 
     ReservationDetailResDto getReservationDetail(UnauthReservationDetailReqDto unauthReservationDetailReqDto);
 
-    void waitEmptyTimeSlot(WaitingReqDto waitingReqDto);
+    void waitEmptyTimeSlot(String memberId, WaitingReqDto waitingReqDto);
 }

@@ -138,7 +138,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public void waitEmptyTimeSlot(WaitingReqDto waitingReqDto) {
+    public void waitEmptyTimeSlot(String memberId, WaitingReqDto waitingReqDto) {
 
         // TODO 레디스에 예약 대기 정보 저장
     }
