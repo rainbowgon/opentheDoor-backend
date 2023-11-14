@@ -63,4 +63,8 @@ public class Reservation extends BaseEntity {
         this.themeId = themeId;
         this.memberId = memberId;
     }
+
+    public void updateReservationNumber() {
+        this.reservationNumber = this.id + 1000;
+    }
 }
