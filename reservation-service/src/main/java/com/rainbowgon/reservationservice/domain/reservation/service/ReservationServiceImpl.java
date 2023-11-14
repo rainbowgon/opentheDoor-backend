@@ -27,4 +27,14 @@ public class ReservationServiceImpl implements ReservationService {
 
         return ReservationBaseInfoResDto.from(themeId, memberInfoForReservation, themeInfoForReservation);
     }
+
+    @Override
+    public ReservationBaseInfoResDto getReservationBaseInfo(String themeId) {
+        ThemeBriefInfoInDto themeInfoForReservation =
+                searchServiceClient.getThemeInfoForReservation(themeId);
+
+        // TODO TimeSlotList 정보 가져오기
+
+        return ReservationBaseInfoResDto.from(themeId, themeInfoForReservation);
+    }
 }
