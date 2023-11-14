@@ -1,6 +1,8 @@
 package com.rainbowgon.reservationservice.domain.reservation.service;
 
+import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationBaseInfoResDto;
+import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationResultResDto;
 import com.rainbowgon.reservationservice.domain.reservation.repository.ReservationRepository;
 import com.rainbowgon.reservationservice.global.client.MemberServiceClient;
 import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
@@ -19,9 +21,9 @@ public class ReservationServiceImpl implements ReservationService {
 
     public ReservationBaseInfoResDto getReservationBaseInfo(String memberId, String themeId) {
         MemberBriefInfoInDto memberInfoForReservation =
-                memberServiceClient.getMemberInfoForReservation(memberId);
+                memberServiceClient.getMemberBriefInfo(memberId);
         ThemeBriefInfoInDto themeInfoForReservation =
-                searchServiceClient.getThemeInfoForReservation(themeId);
+                searchServiceClient.getThemeBriefInfo(themeId);
 
         // TODO TimeSlotList 정보 가져오기
 
@@ -31,10 +33,26 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationBaseInfoResDto getReservationBaseInfo(String themeId) {
         ThemeBriefInfoInDto themeInfoForReservation =
-                searchServiceClient.getThemeInfoForReservation(themeId);
+                searchServiceClient.getThemeBriefInfo(themeId);
 
         // TODO TimeSlotList 정보 가져오기
 
         return ReservationBaseInfoResDto.from(themeId, themeInfoForReservation);
+    }
+
+    /**
+     * 검증
+     * 1. 원하는 테아의 원하는 날짜, 시간대가 비어있는지 확인
+     * 2. 회원인 경우, 저장된 이름과 전화번호가 맞는지
+     * 3. 존재하는 themeId인지
+     * 4. 테마, 인원수(headcount)에 알맞는 가격(totalPrice)인지
+     */
+    @Override
+    public ReservationResultResDto makeReservation(String memberId, ReservationReqDto reservationReqDto) {
+
+        memberServiceClient.getMemberBriefInfo()
+
+
+        return null;
     }
 }
