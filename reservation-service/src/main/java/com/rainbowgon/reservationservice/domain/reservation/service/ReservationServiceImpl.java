@@ -74,7 +74,7 @@ public class ReservationServiceImpl implements ReservationService {
                                                totalPrice);
     }
 
-    // 예약 기능 동작
+    // TODO 예약 기능 동작
     private boolean actReservation(String memberId) {
 
         return true;
