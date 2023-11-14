@@ -30,4 +30,6 @@ public interface ThemeService {
     void setRanks();
 
     List<ThemeSimpleResDto> getRanks();
+
+    Integer getPrice(String themeId, Integer headcount);
 }

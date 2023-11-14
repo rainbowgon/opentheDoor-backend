@@ -19,7 +19,9 @@ public enum GlobalErrorCode implements BaseErrorCode {
 
     CUSTOM_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL_500_1", "서버 오류. 관리자에게 문의 부탁드립니다."),
 
-    THEME_NOT_FOUND(NOT_FOUND, "THEME-404-1", "주어진 ID에 해당하는 테마가 없습니다.");
+    THEME_NOT_FOUND(NOT_FOUND, "THEME-404-1", "주어진 ID에 해당하는 테마가 없습니다."),
+    
+    PRICE_NOT_FOUND(NOT_FOUND, "PRICE-404-1", "주어진 인원수에 해당하는 가격을 찾을 수 없습니다.");
 
     private HttpStatus status;
     private String code;
