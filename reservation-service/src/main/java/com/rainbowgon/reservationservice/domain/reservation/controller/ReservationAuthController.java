@@ -55,7 +55,9 @@ public class ReservationAuthController {
     public ResponseEntity<?> getReservationDetail(
             @RequestHeader String memberId, @PathVariable("reservation-id") Long reservationId) {
 
-        ReservationDetailResDto reservationDetailResDto = reservationService.getReservationDetail(memberId, reservationId)
+        ReservationDetailResDto reservationDetailResDto =
+                reservationService.getReservationDetail(memberId, reservationId);
 
+        return JsonResponse.ok("회원의 예약 상세 정보를 가져왔습니다.", reservationDetailResDto);
     }
 }
