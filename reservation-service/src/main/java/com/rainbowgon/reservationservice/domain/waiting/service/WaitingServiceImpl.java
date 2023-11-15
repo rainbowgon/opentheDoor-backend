@@ -8,10 +8,13 @@ import com.rainbowgon.reservationservice.domain.waiting.repository.WaitingRedisR
 import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeOriginalInfoInDto;
 import com.rainbowgon.reservationservice.global.error.exception.WaitingAlreadyExistsException;
+import com.rainbowgon.reservationservice.global.error.exception.WaitingHistoryNotFoundException;
 import com.rainbowgon.reservationservice.global.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +28,7 @@ public class WaitingServiceImpl implements WaitingService {
     @Transactional
     public void waitEmptyTimeSlot(String memberId, WaitingReqDto waitingReqDto) {
 
-        ThemeOriginalInfoInDto originalInfo = searchServiceClient.getOriginalInfo(waitingReqDto.getThemeId());
-        String waitingId = RedisUtil.createWaitingKey(originalInfo.getTitle(),
-                                                      originalInfo.getOriginalPoster(),
-                                                      waitingReqDto.getTargetDate(),
-                                                      waitingReqDto.getTargetTime());
+        String waitingId = getWaitingId(waitingReqDto);
 
         Waiting waiting = waitingRedisRepository.findById(waitingId)
                 .orElseGet(() -> waitingReqDto.toEntity(waitingId));
@@ -48,12 +47,43 @@ public class WaitingServiceImpl implements WaitingService {
         memberRedisRepository.save(member);
     }
 
+
     @Override
     @Transactional
     public void cancelWaiting(String memberId, WaitingReqDto waitingReqDto) {
 
-        Member member = memberRedisRepository.findById(memberId).orElseThrow();
+        Member member = memberRedisRepository.findById(memberId)
+                .orElseThrow(WaitingHistoryNotFoundException::new);
+        Set<String> waitingIdSet = member.getWaitingIdSet();
 
-        // TODO 레디스에 예약 대기 정보 삭제
+        String waitingId = getWaitingId(waitingReqDto);
+
+        if (!waitingIdSet.contains(waitingId)) {
+            throw WaitingHistoryNotFoundException.EXCEPTION;
+        }
+
+        Waiting waiting = waitingRedisRepository.findById(waitingId)
+                .orElseThrow(WaitingHistoryNotFoundException::new);
+
+        Set<String> memberIdSet = waiting.getMemberIdSet();
+
+        if (!memberIdSet.contains(memberId)) {
+            throw WaitingHistoryNotFoundException.EXCEPTION;
+        }
+
+        waitingIdSet.remove(waitingId);
+        memberIdSet.remove(memberId);
+
+        memberRedisRepository.save(member);
+        waitingRedisRepository.save(waiting);
+
+    }
+
+    private String getWaitingId(WaitingReqDto waitingReqDto) {
+        ThemeOriginalInfoInDto originalInfo = searchServiceClient.getOriginalInfo(waitingReqDto.getThemeId());
+        return RedisUtil.createWaitingKey(originalInfo.getTitle(),
+                                          originalInfo.getOriginalPoster(),
+                                          waitingReqDto.getTargetDate(),
+                                          waitingReqDto.getTargetTime());
     }
 }
