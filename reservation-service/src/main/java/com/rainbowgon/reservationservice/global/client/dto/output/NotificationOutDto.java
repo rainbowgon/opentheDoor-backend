@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class SuccessNotificationOutDto {
+public class NotificationOutDto {
 
     private String memberId;
     private String fcmToken;
@@ -23,9 +23,9 @@ public class SuccessNotificationOutDto {
     private LocalTime targetTime;
     private NotificationType reservationType;
 
-    public static SuccessNotificationOutDto success(String memberId, String fcmToken, String title,
-                                                    Reservation reservation) {
-        return SuccessNotificationOutDto.builder()
+    public static NotificationOutDto success(String memberId, String fcmToken, String title,
+                                             Reservation reservation) {
+        return NotificationOutDto.builder()
                 .memberId(memberId)
                 .fcmToken(fcmToken)
                 .themeId(reservation.getThemeId())

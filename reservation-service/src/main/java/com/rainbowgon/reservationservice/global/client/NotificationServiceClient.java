@@ -1,6 +1,6 @@
 package com.rainbowgon.reservationservice.global.client;
 
-import com.rainbowgon.reservationservice.global.client.dto.output.SuccessNotificationOutDto;
+import com.rainbowgon.reservationservice.global.client.dto.output.NotificationOutDto;
 import com.rainbowgon.reservationservice.global.client.dto.output.WaitingNotificationOutDto;
 import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,7 +17,7 @@ public interface NotificationServiceClient {
 
     @PostMapping("/reservation")
     ResponseWrapper<Nullable> notifyReservationSuccess(
-            @RequestBody SuccessNotificationOutDto successNotificationOutDto);
+            @RequestBody NotificationOutDto successNotificationOutDto);
 
     @PostMapping("/waiting")
     ResponseWrapper<Nullable> notifyEmptyTheme(
