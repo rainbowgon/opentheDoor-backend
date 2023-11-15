@@ -24,4 +24,6 @@ public interface MemberService {
 
     BookerInfoResDto selectBookerInfo(String memberId);
 
+    String selectMemberFcmToken(String memberId);
+
 }
