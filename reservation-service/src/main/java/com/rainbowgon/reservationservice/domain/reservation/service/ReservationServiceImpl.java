@@ -63,7 +63,6 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public ReservationResultResDto makeReservation(String memberId, ReservationReqDto reservationReqDto) {
 
-
         validateBookerInfo(memberId, reservationReqDto);
 
         // TODO 예약 기능 동작
@@ -146,7 +145,9 @@ public class ReservationServiceImpl implements ReservationService {
         String fcmToken = memberServiceClient.getFcmToken(memberId);
         ThemeBriefInfoInDto themeBriefInfo =
                 searchServiceClient.getThemeBriefInfo(reservationReqDto.getThemeId());
-        SuccessNotificationOutDto.success(memberId, fcmToken, themeBriefInfo.getTitle(), reservation);
+        SuccessNotificationOutDto notificationOutDto =
+                SuccessNotificationOutDto.success(memberId, fcmToken, themeBriefInfo.getTitle(), reservation);
+        notificationServiceClient.notifyReservationSuccess(notificationOutDto);
     }
 
     // TODO 예약 기능 동작
