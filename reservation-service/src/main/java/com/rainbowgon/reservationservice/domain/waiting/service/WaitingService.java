@@ -1,12 +1,10 @@
 package com.rainbowgon.reservationservice.domain.waiting.service;
 
-import com.rainbowgon.reservationservice.domain.waiting.repository.WaitingRedisRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.rainbowgon.reservationservice.domain.reservation.dto.request.WaitingReqDto;
 
-@Service
-@RequiredArgsConstructor
-public class WaitingService {
+public interface WaitingService {
 
-    private final WaitingRedisRepository waitingRedisRepository;
+    void waitEmptyTimeSlot(String memberId, WaitingReqDto waitingReqDto);
+
+    void cancelWaiting(String memberId, WaitingReqDto waitingReqDto);
 }

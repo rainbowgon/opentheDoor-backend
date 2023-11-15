@@ -24,4 +24,5 @@ public interface ReservationService {
     ReservationDetailResDto getReservationDetail(String memberId, Long reservationId);
 
     ReservationDetailResDto getReservationDetail(UnauthReservationDetailReqDto unauthReservationDetailReqDto);
+
 }
