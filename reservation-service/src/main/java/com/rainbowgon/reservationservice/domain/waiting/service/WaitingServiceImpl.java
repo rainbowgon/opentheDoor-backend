@@ -52,6 +52,8 @@ public class WaitingServiceImpl implements WaitingService {
     @Transactional
     public void cancelWaiting(String memberId, WaitingReqDto waitingReqDto) {
 
+        Member member = memberRedisRepository.findById(memberId).orElseThrow();
+
         // TODO 레디스에 예약 대기 정보 삭제
     }
 }
