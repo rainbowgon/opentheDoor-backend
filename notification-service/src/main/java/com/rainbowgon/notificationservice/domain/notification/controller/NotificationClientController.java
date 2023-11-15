@@ -34,9 +34,9 @@ public class NotificationClientController {
 
     @PostMapping("/reservation")
     public ResponseEntity<String> sendReservation(
-            @RequestBody List<ReservationInDto> reservationInDtoList) {
+            @RequestBody ReservationInDto reservationInDto) {
 
-        notificationService.sendReservationMessage(reservationInDtoList);
+        notificationService.sendReservationMessage(reservationInDto);
         return ResponseEntity.ok("예약 확정 및 취소 알림 리스트를 성공적으로 전송했습니다.");
     }
 

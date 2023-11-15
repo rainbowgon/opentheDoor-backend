@@ -71,10 +71,9 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void sendReservationMessage(List<ReservationInDto> reservationReqDtoList) {
+    public void sendReservationMessage(ReservationInDto reservationInDto) {
 
-        reservationReqDtoList.stream()
-                .forEach(reservationInDto -> kafkaProducer.sendMessage(MessageFactory.makeReservationMessage(reservationInDto)));
+        kafkaProducer.sendMessage(MessageFactory.makeReservationMessage(reservationInDto));
     }
 
     @Override
