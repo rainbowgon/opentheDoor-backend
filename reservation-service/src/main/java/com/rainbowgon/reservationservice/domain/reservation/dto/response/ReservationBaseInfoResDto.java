@@ -1,9 +1,9 @@
 package com.rainbowgon.reservationservice.domain.reservation.dto.response;
 
-import com.rainbowgon.reservationservice.domain.reservation.vo.PriceVO;
-import com.rainbowgon.reservationservice.domain.reservation.vo.TimeSlotVO;
 import com.rainbowgon.reservationservice.global.client.dto.input.MemberBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
+import com.rainbowgon.reservationservice.global.vo.PriceVO;
+import com.rainbowgon.reservationservice.global.vo.TimeSlotVO;
 import lombok.*;
 
 import java.util.List;
