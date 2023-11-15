@@ -25,7 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -83,12 +86,13 @@ public class ThemeServiceImpl implements ThemeService {
         }
 
         // 레디스에서 전체 정렬된 결과를 가져옵니다.
-        Set<Theme> allSortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(recommendKey, 0, -1);
+        List<Theme> allSortedThemes =
+                new ArrayList<>(cacheRedisThemeTemplate.opsForZSet().reverseRange(recommendKey, 0, -1));
 
         // 필터링 로직 적용
-        Set<Theme> filteredThemes;
+        List<Theme> filteredThemes;
         if ((region != null && !region.isEmpty()) || (headcount != null && headcount > 0)) {
-            filteredThemes = allSortedThemeIds.stream()
+            filteredThemes = allSortedThemes.stream()
                     .filter(theme -> {
                         boolean regionMatch = true;
                         boolean headcountMatch = true;
@@ -106,9 +110,9 @@ public class ThemeServiceImpl implements ThemeService {
                         }
                         return regionMatch && headcountMatch;
                     })
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
         } else {
-            filteredThemes = new HashSet<>(allSortedThemeIds);
+            filteredThemes = new ArrayList<>(allSortedThemes);
         }
 
         // 수동 페이지네이션 적용
@@ -116,9 +120,8 @@ public class ThemeServiceImpl implements ThemeService {
         int end = Math.min((page + 1) * size, filteredThemes.size());
 
 
-        List<ThemeSimpleResDto> content = filteredThemes.stream()
-                .skip(start)
-                .limit(size)
+        List<ThemeSimpleResDto> content = filteredThemes.subList(start, end)
+                .stream()
                 .map(theme -> ThemeSimpleResDto.from(theme, getScore(theme, "BOOKMARK").intValue(),
                                                      getScore(theme, "REVIEW").intValue(), getScore(theme,
                                                                                                     "RATING"
@@ -226,8 +229,8 @@ public class ThemeServiceImpl implements ThemeService {
 
         String redisKey = RedisKeyBuilder.buildKey(sortBy, keyword);
 
-        long start = page * size; // 페이지 계산에 따른 시작 인덱스
-        long end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
+        int start = page * size; // 페이지 계산에 따른 시작 인덱스
+        int end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
 
         boolean keyExists = cacheRedisThemeTemplate.hasKey(redisKey);
         if (!keyExists) {
@@ -246,8 +249,13 @@ public class ThemeServiceImpl implements ThemeService {
             sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, 0, -1);
         }
 
+        // 먼저 Set을 List로 변환합니다. 이때, 원래의 순서가 유지됩니다.
+        List<Theme> sortedThemeList = new ArrayList<>(sortedThemeIds);
+
+        // 조건에 따라 필터링을 수행하고 결과를 List로 변환합니다.
+        List<Theme> filteredSortedThemes;
         if ((region != null && !region.isEmpty()) || (headcount != null && headcount > 0)) {
-            sortedThemeIds = sortedThemeIds.stream()
+            filteredSortedThemes = sortedThemeList.stream()
                     .filter(theme -> {
                         boolean regionMatch = true;
                         boolean headcountMatch = true;
@@ -265,20 +273,29 @@ public class ThemeServiceImpl implements ThemeService {
                         }
                         return regionMatch && headcountMatch;
                     })
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
+        } else {
+            // 필터링 조건이 없는 경우, 전체 리스트를 사용합니다.
+            filteredSortedThemes = sortedThemeList;
         }
 
-
-        List<ThemeSimpleResDto> content = sortedThemeIds.stream()
+        // 필터링된 결과를 이용하여 DTO 리스트를 생성합니다.
+        List<ThemeSimpleResDto> content = filteredSortedThemes.stream()
                 .map(theme -> ThemeSimpleResDto.from(theme, getScore(theme, "BOOKMARK").intValue(),
                                                      getScore(theme, "REVIEW").intValue(), getScore(theme,
                                                                                                     "RATING"
                         )))
                 .collect(Collectors.toList());
 
+        // 페이징 처리를 위해 sublist를 사용합니다. 이는 인덱스 범위에 유의해야 합니다.
+        int startIndex = Math.min(start, content.size());
+        int endIndex = Math.min(content.size(), end + 1);
+        List<ThemeSimpleResDto> pagedContent = content.subList(startIndex, endIndex);
 
-        return new PageImpl<>(content, PageRequest.of(page, size), sortedThemeIds.size());
+        // 최종적으로 페이징된 결과를 반환합니다.
+        return new PageImpl<>(pagedContent, PageRequest.of(page, size), filteredSortedThemes.size());
     }
+
 
     @Scheduled(cron = "0 0 0 * * SUN") // 매주 일요일 자정에 실행
     @Override
