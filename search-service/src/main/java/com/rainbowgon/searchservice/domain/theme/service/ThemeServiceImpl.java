@@ -8,6 +8,7 @@ import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
+import com.rainbowgon.searchservice.global.client.dto.output.ReservationDetailOutDto;
 import com.rainbowgon.searchservice.global.error.exception.PriceNotFoundException;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
 import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
@@ -85,11 +86,7 @@ public class ThemeServiceImpl implements ThemeService {
                 cacheRedisThemeTemplate.expire(distanceKey, Duration.ofMinutes(20));
                 createZSET(sortingKey, reviewKey, recommendKey, theme);
 
-                System.out.println("===================================================================");
-                System.out.println(getScore(theme, "BOOKMARK"));
-                System.out.println(getScore(theme, "REVIEW"));
-                System.out.println(getScore(theme, "RECOMMEND"));
-                System.out.println("===================================================================");
+
             }
         }
 
@@ -152,6 +149,7 @@ public class ThemeServiceImpl implements ThemeService {
         Double viewScore =
                 Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getThemeId())).orElse(0.0);
 
+        System.out.println(viewScore);
         Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
 
         Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2, -Math.log(interest + 1));
@@ -167,6 +165,7 @@ public class ThemeServiceImpl implements ThemeService {
     //ZSet Score 값을 get하는 함수
     @NotNull
     private Double getScore(Theme theme, String key) {
+
         return Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(key, theme.getThemeId()))
                 .orElse(0.0);
     }
@@ -207,22 +206,33 @@ public class ThemeServiceImpl implements ThemeService {
     @Transactional(readOnly = true)
     public List<BookmarkDetailOutDto> selectDetailThemesById(BookmarkInDtoList themeIdList) {
         List<BookmarkDetailOutDto> themeDetailResDtoList = new ArrayList<>();
-        for (String themeId : themeIdList.getThemeList()) {
+        for (String themeId : themeIdList.getThemeIdList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-            themeDetailResDtoList.add(BookmarkDetailOutDto.from(theme));
+            themeDetailResDtoList.add(BookmarkDetailOutDto.from(theme, getScore(theme, "BOOKMARK").intValue(),
+                                                                getScore(theme, "REVIEW").intValue(),
+                                                                getScore(theme, "RATING")));
+
         }
         return themeDetailResDtoList;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookmarkSimpleOutDto> selectSimpleThemesById(BookmarkInDtoList themeIdList) {
-        List<BookmarkSimpleOutDto> themeDetailResDtoList = new ArrayList<>();
-        for (String themeId : themeIdList.getThemeList()) {
+    public List<BookmarkSimpleOutDto> selectSimpleThemesById(BookmarkInDtoList bookmarkInDtoList) {
+        List<BookmarkSimpleOutDto> themeSimpleResDtoList = new ArrayList<>();
+        for (String themeId : bookmarkInDtoList.getThemeIdList()) {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-            themeDetailResDtoList.add(BookmarkSimpleOutDto.from(theme));
+            themeSimpleResDtoList.add(BookmarkSimpleOutDto.from(theme, getScore(theme, "REVIEW").intValue(),
+                                                                getScore(theme, "RATING")));
+
+            System.out.println("===================================================================");
+            System.out.println(getScore(theme, "BOOKMARK"));
+            System.out.println(getScore(theme, "REVIEW"));
+            System.out.println(getScore(theme, "RECOMMEND"));
+            System.out.println("===================================================================");
         }
-        return themeDetailResDtoList;
+
+        return themeSimpleResDtoList;
     }
 
     @Override
@@ -358,5 +368,15 @@ public class ThemeServiceImpl implements ThemeService {
             }
         }
         throw new PriceNotFoundException();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReservationDetailOutDto getThemeForReservation(String themeId) {
+        Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+
+        ReservationDetailOutDto reservationDetailOutDto = ReservationDetailOutDto.from(theme);
+
+        return reservationDetailOutDto;
     }
 }

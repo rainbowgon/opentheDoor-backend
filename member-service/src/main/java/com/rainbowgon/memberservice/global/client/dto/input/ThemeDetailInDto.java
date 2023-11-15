@@ -17,13 +17,12 @@ public class ThemeDetailInDto {
     private String[] genre; // 장르
     private Integer maxHeadcount; // 최대 인원 수
     private Integer minHeadcount; // 최소 인원 수
-    private Integer price; // 가격
     private Integer timeLimit; // 소요 시간 (분 단위)
     private Double level; // 난이도
     private Double activity; // 활동성
     private Double lockRatio; // 장치 비율
     private Double horror; // 공포도
-    
+
     /* 리뷰 정보 */
     private Integer reviewCount; // 리뷰 수(별점 수)
     private Double ratingScore; // 평균 별점

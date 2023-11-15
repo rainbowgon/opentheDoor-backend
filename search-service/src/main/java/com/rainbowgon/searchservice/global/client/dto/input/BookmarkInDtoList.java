@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookmarkInDtoList {
 
-    private List<String> themeList;
+    private List<String> themeIdList;
 
 }

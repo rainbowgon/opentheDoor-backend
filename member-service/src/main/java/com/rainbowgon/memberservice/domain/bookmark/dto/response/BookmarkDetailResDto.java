@@ -18,7 +18,6 @@ public class BookmarkDetailResDto { // 마이페이지에서 보여지는 북마
     private String[] genre; // 장르
     private Integer maxHeadcount; // 최대 인원 수
     private Integer minHeadcount; // 최소 인원 수
-    private Integer price; // 가격
     private Integer timeLimit; // 소요 시간 (분 단위)
     private Double level; // 난이도
     private Double activity; // 활동성
@@ -42,7 +41,6 @@ public class BookmarkDetailResDto { // 마이페이지에서 보여지는 북마
                 .genre(theme.getGenre())
                 .maxHeadcount(theme.getMaxHeadcount())
                 .minHeadcount(theme.getMinHeadcount())
-                .price(theme.getPrice())
                 .timeLimit(theme.getTimeLimit())
                 .level(theme.getLevel())
                 .activity(theme.getActivity())
