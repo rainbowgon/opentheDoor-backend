@@ -25,6 +25,12 @@ public class Theme {
     @Field(type = FieldType.Keyword, name = "title")
     private String title;
 
+    @Field(type = FieldType.Keyword, name = "originalURL", index = false)
+    private String originalUrl;
+
+    @Field(type = FieldType.Keyword, name = "originalPoster", index = false)
+    private String originalPoster;
+
     @Field(type = FieldType.Text, name = "explanation")
     private String explanation;
 

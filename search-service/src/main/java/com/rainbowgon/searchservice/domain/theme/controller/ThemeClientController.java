@@ -5,6 +5,7 @@ import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.ReservationDetailOutDto;
+import com.rainbowgon.searchservice.global.client.dto.output.ReservationOriginalOutDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,4 +56,12 @@ public class ThemeClientController {
         return ResponseEntity.ok(reservationDetailOutDto);
     }
 
+    @GetMapping("/original/{theme-id}")
+    public ResponseEntity<ReservationOriginalOutDto> selectOriginalSThemesForReservation(
+            @PathVariable("theme-id") String themeId
+    ) {
+        ReservationOriginalOutDto reservationOriginalOutDto = themeService.getOriginalForReservation(themeId);
+
+        return ResponseEntity.ok(reservationOriginalOutDto);
+    }
 }
