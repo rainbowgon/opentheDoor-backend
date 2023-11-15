@@ -4,14 +4,16 @@ import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoI
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @FeignClient(name = "search-service")
+@RequestMapping("/clients/themes")
 public interface SearchServiceClient {
 
-    @GetMapping("/clients/themes/brief/{theme-id}")
+    @GetMapping("/brief/{theme-id}")
     ThemeBriefInfoInDto getThemeBriefInfo(@PathVariable("theme-id") String themeId);
-    
-    @GetMapping("/clients/themes/totalprice/{theme-id}/{headcount}")
+
+    @GetMapping("/totalprice/{theme-id}/{headcount}")
     Integer getTotalPrice(@PathVariable("theme-id") String themeId, @PathVariable Integer headcount);
 
 }
