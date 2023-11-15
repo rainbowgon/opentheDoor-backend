@@ -213,12 +213,6 @@ public class ThemeServiceImpl implements ThemeService {
             Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
             themeSimpleResDtoList.add(BookmarkSimpleOutDto.from(theme, getScore(theme, "REVIEW").intValue(),
                                                                 getScore(theme, "RATING")));
-
-            System.out.println("===================================================================");
-            System.out.println(getScore(theme, "BOOKMARK"));
-            System.out.println(getScore(theme, "REVIEW"));
-            System.out.println(getScore(theme, "RECOMMEND"));
-            System.out.println("===================================================================");
         }
 
         return themeSimpleResDtoList;
