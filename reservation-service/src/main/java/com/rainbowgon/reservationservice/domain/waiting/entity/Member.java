@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,10 +17,10 @@ public class Member {
     @Id
     private String memberId;
 
-    private List<String> waitingIdList;
+    private Set<String> waitingIdSet;
 
     public Member(String memberId) {
         this.memberId = memberId;
-        this.waitingIdList = new ArrayList<>();
+        this.waitingIdSet = new HashSet<>();
     }
 }

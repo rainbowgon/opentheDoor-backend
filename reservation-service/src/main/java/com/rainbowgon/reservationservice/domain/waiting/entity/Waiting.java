@@ -10,8 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,7 +21,7 @@ public class Waiting {
     @Id
     private String waitingId;
 
-    private List<String> memberIdList;
+    private Set<String> memberIdSet;
 
     private String themeId;
 
@@ -34,7 +34,7 @@ public class Waiting {
     @Builder
     public Waiting(String waitingId, String themeId, LocalDate targetDate, LocalTime targetTime) {
         this.waitingId = waitingId;
-        this.memberIdList = new ArrayList<>();
+        this.memberIdSet = new HashSet<>();
         this.themeId = themeId;
         this.targetDate = targetDate;
         this.targetTime = targetTime;
