@@ -18,7 +18,8 @@ public enum GlobalErrorCode implements BaseErrorCode {
 
     CUSTOM_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL_500_1", "서버 오류. 관리자에게 문의 부탁드립니다."),
     BOOKER_INFO_INVAILD(FORBIDDEN, "RESERVATION-403-1", "회원의 정보와 예약자의 정보가 일치하지 않습니다."),
-    RESERVATION_NOT_FOUND(NOT_FOUND, "RESERVATION-404-1", "해당 예약 정보가 없습니다.");
+    RESERVATION_NOT_FOUND(NOT_FOUND, "RESERVATION-404-1", "해당 예약 정보가 없습니다."),
+    WAITING_ALREADY_EXISTS(FORBIDDEN, "WAITING-403-1", "이미 예약 대기 신청을 했습니다.");
 
     private HttpStatus status;
     private String code;
