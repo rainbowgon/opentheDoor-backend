@@ -17,7 +17,7 @@ public interface NotificationService {
 
     void sendBookmarkMessage(List<BookmarkInDto> bookmarkInDtoList);
 
-    void sendReservationMessage(List<ReservationInDto> reservationInDtoList);
+    void sendReservationMessage(ReservationInDto reservationInDto);
 
     void sendWaitingMessage(List<WaitingInDto> waitingInDtoList);
 
