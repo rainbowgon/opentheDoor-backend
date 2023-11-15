@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,7 +23,11 @@ public class Waiting {
     private String memberId;
 
     private String themeId;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate targetDate;
+
+    @DateTimeFormat(pattern = "hh:mm")
     private LocalTime targetTime;
 
 }
