@@ -9,6 +9,7 @@ import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.ReservationDetailOutDto;
+import com.rainbowgon.searchservice.global.client.dto.output.ReservationOriginalOutDto;
 import com.rainbowgon.searchservice.global.error.exception.PriceNotFoundException;
 import com.rainbowgon.searchservice.global.error.exception.ThemeNotFoundException;
 import com.rainbowgon.searchservice.global.utils.RedisKeyBuilder;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,16 +35,8 @@ public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
 
-
-    @Qualifier("sortingRedisDoubleTemplate")
-    private final RedisTemplate<String, Double> sortingRedisDoubleTemplate;
-
     @Qualifier("sortingRedisStringTemplate")
     private final RedisTemplate<String, String> sortingRedisStringTemplate;
-
-
-//    @Qualifier("doubleRedisTemplate")
-//    private RedisTemplate<String, String> reservationRedisStringTemplate;
 
     @Qualifier("cacheRedisThemeTemplate")
     private final RedisTemplate<String, Theme> cacheRedisThemeTemplate;
@@ -146,10 +138,8 @@ public class ThemeServiceImpl implements ThemeService {
         Double ratingScore = getScore(theme, "RATING");
 
         //검색 결과로 나온 테마의 조회 수
-        Double viewScore =
-                Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getThemeId())).orElse(0.0);
+        Double viewScore = getScore(theme, "VIEW");
 
-        System.out.println(viewScore);
         Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
 
         Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2, -Math.log(interest + 1));
@@ -192,9 +182,8 @@ public class ThemeServiceImpl implements ThemeService {
     @Override
     @Transactional(readOnly = true)
     public ThemeDetailResDto selectOneThemeById(String themeId) {
-        ValueOperations<String, Double> valueOperations = sortingRedisDoubleTemplate.opsForValue();
         Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
-        valueOperations.increment(themeId, 1);
+        sortingRedisStringTemplate.opsForZSet().incrementScore("VIEW", themeId, 1);
         Double bookmarkCount = getScore(theme, "BOOKMARK");
         Double reviewCount = getScore(theme, "REVIEW");
         Double ratingScore = getScore(theme, "RATING");
@@ -317,17 +306,17 @@ public class ThemeServiceImpl implements ThemeService {
             String lastViewKey = "LASTVIEW:" + theme.getThemeId();
             // Redis에서 지난 조회 수를 가져옵니다. 값이 없다면 0으로 초기화합니다.
             Double lastViewScore =
-                    Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(lastViewKey)).orElse(0.0);
+                    Optional.ofNullable(getScore(theme, "LASTVIEW")).orElse(0.0);
 
             // 검색 결과로 나온 테마의 조회 수
             Double currentViewScore =
-                    Optional.ofNullable(sortingRedisDoubleTemplate.opsForValue().get(theme.getThemeId())).orElse(0.0);
+                    Optional.ofNullable(getScore(theme, "VIEW")).orElse(0.0);
 
             Double viewScore = lastViewScore + currentViewScore;
 
-            sortingRedisDoubleTemplate.opsForValue().set(lastViewKey, viewScore);
+            sortingRedisStringTemplate.opsForZSet().add("LASTVIEW", theme.getThemeId(), viewScore);
 
-            sortingRedisDoubleTemplate.opsForValue().set(theme.getThemeId(), 0.0);
+            sortingRedisStringTemplate.opsForZSet().add("VIEW", theme.getThemeId(), 0.0);
 
             Double interest = 0.4 * reviewScore + 0.3 * currentViewScore + 0.3 * bookmarkScore;
 
@@ -379,4 +368,17 @@ public class ThemeServiceImpl implements ThemeService {
 
         return reservationDetailOutDto;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReservationOriginalOutDto getOriginalForReservation(String themeId) {
+
+        Theme theme = themeRepository.findById(themeId).orElseThrow(ThemeNotFoundException::new);
+
+        ReservationOriginalOutDto reservationOriginalOutDto = ReservationOriginalOutDto.from(theme);
+
+        return reservationOriginalOutDto;
+
+    }
+
 }
