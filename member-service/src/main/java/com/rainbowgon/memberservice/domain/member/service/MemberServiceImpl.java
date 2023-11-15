@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -155,12 +156,17 @@ public class MemberServiceImpl implements MemberService {
     public MemberDto findMemberByProviderId(String providerId) {
 
         // OAuth ID로 회원 조회
-        Member member = memberRepository.findByProviderId(providerId).orElseThrow(MemberNotFoundException::new);
+        Optional<Member> member = memberRepository.findByProviderId(providerId);
+
+        // 없는 회원이면 null 반환 -> 회원가입
+        if (member.isEmpty()) {
+            return null;
+        }
 
         // 회원 ID로 프로필 조회
-        ProfileSimpleResDto profile = profileService.selectProfileByMember(member.getId());
+        ProfileSimpleResDto profile = profileService.selectProfileByMember(member.get().getId());
 
-        return MemberDto.of(member, profile.getProfileId());
+        return MemberDto.of(member.get(), profile.getProfileId());
     }
 
     /**
