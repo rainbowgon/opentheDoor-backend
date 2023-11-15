@@ -9,9 +9,11 @@ import com.rainbowgon.reservationservice.domain.reservation.dto.response.Reserva
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import com.rainbowgon.reservationservice.domain.reservation.repository.ReservationRepository;
 import com.rainbowgon.reservationservice.global.client.MemberServiceClient;
+import com.rainbowgon.reservationservice.global.client.NotificationServiceClient;
 import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
 import com.rainbowgon.reservationservice.global.client.dto.input.MemberBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
+import com.rainbowgon.reservationservice.global.client.dto.output.SuccessNotificationOutDto;
 import com.rainbowgon.reservationservice.global.error.exception.BookerInfoInvalidException;
 import com.rainbowgon.reservationservice.global.error.exception.ReservationNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final MemberServiceClient memberServiceClient;
     private final SearchServiceClient searchServiceClient;
+    private final NotificationServiceClient notificationServiceClient;
 
     public ReservationBaseInfoResDto getReservationBaseInfo(String memberId, String themeId) {
         MemberBriefInfoInDto memberInfoForReservation =
@@ -76,6 +79,8 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationReqDto.toAuthEntity(memberId, totalPrice);
         reservationRepository.save(reservation);
         reservation.updateReservationNumber();
+
+        sendSuccessNotification(memberId, reservationReqDto, reservation);
 
         return ReservationResultResDto.success(reservation.getId(), reservation.getReservationNumber(),
                                                totalPrice);
@@ -134,6 +139,14 @@ public class ReservationServiceImpl implements ReservationService {
         ThemeBriefInfoInDto themeBriefInfo = searchServiceClient.getThemeBriefInfo(reservation.getThemeId());
 
         return ReservationDetailResDto.from(reservation, themeBriefInfo);
+    }
+
+    private void sendSuccessNotification(String memberId, ReservationReqDto reservationReqDto,
+                                         Reservation reservation) {
+        String fcmToken = memberServiceClient.getFcmToken(memberId);
+        ThemeBriefInfoInDto themeBriefInfo =
+                searchServiceClient.getThemeBriefInfo(reservationReqDto.getThemeId());
+        SuccessNotificationOutDto.success(memberId, fcmToken, themeBriefInfo.getTitle(), reservation);
     }
 
     // TODO 예약 기능 동작
