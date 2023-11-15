@@ -1,5 +1,6 @@
 package com.rainbowgon.memberservice.domain.profile.service;
 
+import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.entity.Profile;
@@ -35,31 +36,27 @@ public class ProfileServiceImpl implements ProfileService {
     public JwtTokenDto createProfile(Member member, String fcmToken, String nickname, String profileImage) {
 
         // 프로필 생성
-        Profile profile = profileRepository.save(
-                Profile.builder()
-                        .member(member)
-                        .nickname(nickname)
-                        .profileImage(profileImage)
-                        .build());
+        Profile profile = profileRepository.save(Profile.builder()
+                                                         .member(member)
+                                                         .nickname(nickname)
+                                                         .profileImage(profileImage)
+                                                         .build());
 
         // accessToken, refreshToken 생성
-        JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
-                .accessToken(jwtTokenProvider.generateAccessToken(profile.getId()))
-                .refreshToken(jwtTokenProvider.generateRefreshToken(profile.getId()))
-                .build();
+        String accessToken = jwtTokenProvider.generateAccessToken(profile.getId());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(profile.getId());
 
         // accessToken, refreshToken, fcmToken redis 저장
-        tokenRedisRepository.save(
-                Token.builder()
-                        .profileId(profile.getId())
-                        .memberId(String.valueOf(member.getId()))
-                        .accessToken(jwtTokenDto.getAccessToken())
-                        .refreshToken(jwtTokenDto.getRefreshToken())
-                        .fcmToken(fcmToken)
-                        .expiration(REFRESH_TOKEN_EXPIRE_TIME)
-                        .build());
+        Token savedToken = tokenRedisRepository.save(Token.builder()
+                                                             .profileId(profile.getId())
+                                                             .memberId(String.valueOf(member.getId()))
+                                                             .accessToken(accessToken)
+                                                             .refreshToken(refreshToken)
+                                                             .fcmToken(fcmToken)
+                                                             .expiration(REFRESH_TOKEN_EXPIRE_TIME)
+                                                             .build());
 
-        return jwtTokenDto;
+        return JwtTokenDto.of(savedToken.getAccessToken(), savedToken.getRefreshToken());
     }
 
     @Override
@@ -136,6 +133,15 @@ public class ProfileServiceImpl implements ProfileService {
 
         // redis token 정보 삭제
         tokenRedisRepository.deleteById(profile.getId());
+    }
+
+    /**
+     * 프로필 ID로 프로필, 멤버 객체 찾기
+     */
+    @Override
+    public MemberDto findProfileById(Long profileId) {
+        Profile profile = profileRepository.findById(profileId).orElseThrow(ProfileNotFoundException::new);
+        return MemberDto.from(profile);
     }
 
     /**

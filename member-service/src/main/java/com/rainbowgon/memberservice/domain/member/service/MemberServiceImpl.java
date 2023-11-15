@@ -2,6 +2,7 @@ package com.rainbowgon.memberservice.domain.member.service;
 
 
 import com.rainbowgon.memberservice.domain.bookmark.service.BookmarkService;
+import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
@@ -144,6 +145,22 @@ public class MemberServiceImpl implements MemberService {
         Token token = tokenRedisRepository.findById(profile.getProfileId()).orElseThrow(RedisErrorException::new);
 
         return token.getFcmToken();
+    }
+
+    /**
+     * OAuth Provider ID로 회원 조회
+     * 존재하는 회원이면 회원 ID, 프로필 ID 반환
+     */
+    @Override
+    public MemberDto findMemberByProviderId(String providerId) {
+
+        // OAuth ID로 회원 조회
+        Member member = memberRepository.findByProviderId(providerId).orElseThrow(MemberNotFoundException::new);
+
+        // 회원 ID로 프로필 조회
+        ProfileSimpleResDto profile = profileService.selectProfileByMember(member.getId());
+
+        return MemberDto.of(member, profile.getProfileId());
     }
 
     /**

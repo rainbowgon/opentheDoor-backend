@@ -1,5 +1,6 @@
 package com.rainbowgon.memberservice.domain.member.service;
 
+import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
@@ -25,5 +26,7 @@ public interface MemberService {
     BookerInfoResDto selectBookerInfo(String memberId);
 
     String selectMemberFcmToken(String memberId);
+
+    MemberDto findMemberByProviderId(String providerId);
 
 }
