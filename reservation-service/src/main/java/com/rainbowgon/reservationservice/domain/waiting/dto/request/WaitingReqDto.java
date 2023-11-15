@@ -1,4 +1,4 @@
-package com.rainbowgon.reservationservice.domain.reservation.dto.request;
+package com.rainbowgon.reservationservice.domain.waiting.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

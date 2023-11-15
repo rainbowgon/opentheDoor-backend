@@ -1,9 +1,10 @@
 package com.rainbowgon.reservationservice.domain.reservation.controller;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
-import com.rainbowgon.reservationservice.domain.reservation.dto.request.WaitingReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.*;
 import com.rainbowgon.reservationservice.domain.reservation.service.ReservationService;
+import com.rainbowgon.reservationservice.domain.waiting.dto.request.WaitingReqDto;
+import com.rainbowgon.reservationservice.domain.waiting.service.WaitingService;
 import com.rainbowgon.reservationservice.global.response.JsonResponse;
 import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ReservationAuthController {
 
     private final ReservationService reservationService;
+    private final WaitingService waitingService;
 
     @GetMapping("/{theme-id}")
     public ResponseEntity<?> getReservationBaseInfo(
@@ -67,7 +69,7 @@ public class ReservationAuthController {
     public ResponseEntity<ResponseWrapper<Nullable>> waitEmptyTimeSlot(
             @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
 
-        reservationService.waitEmptyTimeSlot(memberId, waitingReqDto);
+        waitingService.waitEmptyTimeSlot(memberId, waitingReqDto);
 
         return JsonResponse.ok("예약 대기 신청을 완료했습니다.");
     }
@@ -76,7 +78,7 @@ public class ReservationAuthController {
     public ResponseEntity<ResponseWrapper<Nullable>> cancelWaiting(
             @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
 
-        reservationService.cancelWaiting(memberId, waitingReqDto);
+        waitingService.cancelWaiting(memberId, waitingReqDto);
 
         return JsonResponse.ok("예약 대기 신청을 취소했습니다.");
     }

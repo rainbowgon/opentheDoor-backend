@@ -1,6 +1,6 @@
 package com.rainbowgon.reservationservice.domain.waiting.service;
 
-import com.rainbowgon.reservationservice.domain.reservation.dto.request.WaitingReqDto;
+import com.rainbowgon.reservationservice.domain.waiting.dto.request.WaitingReqDto;
 
 public interface WaitingService {
 
