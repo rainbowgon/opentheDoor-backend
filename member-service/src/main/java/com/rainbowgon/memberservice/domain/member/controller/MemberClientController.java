@@ -30,4 +30,15 @@ public class MemberClientController {
         return ResponseEntity.ok(bookerInfo);
     }
 
+    /**
+     * memberId로 fcm token 조회
+     */
+    @GetMapping("/fcm/{member-id}")
+    public ResponseEntity<String> selectMemberFcmToken(@PathVariable("member-id") String memberId) {
+
+        String fcmToken = memberService.selectMemberFcmToken(memberId);
+
+        return ResponseEntity.ok(fcmToken);
+    }
+
 }

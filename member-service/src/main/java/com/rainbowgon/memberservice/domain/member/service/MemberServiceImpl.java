@@ -13,7 +13,10 @@ import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleRes
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.global.error.exception.MemberBadPhoneNumberException;
 import com.rainbowgon.memberservice.global.error.exception.MemberNotFoundException;
+import com.rainbowgon.memberservice.global.error.exception.RedisErrorException;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
+import com.rainbowgon.memberservice.global.redis.dto.Token;
+import com.rainbowgon.memberservice.global.redis.repository.TokenRedisRepository;
 import com.rainbowgon.memberservice.global.util.CoolSmsSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +36,7 @@ public class MemberServiceImpl implements MemberService {
     private final ProfileService profileService;
     private final BookmarkService bookmarkService;
     private final CoolSmsSender coolSmsSender;
+    private final TokenRedisRepository tokenRedisRepository;
 
     @Transactional
     @Override
@@ -128,6 +132,18 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(UUID.fromString(memberId)).orElseThrow(MemberNotFoundException::new);
 
         return BookerInfoResDto.of(member.getName(), member.getPhoneNumber());
+    }
+
+    @Override
+    public String selectMemberFcmToken(String memberId) {
+
+        // 회원 ID로 프로필 ID 조회
+        ProfileSimpleResDto profile = profileService.selectProfileByMember(UUID.fromString(memberId));
+
+        // redis token 가져오기
+        Token token = tokenRedisRepository.findById(profile.getProfileId()).orElseThrow(RedisErrorException::new);
+
+        return token.getFcmToken();
     }
 
     /**
