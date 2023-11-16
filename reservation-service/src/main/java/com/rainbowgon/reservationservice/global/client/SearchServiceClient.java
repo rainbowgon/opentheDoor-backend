@@ -5,10 +5,8 @@ import com.rainbowgon.reservationservice.global.client.dto.input.ThemeOriginalIn
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-@FeignClient(name = "search-service")
-@RequestMapping("/clients/themes")
+@FeignClient(name = "search-service", path = "/clients/themes")
 public interface SearchServiceClient {
 
     @GetMapping("/brief/{theme-id}")
