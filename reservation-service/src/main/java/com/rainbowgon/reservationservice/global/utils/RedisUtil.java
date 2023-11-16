@@ -11,7 +11,7 @@ public class RedisUtil {
         return String.format("%s-%s-%s-%s", title, posterUrl, targetDate.toString(), targetTime.toString());
     }
 
-    public static String createTimeLineId(String title, String posterUrl) {
-        return String.format("%s-%s", title, posterUrl);
+    public static String createTimeLineId(String title) {
+        return title;
     }
 }

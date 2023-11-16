@@ -21,8 +21,7 @@ public class TimeLineServiceImpl implements TimeLineService {
 
     public List<TimeSlotVO> getThemeTimeLine(String themeId) {
         ThemeOriginalInfoInDto originalInfo = searchServiceClient.getOriginalInfo(themeId);
-        String targetTimeLineId = RedisUtil.createTimeLineId(originalInfo.getTitle(),
-                                                             originalInfo.getOriginalPoster());
+        String targetTimeLineId = RedisUtil.createTimeLineId(originalInfo.getTitle());
 
         TimeLine timeLine = timeLineRedisRepository.findById(targetTimeLineId)
                 .orElseThrow(TimeLineNotFoundException::new);
