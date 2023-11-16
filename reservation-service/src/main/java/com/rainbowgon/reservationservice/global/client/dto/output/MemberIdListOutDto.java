@@ -18,7 +18,4 @@ public class MemberIdListOutDto {
                 .build();
     }
 
-    public void add(String memberId) {
-        this.memberIdList.add(memberId);
-    }
 }
