@@ -35,7 +35,10 @@ public class ThemeDetailResDto {
     private Double ratingScore; // 테마 평균 별점
     private Integer reviewCount; // 테마 리뷰 수
     private Integer bookmarkCount; // 북마크 리뷰 수
+//    private List<ReservationInDto> timeslot;
 
+    //    public static ThemeDetailResDto from(Theme theme, Integer bookmarkCount, Integer reviewCount,
+//                                         Double ratingScore, List<ReservationInDto> timeslot) {
     public static ThemeDetailResDto from(Theme theme, Integer bookmarkCount, Integer reviewCount,
                                          Double ratingScore) {
         return ThemeDetailResDto.builder()
@@ -61,6 +64,7 @@ public class ThemeDetailResDto {
                 .bookmarkCount(bookmarkCount)
                 .reviewCount(reviewCount)
                 .ratingScore(ratingScore)
+//                .timeslot(timeslot)
                 .build();
     }
 }

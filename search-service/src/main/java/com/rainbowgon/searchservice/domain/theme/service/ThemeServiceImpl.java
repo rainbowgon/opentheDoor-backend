@@ -5,6 +5,7 @@ import com.rainbowgon.searchservice.domain.theme.dto.response.ThemeSimpleResDto;
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import com.rainbowgon.searchservice.domain.theme.model.entry.PriceEntry;
 import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
+import com.rainbowgon.searchservice.global.client.ReservationServiceClient;
 import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
@@ -37,6 +38,7 @@ import java.util.stream.StreamSupport;
 public class ThemeServiceImpl implements ThemeService {
 
     private final ThemeRepository themeRepository;
+    private final ReservationServiceClient reservationServiceClient;
 
     @Qualifier("sortingRedisStringTemplate")
     private final RedisTemplate<String, String> sortingRedisStringTemplate;
@@ -191,6 +193,10 @@ public class ThemeServiceImpl implements ThemeService {
         Double reviewCount = getScore(theme, "REVIEW");
         Double ratingScore = getScore(theme, "RATING");
 
+//        List<ReservationInDto> timeslot = reservationServiceClient.getTimeslot(themeId);
+
+//        return ThemeDetailResDto.from(theme, bookmarkCount.intValue(), reviewCount.intValue(), ratingScore,
+//                                      timeslot);
         return ThemeDetailResDto.from(theme, bookmarkCount.intValue(), reviewCount.intValue(), ratingScore);
     }
 
