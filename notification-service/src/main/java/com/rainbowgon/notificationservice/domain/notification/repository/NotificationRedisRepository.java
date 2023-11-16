@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface NotificationRedisRepository extends CrudRepository<Notification, String> {
 
-    List<Notification> findAllByMemberId(Long memberId);
+    List<Notification> findAllByMemberId(String memberId);
 }
