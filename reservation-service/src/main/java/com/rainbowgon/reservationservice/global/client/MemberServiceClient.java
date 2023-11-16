@@ -4,12 +4,14 @@ import com.rainbowgon.reservationservice.global.client.dto.input.FcmTokenInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.MemberBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.output.MemberIdListOutDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "member-service")
-@RequestMapping("/clients/members")
+@FeignClient(name = "member-service", path = "/clients/members")
 public interface MemberServiceClient {
 
     @GetMapping("/booker/{member-id}")
