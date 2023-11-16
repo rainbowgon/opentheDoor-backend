@@ -12,6 +12,8 @@ import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.member.repository.MemberRepository;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
+import com.rainbowgon.memberservice.global.client.dto.output.FcmTokenListOutDto;
+import com.rainbowgon.memberservice.global.client.dto.output.FcmTokenOutDto;
 import com.rainbowgon.memberservice.global.error.exception.MemberBadPhoneNumberException;
 import com.rainbowgon.memberservice.global.error.exception.MemberNotFoundException;
 import com.rainbowgon.memberservice.global.error.exception.RedisErrorException;
@@ -25,9 +27,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -136,8 +140,11 @@ public class MemberServiceImpl implements MemberService {
         return BookerInfoResDto.of(member.getName(), member.getPhoneNumber());
     }
 
+    /**
+     * 회원 ID로 fcm token 단 건 조회
+     */
     @Override
-    public String selectMemberFcmToken(String memberId) {
+    public FcmTokenOutDto selectMemberFcmToken(String memberId) {
 
         // 회원 ID로 프로필 ID 조회
         ProfileSimpleResDto profile = profileService.selectProfileByMember(UUID.fromString(memberId));
@@ -145,7 +152,22 @@ public class MemberServiceImpl implements MemberService {
         // redis token 가져오기
         Token token = tokenRedisRepository.findById(profile.getProfileId()).orElseThrow(RedisErrorException::new);
 
-        return token.getFcmToken();
+        return FcmTokenOutDto.from(token);
+    }
+
+    /**
+     * 회원 ID 리스트로 fcm token 리스트 조회
+     */
+    @Override
+    public FcmTokenListOutDto selectMemberFcmTokenList(List<String> memberIdList) {
+
+        List<FcmTokenOutDto> fcmTokenList = memberIdList.stream()
+                .map(memberId -> profileService.selectProfileByMember(UUID.fromString(memberId)))
+                .map(profile -> tokenRedisRepository.findById(profile.getProfileId()).orElseThrow(RedisErrorException::new))
+                .map(FcmTokenOutDto::from)
+                .collect(Collectors.toList());
+
+        return FcmTokenListOutDto.builder().fcmTokenList(fcmTokenList).build();
     }
 
     /**
