@@ -10,7 +10,7 @@ import java.util.List;
 @FeignClient(name = "reservation-service")
 public interface ReservationServiceClient {
 
-    @GetMapping("/clients/reservations/{theme-id}")
+    @GetMapping("/clients/timelines//{theme-id}")
     List<ReservationInDto> getTimeslot(@PathVariable("theme-id") String themeId);
-    
+
 }
