@@ -24,7 +24,7 @@ public class ReservationAuthController {
     private final WaitingService waitingService;
 
     @GetMapping("/{theme-id}")
-    public ResponseEntity<?> getReservationBaseInfo(
+    public ResponseEntity<ResponseWrapper<ReservationBaseInfoResDto>> getReservationBaseInfo(
             @RequestHeader String memberId, @PathVariable("theme-id") String themeId) {
 
         ReservationBaseInfoResDto reservationBaseInfoResDto =
@@ -33,7 +33,7 @@ public class ReservationAuthController {
         return JsonResponse.ok("회원의 테마 예약 페이지 정보를 가져왔습니다.", reservationBaseInfoResDto);
     }
 
-    @PostMapping("/{theme-id}")
+    @PostMapping
     public ResponseEntity<ResponseWrapper<ReservationResultResDto>> makeReservation(
             @RequestHeader String memberId, @RequestBody ReservationReqDto reservationReqDto) {
 
@@ -48,7 +48,8 @@ public class ReservationAuthController {
     }
 
     @GetMapping("/reserved")
-    public ResponseEntity<?> getAllReservationHistory(@RequestHeader String memberId) {
+    public ResponseEntity<ResponseWrapper<List<ReservationBriefResDto>>> getAllReservationHistory(
+            @RequestHeader String memberId) {
 
         List<ReservationBriefResDto> historyList = reservationService.getAllReservationHistory(memberId);
 
@@ -56,7 +57,7 @@ public class ReservationAuthController {
     }
 
     @GetMapping("/reserved/{reservation-id}")
-    public ResponseEntity<?> getReservationDetail(
+    public ResponseEntity<ResponseWrapper<ReservationDetailResDto>> getReservationDetail(
             @RequestHeader String memberId, @PathVariable("reservation-id") Long reservationId) {
 
         ReservationDetailResDto reservationDetailResDto =
