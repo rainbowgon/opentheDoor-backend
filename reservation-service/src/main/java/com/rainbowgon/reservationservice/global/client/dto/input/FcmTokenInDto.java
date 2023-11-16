@@ -5,5 +5,6 @@ import lombok.Getter;
 @Getter
 public class FcmTokenInDto {
 
+    private String memberId;
     private String fcmToken;
 }
