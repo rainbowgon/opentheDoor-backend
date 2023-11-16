@@ -30,7 +30,7 @@ public class ReservationUnauthController {
         return JsonResponse.ok("비회원의 테마 예약 페이지 정보를 가져왔습니다.", reservationBaseInfoResDto);
     }
 
-    @PostMapping("/{theme-id}")
+    @PostMapping
     public ResponseEntity<ResponseWrapper<ReservationResultResDto>> makeReservation(
             @RequestBody ReservationReqDto reservationReqDto) {
 
