@@ -12,17 +12,17 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class TimeslotRedisConfig {
+public class TimeLineRedisConfig {
 
-    @Value("${spring.redis.timeslot.host}")
+    @Value("${spring.redis.timeLine.host}")
     private String host;
 
-    @Value("${spring.redis.timeslot.port}")
+    @Value("${spring.redis.timeLine.port}")
     private int port;
 
     @Primary
-    @Bean(name = "timeslotRedisConnectionFactory")
-    public RedisConnectionFactory timeslotRedisConnectionFactory() {
+    @Bean(name = "timeLineRedisConnectionFactory")
+    public RedisConnectionFactory timeLineRedisConnectionFactory() {
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
@@ -31,13 +31,13 @@ public class TimeslotRedisConfig {
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
-    @Bean(name = "timeslotRedisStringTemplate")
-    public RedisTemplate<String, String> timeslotRedisStringTemplate(
-            @Qualifier("timeslotRedisConnectionFactory")
-            RedisConnectionFactory timeslotRedisConnectionFactory) {
+    @Bean(name = "timeLineRedisStringTemplate")
+    public RedisTemplate<String, String> timeLineRedisStringTemplate(
+            @Qualifier("timeLineRedisConnectionFactory")
+            RedisConnectionFactory timeLineRedisConnectionFactory) {
 
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(timeslotRedisConnectionFactory);
+        redisTemplate.setConnectionFactory(timeLineRedisConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());

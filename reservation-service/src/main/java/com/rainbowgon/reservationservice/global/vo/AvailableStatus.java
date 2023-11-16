@@ -1,4 +1,4 @@
-package com.rainbowgon.reservationservice.domain.reservation.entity;
+package com.rainbowgon.reservationservice.global.vo;
 
 public enum AvailableStatus {
 
