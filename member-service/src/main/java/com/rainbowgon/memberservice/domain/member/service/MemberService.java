@@ -6,9 +6,12 @@ import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.BookerInfoResDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
+import com.rainbowgon.memberservice.global.client.dto.output.FcmTokenListOutDto;
+import com.rainbowgon.memberservice.global.client.dto.output.FcmTokenOutDto;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface MemberService {
@@ -25,7 +28,9 @@ public interface MemberService {
 
     BookerInfoResDto selectBookerInfo(String memberId);
 
-    String selectMemberFcmToken(String memberId);
+    FcmTokenOutDto selectMemberFcmToken(String memberId);
+
+    FcmTokenListOutDto selectMemberFcmTokenList(List<String> memberIdList);
 
     MemberDto findMemberByProviderId(String providerId);
 

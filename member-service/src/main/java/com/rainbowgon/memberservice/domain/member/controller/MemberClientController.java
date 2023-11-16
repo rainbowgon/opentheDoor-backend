@@ -2,13 +2,13 @@ package com.rainbowgon.memberservice.domain.member.controller;
 
 import com.rainbowgon.memberservice.domain.member.dto.response.BookerInfoResDto;
 import com.rainbowgon.memberservice.domain.member.service.MemberService;
+import com.rainbowgon.memberservice.global.client.dto.input.MemberIdListInDto;
+import com.rainbowgon.memberservice.global.client.dto.output.FcmTokenListOutDto;
+import com.rainbowgon.memberservice.global.client.dto.output.FcmTokenOutDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -34,11 +34,22 @@ public class MemberClientController {
      * memberId로 fcm token 조회
      */
     @GetMapping("/fcm/{member-id}")
-    public ResponseEntity<String> selectMemberFcmToken(@PathVariable("member-id") String memberId) {
+    public ResponseEntity<FcmTokenOutDto> selectMemberFcmToken(@PathVariable("member-id") String memberId) {
 
-        String fcmToken = memberService.selectMemberFcmToken(memberId);
+        FcmTokenOutDto MemberFcmToken = memberService.selectMemberFcmToken(memberId);
 
-        return ResponseEntity.ok(fcmToken);
+        return ResponseEntity.ok(MemberFcmToken);
+    }
+
+    /**
+     * memberIdList -> fcmTokenList
+     */
+    @PostMapping("/fcm")
+    public ResponseEntity<FcmTokenListOutDto> selectMemberFcmTokenList(@RequestBody MemberIdListInDto memberIdList) {
+
+        FcmTokenListOutDto fcmTokenList = memberService.selectMemberFcmTokenList(memberIdList.getMemberIdList());
+
+        return ResponseEntity.ok(fcmTokenList);
     }
 
 }
