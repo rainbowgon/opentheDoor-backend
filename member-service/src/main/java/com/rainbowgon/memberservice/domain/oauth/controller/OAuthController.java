@@ -11,10 +11,7 @@ import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -53,7 +50,7 @@ public class OAuthController {
     /**
      * 카카오 로그인
      */
-    @GetMapping("/login/kakao")
+    @PostMapping("/login/kakao")
     public ResponseEntity<ResponseWrapper<JwtTokenDto>> kakaoLogin(
             @RequestParam("fcmToken") String fcmToken,
             @RequestParam("profileId") Long profileId) {
@@ -62,4 +59,5 @@ public class OAuthController {
 
         return JsonResponse.ok("로그인에 성공하였습니다.", jwtTokenDto);
     }
+
 }
