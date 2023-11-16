@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface NotificationService {
 
-    List<NotificationListResDto> selectNotificationList(Long profileId);
+    List<NotificationListResDto> selectNotificationList(String memberId);
 
     void checkOneNotification(Long notificationId);
 
-    void checkAllNotification(Long profileId);
+    void checkAllNotification(String memberId);
 
     void sendBookmarkMessage(List<BookmarkInDto> bookmarkInDtoList);
 
