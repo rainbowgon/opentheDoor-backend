@@ -20,6 +20,6 @@ public interface NotificationServiceClient {
             @RequestBody NotificationOutDto successNotificationOutDto);
 
     @PostMapping("/waiting")
-    ResponseWrapper<Nullable> notifyEmptyTheme(
+    ResponseWrapper<Nullable> notifyEmptyTimeSlot(
             @RequestBody List<EmptyTimeSlotNotificationOutDto> emptyTimeSlotNotificationOutDtoList);
 }

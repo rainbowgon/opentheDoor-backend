@@ -105,7 +105,7 @@ public class WaitingServiceImpl implements WaitingService {
                                 .from(fcmTokenInDto, themeInfo, waiting))
                         .collect(Collectors.toList());
 
-        notificationServiceClient.notifyEmptyTheme(emptyTimeSlotNotificationOutDtoList);
+        notificationServiceClient.notifyEmptyTimeSlot(emptyTimeSlotNotificationOutDtoList);
 
     }
 
