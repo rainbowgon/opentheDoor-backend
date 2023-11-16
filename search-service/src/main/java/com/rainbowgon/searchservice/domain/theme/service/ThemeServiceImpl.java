@@ -398,4 +398,12 @@ public class ThemeServiceImpl implements ThemeService {
 
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean checkTheme(String themeId) {
+
+        return themeRepository.existsById(themeId);
+
+    }
+
 }
