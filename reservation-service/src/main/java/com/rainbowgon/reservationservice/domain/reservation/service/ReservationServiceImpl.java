@@ -142,7 +142,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private void sendSuccessNotification(String memberId, ReservationReqDto reservationReqDto,
                                          Reservation reservation) {
-        String fcmToken = memberServiceClient.getFcmToken(memberId);
+        String fcmToken = memberServiceClient.getFcmToken(memberId).getFcmToken();
         ThemeBriefInfoInDto themeBriefInfo =
                 searchServiceClient.getThemeBriefInfo(reservationReqDto.getThemeId());
         NotificationOutDto notificationOutDto =

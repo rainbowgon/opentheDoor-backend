@@ -52,12 +52,13 @@ public class Review extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EscapeStatus isEscaped;
 
-    @Column(columnDefinition = "INT UNSIGNED")
+    @Column(columnDefinition = "TINYINT UNSIGNED")
     private Integer myLevel; // 1 ~ 5
 
-    @Column(columnDefinition = "INT UNSIGNED")
+    @Column(columnDefinition = "TINYINT UNSIGNED")
     private Integer hintCount;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(columnDefinition = "VARCHAR(5) DEFAULT 'NO'")
@@ -68,7 +69,7 @@ public class Review extends BaseEntity {
 
     private LocalTime performedTime;
 
-    @Column(columnDefinition = "INT UNSIGNED")
+    @Column(columnDefinition = "TINYINT UNSIGNED")
     private Integer performedHeadcount;
 
     @Builder

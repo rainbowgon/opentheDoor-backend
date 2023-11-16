@@ -207,7 +207,7 @@ public class ReviewServiceImpl implements ReviewService {
             Double reviewCount = zSetOperations.score("REVIEW", themeId);
             // 평균 별점 재계산
             double delta = (rating - ratingScore) / reviewCount;
-            zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0 / 10.0));
+            zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0) / 10.0);
         }
     }
 
@@ -228,7 +228,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 평균 별점 재계산
         Double reviewCount = zSetOperations.score("REVIEW", themeId);
         double delta = (newRating - originRating) / reviewCount;
-        zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0 / 10.0));
+        zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0) / 10.0);
     }
 
     /**
@@ -251,6 +251,6 @@ public class ReviewServiceImpl implements ReviewService {
         Double reviewCount = zSetOperations.score("REVIEW", themeId);
         // 평균 별점 재계산
         double delta = (ratingScore - rating) / reviewCount;
-        zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0 / 10.0));
+        zSetOperations.incrementScore("RATING", themeId, Math.round(delta * 10.0) / 10.0);
     }
 }

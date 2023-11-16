@@ -41,10 +41,10 @@ public class Member extends BaseEntity {
 
     @Column(columnDefinition = "VARCHAR(10)")
     @Enumerated(EnumType.STRING)
-    //    @NotNull
+    @NotNull
     private Provider provider;
 
-    //    @NotNull
+    @NotNull
     private String providerId;
 
     @Builder

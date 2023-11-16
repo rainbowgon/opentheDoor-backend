@@ -64,4 +64,10 @@ public class ThemeClientController {
 
         return ResponseEntity.ok(reservationOriginalOutDto);
     }
+    @GetMapping("/exists/{theme-id}")
+    public ResponseEntity<Boolean> checkTheme(
+            @PathVariable("theme-id") String themeId
+    ) {
+        return ResponseEntity.ok(themeService.checkTheme(themeId));
+    }
 }
