@@ -96,17 +96,20 @@ public class WaitingServiceImpl implements WaitingService {
         Waiting waiting =
                 waitingRedisRepository.findById(waitingId).orElseThrow(WaitingHistoryNotFoundException::new);
 
+        List<EmptyTimeSlotNotificationOutDto> emptyTimeSlotNotificationOutDtoList =
+                getEmptyTimeSlotNotificationOutDtoList(waiting);
+
+        notificationServiceClient.notifyEmptyTimeSlot(emptyTimeSlotNotificationOutDtoList);
+    }
+
+    private List<EmptyTimeSlotNotificationOutDto> getEmptyTimeSlotNotificationOutDtoList(Waiting waiting) {
         ThemeBriefInfoInDto themeInfo = searchServiceClient.getThemeBriefInfo(waiting.getThemeId());
         List<MemberIdOutDto> memberIdOutDtoList =
                 waiting.getMemberIdSet().stream().map(MemberIdOutDto::from).collect(Collectors.toList());
-        List<EmptyTimeSlotNotificationOutDto> emptyTimeSlotNotificationOutDtoList =
-                memberServiceClient.getFcmTokenList(memberIdOutDtoList).stream()
-                        .map(fcmTokenInDto -> EmptyTimeSlotNotificationOutDto
-                                .from(fcmTokenInDto, themeInfo, waiting))
-                        .collect(Collectors.toList());
-
-        notificationServiceClient.notifyEmptyTimeSlot(emptyTimeSlotNotificationOutDtoList);
-
+        return memberServiceClient.getFcmTokenList(memberIdOutDtoList).stream()
+                .map(fcmTokenInDto -> EmptyTimeSlotNotificationOutDto
+                        .from(fcmTokenInDto, themeInfo, waiting))
+                .collect(Collectors.toList());
     }
 
     private String getWaitingId(WaitingReqDto waitingReqDto) {
@@ -122,4 +125,5 @@ public class WaitingServiceImpl implements WaitingService {
                                          emptyTimeSlotReqDto.getTargetDate(),
                                          emptyTimeSlotReqDto.getTargetTime());
     }
+
 }
