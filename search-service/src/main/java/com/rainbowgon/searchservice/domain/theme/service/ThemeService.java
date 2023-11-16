@@ -39,4 +39,7 @@ public interface ThemeService {
 
     ReservationOriginalOutDto getOriginalForReservation(String themeId);
 
+    Boolean checkTheme(String themeId);
+
+
 }
