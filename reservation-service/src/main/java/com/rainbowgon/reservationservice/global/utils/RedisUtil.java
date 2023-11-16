@@ -9,4 +9,8 @@ public class RedisUtil {
                                          LocalTime targetTime) {
         return String.format("%s_%s_%s_%s", title, posterUrl, targetDate.toString(), targetTime.toString());
     }
+
+    public static String createTimeLineId(String title, String posterUrl) {
+        return String.format("%s-%s", title, posterUrl);
+    }
 }
