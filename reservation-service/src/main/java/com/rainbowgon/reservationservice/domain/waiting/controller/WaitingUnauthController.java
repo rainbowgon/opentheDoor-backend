@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/waiting/unauth")
-public class WaitingController {
+@RequestMapping("/waitings/unauth")
+public class WaitingUnauthController {
 
     private final WaitingService waitingService;
 

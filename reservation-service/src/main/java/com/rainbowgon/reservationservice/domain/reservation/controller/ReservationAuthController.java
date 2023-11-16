@@ -3,14 +3,12 @@ package com.rainbowgon.reservationservice.domain.reservation.controller;
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.*;
 import com.rainbowgon.reservationservice.domain.reservation.service.ReservationService;
-import com.rainbowgon.reservationservice.domain.waiting.dto.request.WaitingReqDto;
 import com.rainbowgon.reservationservice.domain.waiting.service.WaitingService;
 import com.rainbowgon.reservationservice.global.response.JsonResponse;
 import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -66,21 +64,4 @@ public class ReservationAuthController {
         return JsonResponse.ok("회원의 예약 상세 정보를 가져왔습니다.", reservationDetailResDto);
     }
 
-    @PostMapping("/waiting")
-    public ResponseEntity<ResponseWrapper<Nullable>> waitEmptyTimeSlot(
-            @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
-
-        waitingService.waitEmptyTimeSlot(memberId, waitingReqDto);
-
-        return JsonResponse.ok("예약 대기 신청을 완료했습니다.");
-    }
-
-    @PostMapping("/waiting/cancel")
-    public ResponseEntity<ResponseWrapper<Nullable>> cancelWaiting(
-            @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
-
-        waitingService.cancelWaiting(memberId, waitingReqDto);
-
-        return JsonResponse.ok("예약 대기 신청을 취소했습니다.");
-    }
 }
