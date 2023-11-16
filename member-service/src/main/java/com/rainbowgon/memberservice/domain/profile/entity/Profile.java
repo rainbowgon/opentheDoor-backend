@@ -22,7 +22,7 @@ public class Profile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "profile_id", columnDefinition = "INT UNSIGNED")
+    @Column(name = "profile_id", columnDefinition = "MEDIUMINT UNSIGNED")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
