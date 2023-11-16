@@ -22,7 +22,8 @@ public class ReservationUnauthController {
     private final ReservationService reservationService;
 
     @GetMapping("/{theme-id}")
-    public ResponseEntity<?> getReservationBaseInfo(@PathVariable("theme-id") String themeId) {
+    public ResponseEntity<ResponseWrapper<ReservationBaseInfoResDto>> getReservationBaseInfo(
+            @PathVariable("theme-id") String themeId) {
 
         ReservationBaseInfoResDto reservationBaseInfoResDto =
                 reservationService.getReservationBaseInfo(themeId);
@@ -45,7 +46,7 @@ public class ReservationUnauthController {
     }
 
     @PostMapping("/reserved")
-    public ResponseEntity<?> getReservationDetail(
+    public ResponseEntity<ResponseWrapper<ReservationDetailResDto>> getReservationDetail(
             @RequestBody UnauthReservationDetailReqDto unauthReservationDetailReqDto) {
         ReservationDetailResDto reservationDetailResDto =
                 reservationService.getReservationDetail(unauthReservationDetailReqDto);
