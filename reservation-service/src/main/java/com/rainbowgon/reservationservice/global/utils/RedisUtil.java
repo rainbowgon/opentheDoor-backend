@@ -6,9 +6,9 @@ import java.time.LocalTime;
 public class RedisUtil {
 
     // TODO 단순 String을 Hash로 저장
-    public static String createWaitingId(String title, String posterUrl, LocalDate targetDate,
+    public static String createWaitingId(String timeLineId, LocalDate targetDate,
                                          LocalTime targetTime) {
-        return String.format("%s-%s-%s-%s", title, posterUrl, targetDate.toString(), targetTime.toString());
+        return String.format("%s-%s-%s", timeLineId, targetDate.toString(), targetTime.toString());
     }
 
     public static String createTimeLineId(String title) {

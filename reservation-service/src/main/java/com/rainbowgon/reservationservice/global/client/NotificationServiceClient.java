@@ -1,7 +1,7 @@
 package com.rainbowgon.reservationservice.global.client;
 
+import com.rainbowgon.reservationservice.global.client.dto.output.EmptyTimeSlotNotificationOutDto;
 import com.rainbowgon.reservationservice.global.client.dto.output.NotificationOutDto;
-import com.rainbowgon.reservationservice.global.client.dto.output.WaitingNotificationOutDto;
 import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.lang.Nullable;
@@ -20,6 +20,6 @@ public interface NotificationServiceClient {
             @RequestBody NotificationOutDto successNotificationOutDto);
 
     @PostMapping("/waiting")
-    ResponseWrapper<Nullable> notifyEmptyTheme(
-            @RequestBody List<WaitingNotificationOutDto> waitingNotificationOutDtoList);
+    ResponseWrapper<Nullable> notifyEmptyTimeSlot(
+            @RequestBody List<EmptyTimeSlotNotificationOutDto> emptyTimeSlotNotificationOutDtoList);
 }
