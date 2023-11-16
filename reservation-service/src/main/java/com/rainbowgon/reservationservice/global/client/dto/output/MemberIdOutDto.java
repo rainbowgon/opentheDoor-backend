@@ -6,12 +6,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class MemberIdDto {
+public class MemberIdOutDto {
 
     private String memberId;
 
-    public static MemberIdDto from(String memberId) {
-        return MemberIdDto.builder()
+    public static MemberIdOutDto from(String memberId) {
+        return MemberIdOutDto.builder()
                 .memberId(memberId)
                 .build();
     }
