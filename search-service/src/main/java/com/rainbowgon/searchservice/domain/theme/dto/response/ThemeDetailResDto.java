@@ -39,9 +39,8 @@ public class ThemeDetailResDto {
 
     //    public static ThemeDetailResDto from(Theme theme, Integer bookmarkCount, Integer reviewCount,
 //                                         Double ratingScore, List<ReservationInDto> timeslot) {
-    public static ThemeDetailResDto from
-    (Theme theme, Integer bookmarkCount, Integer reviewCount,
-     Double ratingScore) {
+    public static ThemeDetailResDto from(Theme theme, Integer bookmarkCount, Integer reviewCount,
+                                         Double ratingScore) {
         return ThemeDetailResDto.builder()
                 .themeId(theme.getThemeId())
                 .venue(theme.getVenue())
