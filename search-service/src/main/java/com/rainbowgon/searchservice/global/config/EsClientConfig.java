@@ -29,6 +29,10 @@ public class EsClientConfig extends ElasticsearchConfiguration {
                 // 연결 타임아웃과 소켓 타임아웃 설정
                 .withConnectTimeout(Duration.ofMillis(CONNECTION_TIMEOUT))
                 .withSocketTimeout(Duration.ofMillis(SOCKET_TIMEOUT))
+                .withHttpClientConfigurer(clientBuilder -> {
+                    clientBuilder.setKeepAliveStrategy((httpResponse, httpContext) -> 1000 * 60);
+                    return clientBuilder;
+                })
 //                .withBasicAuth(username, password) // 필요한 경우 주석 해제
                 .build();
     }
