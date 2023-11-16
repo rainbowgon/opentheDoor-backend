@@ -1,7 +1,7 @@
-package com.rainbowgon.reservationservice.domain.timeslot.service;
+package com.rainbowgon.reservationservice.domain.timeline.service;
 
-import com.rainbowgon.reservationservice.domain.timeslot.entity.TimeLine;
-import com.rainbowgon.reservationservice.domain.timeslot.repository.TimeLineRedisRepository;
+import com.rainbowgon.reservationservice.domain.timeline.entity.TimeLine;
+import com.rainbowgon.reservationservice.domain.timeline.repository.TimeLineRedisRepository;
 import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeOriginalInfoInDto;
 import com.rainbowgon.reservationservice.global.error.exception.TimeLineNotFoundException;

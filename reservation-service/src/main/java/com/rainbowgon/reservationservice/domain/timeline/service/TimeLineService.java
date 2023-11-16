@@ -1,4 +1,4 @@
-package com.rainbowgon.reservationservice.domain.timeslot.service;
+package com.rainbowgon.reservationservice.domain.timeline.service;
 
 import com.rainbowgon.reservationservice.global.vo.TimeSlotVO;
 

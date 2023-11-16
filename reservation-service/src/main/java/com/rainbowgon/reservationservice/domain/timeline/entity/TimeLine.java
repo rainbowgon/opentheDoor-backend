@@ -1,4 +1,4 @@
-package com.rainbowgon.reservationservice.domain.timeslot.entity;
+package com.rainbowgon.reservationservice.domain.timeline.entity;
 
 import com.rainbowgon.reservationservice.global.vo.TimeSlotVO;
 import lombok.Getter;
