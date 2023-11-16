@@ -42,10 +42,6 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     // rabbitmq
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
-    // feign
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    // eureka
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     // config server
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     // bootstrap.yml
