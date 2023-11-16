@@ -14,7 +14,7 @@ import java.time.Duration;
 public class EsClientConfig extends ElasticsearchConfiguration {
 
     // 연결 타임아웃 및 소켓 타임아웃 설정을 위한 상수
-    private static final long CONNECTION_TIMEOUT = 10000; // 예: 10초
+    private static final long CONNECTION_TIMEOUT = 60000; // 예: 10초
     private static final long SOCKET_TIMEOUT = 60000; // 예: 60초
     @Value("${elasticsearch.host}")
     private String host;
