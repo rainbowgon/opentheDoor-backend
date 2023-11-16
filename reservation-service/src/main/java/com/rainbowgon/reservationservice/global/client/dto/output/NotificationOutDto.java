@@ -19,7 +19,7 @@ public class NotificationOutDto {
     private String title;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate targetDate;
-    @JsonFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime targetTime;
     private NotificationType reservationType;
 

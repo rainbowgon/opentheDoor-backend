@@ -27,7 +27,7 @@ public class Reservation extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate targetDate;
 
-    @DateTimeFormat(pattern = "hh:mm")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime targetTime;
 
     @Column(columnDefinition = "MEDIUMINT UNSIGNED")

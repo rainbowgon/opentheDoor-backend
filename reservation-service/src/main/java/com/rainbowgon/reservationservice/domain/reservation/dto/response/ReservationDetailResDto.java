@@ -22,7 +22,7 @@ public class ReservationDetailResDto {
     private String bookerPhoneNumber;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate targetDate;
-    @JsonFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime targetTime;
     private Integer headcount;
     private Integer totalPrice;
