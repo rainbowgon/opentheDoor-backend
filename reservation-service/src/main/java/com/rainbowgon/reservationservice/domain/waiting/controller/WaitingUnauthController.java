@@ -3,8 +3,10 @@ package com.rainbowgon.reservationservice.domain.waiting.controller;
 import com.rainbowgon.reservationservice.domain.waiting.dto.request.EmptyTimeSlotReqDto;
 import com.rainbowgon.reservationservice.domain.waiting.service.WaitingService;
 import com.rainbowgon.reservationservice.global.response.JsonResponse;
+import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,13 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/waiting/unauth")
-public class WaitingController {
+@RequestMapping("/waitings/unauth")
+public class WaitingUnauthController {
 
     private final WaitingService waitingService;
 
     @PostMapping("/notify/empty-slot")
-    public ResponseEntity<?> alertEmptyTimeSlot(@RequestBody EmptyTimeSlotReqDto emptyTimeSlotReqDto) {
+    public ResponseEntity<ResponseWrapper<Nullable>> alertEmptyTimeSlot(
+            @RequestBody EmptyTimeSlotReqDto emptyTimeSlotReqDto) {
 
         waitingService.notifyEmptyTimeSlot(emptyTimeSlotReqDto);
 
