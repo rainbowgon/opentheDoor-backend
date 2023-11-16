@@ -104,13 +104,16 @@ public class WaitingServiceImpl implements WaitingService {
 
     private List<EmptyTimeSlotNotificationOutDto> getEmptyTimeSlotNotificationOutDtoList(Waiting waiting) {
         ThemeBriefInfoInDto themeInfo = searchServiceClient.getThemeBriefInfo(waiting.getThemeId());
+
         List<MemberIdOutDto> memberIdOutDtoList =
                 waiting.getMemberIdSet().stream().map(MemberIdOutDto::from).collect(Collectors.toList());
+
         return memberServiceClient.getFcmTokenList(memberIdOutDtoList).stream()
                 .map(fcmTokenInDto -> EmptyTimeSlotNotificationOutDto
                         .from(fcmTokenInDto, themeInfo, waiting))
                 .collect(Collectors.toList());
     }
+
 
     private String getWaitingId(WaitingReqDto waitingReqDto) {
         ThemeOriginalInfoInDto originalInfo = searchServiceClient.getOriginalInfo(waitingReqDto.getThemeId());
