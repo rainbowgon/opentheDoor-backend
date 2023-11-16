@@ -18,8 +18,8 @@ public interface MemberServiceClient {
     @GetMapping("/booker/{member-id}")
     MemberBriefInfoInDto getMemberBriefInfo(@PathVariable("member-id") String memberId);
 
-    @GetMapping("/fcm")
-    FcmTokenInDto getFcmToken(@RequestBody MemberIdOutDto memberIdOutDto);
+    @GetMapping("/fcm/{member-id}")
+    FcmTokenInDto getFcmToken(@PathVariable("member-id") String memberId);
 
     @GetMapping("/fcm/list")
     List<FcmTokenInDto> getFcmTokenList(@RequestBody List<MemberIdOutDto> memberIdOutDtoList);
