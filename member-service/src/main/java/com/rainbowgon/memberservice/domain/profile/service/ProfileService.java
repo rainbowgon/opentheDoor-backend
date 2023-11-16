@@ -1,5 +1,6 @@
 package com.rainbowgon.memberservice.domain.profile.service;
 
+import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.global.entity.NotificationStatus;
@@ -21,5 +22,7 @@ public interface ProfileService {
     NotificationStatus updateBookmarkNotificationStatus(UUID memberId);
 
     void deleteProfile(UUID memberId);
+
+    MemberDto findProfileById(Long profileId);
 
 }

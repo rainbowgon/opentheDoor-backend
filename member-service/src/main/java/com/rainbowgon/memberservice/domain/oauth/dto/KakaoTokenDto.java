@@ -1,19 +1,16 @@
-package com.rainbowgon.memberservice.domain.member.dto.response.oauth;
+package com.rainbowgon.memberservice.domain.oauth.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KakaoTokenResDto {
+public class KakaoTokenDto {
 
     private String accessToken;
     private String tokenType;
     private String refreshToken;
-    private String idToken;
     private Integer expiresIn;
     private String scope;
     private Integer refreshTokenExpiresIn;

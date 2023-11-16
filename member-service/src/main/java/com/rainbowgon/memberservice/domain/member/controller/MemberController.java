@@ -4,9 +4,6 @@ import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
-import com.rainbowgon.memberservice.domain.member.dto.response.oauth.KakaoProfileResDto;
-import com.rainbowgon.memberservice.domain.member.dto.response.oauth.OAuthProfileResDto;
-import com.rainbowgon.memberservice.domain.member.service.KakaoLoginService;
 import com.rainbowgon.memberservice.domain.member.service.MemberService;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import com.rainbowgon.memberservice.global.response.JsonResponse;
@@ -27,20 +24,6 @@ import java.util.UUID;
 public class MemberController {
 
     private final MemberService memberService;
-    private final KakaoLoginService kakaoLoginService;
-
-
-    /**
-     * TODO 카카오 로그인
-     */
-    @GetMapping("/login/kakao")
-    public ResponseEntity<OAuthProfileResDto> kakaoLogin(@RequestParam("code") String code) throws Exception {
-
-        String kakaoAccessToken = kakaoLoginService.getToken(code);
-        KakaoProfileResDto kakaoProfileResDto = kakaoLoginService.getProfile(kakaoAccessToken);
-
-        return ResponseEntity.ok(OAuthProfileResDto.fromKakao(kakaoProfileResDto));
-    }
 
 
     /**

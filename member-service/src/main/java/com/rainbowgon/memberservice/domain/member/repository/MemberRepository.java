@@ -10,4 +10,6 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
     Optional<Member> findByPhoneNumber(String phoneNumber);
 
+    Optional<Member> findByProviderId(String providerId);
+
 }

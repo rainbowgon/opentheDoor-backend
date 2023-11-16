@@ -1,4 +1,4 @@
-package com.rainbowgon.memberservice.domain.member.dto.response.oauth;
+package com.rainbowgon.memberservice.domain.oauth.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KakaoProfileResDto {
+public class KakaoUserInfoDto {
 
     private String id;
     private String connectedAt;

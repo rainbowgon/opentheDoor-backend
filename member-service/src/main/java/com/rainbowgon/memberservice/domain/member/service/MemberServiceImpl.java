@@ -2,6 +2,7 @@ package com.rainbowgon.memberservice.domain.member.service;
 
 
 import com.rainbowgon.memberservice.domain.bookmark.service.BookmarkService;
+import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -144,6 +146,27 @@ public class MemberServiceImpl implements MemberService {
         Token token = tokenRedisRepository.findById(profile.getProfileId()).orElseThrow(RedisErrorException::new);
 
         return token.getFcmToken();
+    }
+
+    /**
+     * OAuth Provider ID로 회원 조회
+     * 존재하는 회원이면 회원 ID, 프로필 ID 반환
+     */
+    @Override
+    public MemberDto findMemberByProviderId(String providerId) {
+
+        // OAuth ID로 회원 조회
+        Optional<Member> member = memberRepository.findByProviderId(providerId);
+
+        // 없는 회원이면 null 반환 -> 회원가입
+        if (member.isEmpty()) {
+            return null;
+        }
+
+        // 회원 ID로 프로필 조회
+        ProfileSimpleResDto profile = profileService.selectProfileByMember(member.get().getId());
+
+        return MemberDto.of(member.get(), profile.getProfileId());
     }
 
     /**
