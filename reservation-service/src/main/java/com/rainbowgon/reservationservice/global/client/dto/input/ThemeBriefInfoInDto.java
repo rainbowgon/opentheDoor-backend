@@ -1,6 +1,6 @@
 package com.rainbowgon.reservationservice.global.client.dto.input;
 
-import com.rainbowgon.reservationservice.domain.reservation.vo.PriceVO;
+import com.rainbowgon.reservationservice.global.vo.PriceVO;
 import lombok.Getter;
 
 import java.util.List;

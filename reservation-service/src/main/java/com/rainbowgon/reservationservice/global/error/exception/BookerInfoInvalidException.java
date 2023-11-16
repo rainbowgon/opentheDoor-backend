@@ -8,6 +8,6 @@ public class BookerInfoInvalidException extends CustomException {
     public static final CustomException EXCEPTION = new BookerInfoInvalidException();
 
     public BookerInfoInvalidException() {
-        super(GlobalErrorCode.BOOKER_INFO_INVAILD);
+        super(GlobalErrorCode.BOOKER_INFO_INVALID);
     }
 }

@@ -1,4 +1,4 @@
-package com.rainbowgon.reservationservice.domain.reservation.vo;
+package com.rainbowgon.reservationservice.global.vo;
 
 import lombok.Getter;
 
