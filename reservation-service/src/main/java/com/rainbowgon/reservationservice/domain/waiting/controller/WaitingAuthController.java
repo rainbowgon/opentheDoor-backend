@@ -16,7 +16,7 @@ public class WaitingAuthController {
 
     private final WaitingService waitingService;
 
-    @PostMapping("/waiting")
+    @PostMapping
     public ResponseEntity<ResponseWrapper<Nullable>> waitEmptyTimeSlot(
             @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
 
@@ -25,7 +25,7 @@ public class WaitingAuthController {
         return JsonResponse.ok("예약 대기 신청을 완료했습니다.");
     }
 
-    @PostMapping("/waiting/cancel")
+    @PostMapping("/cancel")
     public ResponseEntity<ResponseWrapper<Nullable>> cancelWaiting(
             @RequestHeader String memberId, @RequestBody WaitingReqDto waitingReqDto) {
 
