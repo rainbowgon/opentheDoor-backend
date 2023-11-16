@@ -12,7 +12,7 @@ import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeOriginalInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.output.EmptyTimeSlotNotificationOutDto;
-import com.rainbowgon.reservationservice.global.client.dto.output.MemberIdOutDto;
+import com.rainbowgon.reservationservice.global.client.dto.output.MemberIdListOutDto;
 import com.rainbowgon.reservationservice.global.error.exception.WaitingAlreadyExistsException;
 import com.rainbowgon.reservationservice.global.error.exception.WaitingHistoryNotFoundException;
 import com.rainbowgon.reservationservice.global.utils.RedisUtil;
@@ -104,10 +104,9 @@ public class WaitingServiceImpl implements WaitingService {
     private List<EmptyTimeSlotNotificationOutDto> getEmptyTimeSlotNotificationOutDtoList(Waiting waiting) {
         ThemeBriefInfoInDto themeInfo = searchServiceClient.getThemeBriefInfo(waiting.getThemeId());
 
-        List<MemberIdOutDto> memberIdOutDtoList =
-                waiting.getMemberIdSet().stream().map(MemberIdOutDto::from).collect(Collectors.toList());
+        List<String> memberIdList = List.copyOf(waiting.getMemberIdSet());
 
-        return memberServiceClient.getFcmTokenList(memberIdOutDtoList).stream()
+        return memberServiceClient.getFcmTokenList(MemberIdListOutDto.from(memberIdList)).stream()
                 .map(fcmTokenInDto -> EmptyTimeSlotNotificationOutDto
                         .from(fcmTokenInDto, themeInfo, waiting))
                 .collect(Collectors.toList());

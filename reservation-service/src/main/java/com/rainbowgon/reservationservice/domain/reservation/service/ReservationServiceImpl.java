@@ -13,7 +13,6 @@ import com.rainbowgon.reservationservice.global.client.NotificationServiceClient
 import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
 import com.rainbowgon.reservationservice.global.client.dto.input.MemberBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
-import com.rainbowgon.reservationservice.global.client.dto.output.MemberIdOutDto;
 import com.rainbowgon.reservationservice.global.client.dto.output.NotificationOutDto;
 import com.rainbowgon.reservationservice.global.error.exception.BookerInfoInvalidException;
 import com.rainbowgon.reservationservice.global.error.exception.ReservationNotFoundException;
@@ -143,7 +142,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private void sendSuccessNotification(String memberId, ReservationReqDto reservationReqDto,
                                          Reservation reservation) {
-        String fcmToken = memberServiceClient.getFcmToken(MemberIdOutDto.from(memberId)).getFcmToken();
+        String fcmToken = memberServiceClient.getFcmToken(memberId).getFcmToken();
         ThemeBriefInfoInDto themeBriefInfo =
                 searchServiceClient.getThemeBriefInfo(reservationReqDto.getThemeId());
         NotificationOutDto notificationOutDto =

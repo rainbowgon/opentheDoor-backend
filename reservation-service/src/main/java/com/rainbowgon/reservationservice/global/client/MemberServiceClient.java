@@ -2,12 +2,9 @@ package com.rainbowgon.reservationservice.global.client;
 
 import com.rainbowgon.reservationservice.global.client.dto.input.FcmTokenInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.MemberBriefInfoInDto;
-import com.rainbowgon.reservationservice.global.client.dto.output.MemberIdOutDto;
+import com.rainbowgon.reservationservice.global.client.dto.output.MemberIdListOutDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,9 +15,9 @@ public interface MemberServiceClient {
     @GetMapping("/booker/{member-id}")
     MemberBriefInfoInDto getMemberBriefInfo(@PathVariable("member-id") String memberId);
 
-    @GetMapping("/fcm")
-    FcmTokenInDto getFcmToken(@RequestBody MemberIdOutDto memberIdOutDto);
+    @GetMapping("/fcm/{member-id}")
+    FcmTokenInDto getFcmToken(@PathVariable("member-id") String memberId);
 
-    @GetMapping("/fcm/list")
-    List<FcmTokenInDto> getFcmTokenList(@RequestBody List<MemberIdOutDto> memberIdOutDtoList);
+    @PostMapping("/fcm")
+    List<FcmTokenInDto> getFcmTokenList(@RequestBody MemberIdListOutDto memberIdListOutDto);
 }
