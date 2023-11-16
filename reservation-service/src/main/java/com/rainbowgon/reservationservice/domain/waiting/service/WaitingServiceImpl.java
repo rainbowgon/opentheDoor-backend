@@ -93,13 +93,12 @@ public class WaitingServiceImpl implements WaitingService {
     public void notifyEmptyTimeSlot(EmptyTimeSlotReqDto emptyTimeSlotReqDto) {
         String waitingId = getWaitingId(emptyTimeSlotReqDto);
 
-        Waiting waiting =
-                waitingRedisRepository.findById(waitingId).orElseThrow(WaitingHistoryNotFoundException::new);
+        waitingRedisRepository.findById(waitingId).ifPresent((waiting) -> {
+            List<EmptyTimeSlotNotificationOutDto> emptyTimeSlotNotificationOutDtoList =
+                    getEmptyTimeSlotNotificationOutDtoList(waiting);
 
-        List<EmptyTimeSlotNotificationOutDto> emptyTimeSlotNotificationOutDtoList =
-                getEmptyTimeSlotNotificationOutDtoList(waiting);
-
-        notificationServiceClient.notifyEmptyTimeSlot(emptyTimeSlotNotificationOutDtoList);
+            notificationServiceClient.notifyEmptyTimeSlot(emptyTimeSlotNotificationOutDtoList);
+        });
     }
 
     private List<EmptyTimeSlotNotificationOutDto> getEmptyTimeSlotNotificationOutDtoList(Waiting waiting) {
