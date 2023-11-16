@@ -1,7 +1,6 @@
 package com.rainbowgon.reservationservice.global.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rainbowgon.reservationservice.domain.reservation.entity.AvailableStatus;
 import lombok.Getter;
 
 import java.time.LocalTime;
