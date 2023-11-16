@@ -15,7 +15,6 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     listener:
       concurrency: 3
-      type: single
 
   redis:
     notification:
