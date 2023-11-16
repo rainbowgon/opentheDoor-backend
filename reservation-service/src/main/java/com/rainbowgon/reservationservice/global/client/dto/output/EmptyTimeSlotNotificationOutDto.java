@@ -21,7 +21,7 @@ public class EmptyTimeSlotNotificationOutDto {
     private String title;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate targetDate;
-    @JsonFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime targetTime;
 
     public static EmptyTimeSlotNotificationOutDto from(FcmTokenInDto fcmTokenDto,
