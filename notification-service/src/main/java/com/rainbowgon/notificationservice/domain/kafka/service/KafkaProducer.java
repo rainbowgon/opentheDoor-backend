@@ -12,9 +12,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KafkaProducer {
+public cl
+        ass KafkaProducer {
 
-    private final String TOPIC = "notification";
+    private final String TOPIC = "noti";
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
