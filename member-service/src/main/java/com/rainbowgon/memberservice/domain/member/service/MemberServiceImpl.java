@@ -128,6 +128,16 @@ public class MemberServiceImpl implements MemberService {
         bookmarkService.deleteBookmark(memberId);
     }
 
+    @Override
+    public void logout(UUID memberId) {
+
+        // 회원 ID로 프로필 ID 조회
+        ProfileSimpleResDto profile = profileService.selectProfileByMember(memberId);
+
+        // 토큰 삭제하기
+        tokenRedisRepository.deleteById(profile.getProfileId());
+    }
+
     /**
      * reservation-service와 feign 통신
      * memberId로 name, phoneNumber 조회
