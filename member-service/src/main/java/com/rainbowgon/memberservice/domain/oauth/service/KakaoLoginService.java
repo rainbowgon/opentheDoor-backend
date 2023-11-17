@@ -114,14 +114,15 @@ public class KakaoLoginService {
         String refreshToken = jwtTokenProvider.generateRefreshToken(memberDto.getProfileId());
 
         // token redis 업데이트
-        Token tokenDto = tokenRedisRepository.save(Token.builder()
-                                                           .profileId(memberDto.getProfileId())
-                                                           .memberId(memberDto.getMemberId())
-                                                           .accessToken(accessToken)
-                                                           .refreshToken(refreshToken)
-                                                           .fcmToken(fcmToken)
-                                                           .expiration(REFRESH_TOKEN_EXPIRE_TIME)
-                                                           .build());
+        Token tokenDto = tokenRedisRepository.save(
+                Token.builder()
+                        .profileId(memberDto.getProfileId())
+                        .memberId(memberDto.getMemberId())
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .fcmToken(fcmToken)
+                        .expiration(REFRESH_TOKEN_EXPIRE_TIME)
+                        .build());
 
         return JwtTokenDto.of(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 
