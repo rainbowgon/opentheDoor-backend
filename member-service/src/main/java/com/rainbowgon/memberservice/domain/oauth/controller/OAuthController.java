@@ -22,6 +22,14 @@ public class OAuthController {
     private final KakaoLoginService kakaoLoginService;
     private final MemberService memberService;
 
+    /**
+     * 카카오 callback 버리기
+     */
+    @GetMapping("/kakao")
+    public ResponseEntity<?> kakao(@RequestParam("code") String code) {
+        return null;
+    }
+
 
     /**
      * 인가 코드 값으로 사용자 정보 가져오기
@@ -33,9 +41,11 @@ public class OAuthController {
 
         // 인가코드(code)로 토큰 발급 요청
         String kakaoAccessToken = kakaoLoginService.getToken(code);
+        log.info("[OAuthController] kakaoCallback ... kakaoAccessToken = {}", kakaoAccessToken);
 
         // accessToken으로 사용자 정보 가져오기
         KakaoUserInfoDto kakaoUserInfoDto = kakaoLoginService.getProfile(kakaoAccessToken);
+        log.info("[OAuthController] kakaoCallback ... kakaoUserInfoDto.getId() = {}", kakaoUserInfoDto.getId());
 
         // 가입된 회원인지 확인
         MemberDto member = memberService.findMemberByProviderId(kakaoUserInfoDto.getId());
