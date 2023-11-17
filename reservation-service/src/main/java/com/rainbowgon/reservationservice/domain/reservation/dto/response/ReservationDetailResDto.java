@@ -45,7 +45,7 @@ public class ReservationDetailResDto {
                 .totalPrice(reservation.getTotalPrice())
                 .themeId(reservation.getThemeId())
                 .poster(themeDto.getPoster())
-                .themeId(themeDto.getTitle())
+                .title(themeDto.getTitle())
                 .venue(themeDto.getVenue())
                 .location(themeDto.getLocation())
                 .genre(themeDto.getGenre())
