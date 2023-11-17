@@ -24,8 +24,8 @@ public class ReservationBaseInfoResDto {
     private String location;
     private List<String> genre;
     private List<PriceVO> priceList;
-    private String siteToS;
-    private String venueToS;
+    private String siteTos;
+    private String venueTos;
 
     // TODO timeSlotList 넣기
     public static ReservationBaseInfoResDto from(String themeId, MemberBriefInfoInDto memberDto,
@@ -41,8 +41,8 @@ public class ReservationBaseInfoResDto {
                 .location(themeDto.getLocation())
                 .genre(themeDto.getGenre())
                 .priceList(themeDto.getPriceList())
-                .siteToS(themeDto.getSiteToS())
-                .venueToS(themeDto.getVenueToS())
+                .siteTos(themeDto.getSiteTos())
+                .venueTos(themeDto.getVenueTos())
                 .build();
 
     }
@@ -61,8 +61,8 @@ public class ReservationBaseInfoResDto {
                 .location(themeDto.getLocation())
                 .genre(themeDto.getGenre())
                 .priceList(themeDto.getPriceList())
-                .siteToS(themeDto.getSiteToS())
-                .venueToS(themeDto.getVenueToS())
+                .siteTos(themeDto.getSiteTos())
+                .venueTos(themeDto.getVenueTos())
                 .build();
 
     }
