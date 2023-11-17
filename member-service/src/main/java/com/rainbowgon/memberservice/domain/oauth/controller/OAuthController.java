@@ -29,6 +29,8 @@ public class OAuthController {
     @GetMapping("/kakao/callback")
     public ResponseEntity<?> kakaoCallback(@RequestParam("code") String code) throws Exception {
 
+        log.info("[OAuthController] kakaoCallback ... code = {}", code);
+
         // 인가코드(code)로 토큰 발급 요청
         String kakaoAccessToken = kakaoLoginService.getToken(code);
 
