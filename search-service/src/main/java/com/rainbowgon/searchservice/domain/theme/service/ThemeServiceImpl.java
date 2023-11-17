@@ -370,7 +370,7 @@ public class ThemeServiceImpl implements ThemeService {
 
         for (PriceEntry priceEntry : theme.getPriceList()) {
             if (priceEntry.getHeadcount().equals(headcount)) {
-                return priceEntry.getPrice();
+                return priceEntry.getPrice() * headcount;
             }
         }
         throw new PriceNotFoundException();
