@@ -11,10 +11,7 @@ import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -25,6 +22,14 @@ public class OAuthController {
     private final KakaoLoginService kakaoLoginService;
     private final MemberService memberService;
 
+    /**
+     * 카카오 callback 버리기
+     */
+    @GetMapping("/kakao")
+    public ResponseEntity<?> kakao(@RequestParam("code") String code) {
+        return null;
+    }
+
 
     /**
      * 인가 코드 값으로 사용자 정보 가져오기
@@ -32,11 +37,15 @@ public class OAuthController {
     @GetMapping("/kakao/callback")
     public ResponseEntity<?> kakaoCallback(@RequestParam("code") String code) throws Exception {
 
+        log.info("[OAuthController] kakaoCallback ... code = {}", code);
+
         // 인가코드(code)로 토큰 발급 요청
         String kakaoAccessToken = kakaoLoginService.getToken(code);
+        log.info("[OAuthController] kakaoCallback ... kakaoAccessToken = {}", kakaoAccessToken);
 
         // accessToken으로 사용자 정보 가져오기
         KakaoUserInfoDto kakaoUserInfoDto = kakaoLoginService.getProfile(kakaoAccessToken);
+        log.info("[OAuthController] kakaoCallback ... kakaoUserInfoDto.getId() = {}", kakaoUserInfoDto.getId());
 
         // 가입된 회원인지 확인
         MemberDto member = memberService.findMemberByProviderId(kakaoUserInfoDto.getId());
@@ -53,7 +62,7 @@ public class OAuthController {
     /**
      * 카카오 로그인
      */
-    @GetMapping("/login/kakao")
+    @PostMapping("/login/kakao")
     public ResponseEntity<ResponseWrapper<JwtTokenDto>> kakaoLogin(
             @RequestParam("fcmToken") String fcmToken,
             @RequestParam("profileId") Long profileId) {

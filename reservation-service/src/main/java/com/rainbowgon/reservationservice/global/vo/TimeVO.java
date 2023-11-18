@@ -8,7 +8,7 @@ import java.time.LocalTime;
 @Getter
 public class TimeVO {
 
-    @JsonFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime time;
     private AvailableStatus isAvailable;
 }

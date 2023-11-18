@@ -32,7 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public List<NotificationListResDto> selectNotificationList(Long memberId) {
+    public List<NotificationListResDto> selectNotificationList(String memberId) {
 
         return notificationRedisRepository.findAllByMemberId(memberId).stream()
                 .map(notification -> NotificationListResDto.from(notification)).collect(Collectors.toList());
@@ -50,7 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void checkAllNotification(Long memberId) {
+    public void checkAllNotification(String memberId) {
 
         HashOperations<String, String, String> hashOperations = redisTemplate.opsForHash();
         SetOperations<String, String> setOperations = redisTemplate.opsForSet();

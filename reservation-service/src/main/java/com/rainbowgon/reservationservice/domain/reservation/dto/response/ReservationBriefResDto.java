@@ -18,7 +18,7 @@ public class ReservationBriefResDto {
     private Long reservationNumber;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate targetDate;
-    @JsonFormat(pattern = "hh:mm")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime targetTime;
     private Integer headcount;
     private Integer totalPrice;
