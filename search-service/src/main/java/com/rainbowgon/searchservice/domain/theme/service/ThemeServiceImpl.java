@@ -227,11 +227,10 @@ public class ThemeServiceImpl implements ThemeService {
         Double reviewCount = getScore(theme, "REVIEW");
         Double ratingScore = getScore(theme, "RATING");
 
-//        List<ReservationInDto> timeslot = reservationServiceClient.getTimeslot(themeId);
+        List<ReservationInDto> timeslot = reservationServiceClient.getTimeslot(themeId);
 
-//        return ThemeDetailResDto.from(theme, bookmarkCount.intValue(), reviewCount.intValue(), ratingScore,
-//                                      timeslot);
-        return ThemeDetailResDto.from(theme, bookmarkCount.intValue(), reviewCount.intValue(), ratingScore);
+        return ThemeDetailResDto.from(theme, bookmarkCount.intValue(), reviewCount.intValue(), ratingScore,
+                                      timeslot);
     }
 
     @Override
