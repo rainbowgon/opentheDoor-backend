@@ -52,7 +52,14 @@ public class OAuthController {
 
         // 가입 정보가 없다면 회원가입 요청 (kakao id, profile image, nickname 반환)
         if (member == null) {
-            return JsonResponse.ok("카카오 프로필 정보를 성공적으로 가져왔습니다.", OauthSignUpResDto.fromKakao(kakaoUserInfoDto));
+
+            // kakao 프로필 이미지 url을 s3 url로 변환
+            String profileImageUrl = kakaoLoginService.getProfileImageUrl(
+                    kakaoUserInfoDto.getKakaoAccount().getProfile().getProfileImageUrl(),
+                    kakaoUserInfoDto.getKakaoAccount().getProfile().getNickname());
+
+            return JsonResponse.ok(
+                    "카카오 프로필 정보를 성공적으로 가져왔습니다.", OauthSignUpResDto.fromKakao(kakaoUserInfoDto, profileImageUrl));
         }
 
         // 가입 정보가 있다면 로그인 요청 (profileId 반환)

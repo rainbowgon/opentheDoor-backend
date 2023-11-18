@@ -2,6 +2,7 @@ package com.rainbowgon.memberservice.global.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.rainbowgon.memberservice.global.error.exception.AwsS3ErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,47 +23,30 @@ public class S3FileService {
 
     private final AmazonS3 amazonS3;
 
-    @Value("${spring.aws.s3.bucket}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${spring.aws.s3.directory}")
+    @Value("${cloud.aws.s3.directory}")
     private String directory;
 
     /**
-     * 이미지 저장
+     * 이미지 저장 (from MultipartFile)
+     * DB에 저장되는 파일명(directory + path + fileName) 반환
      */
     public String saveFile(String path, MultipartFile multipartFile) throws IOException {
 
-        String savedFilename = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+        // S3에 저장되는 파일명
+        String S3FileName = generateS3FileName(path, multipartFile.getOriginalFilename());
 
-        uploadFile(path, multipartFile.getSize(), multipartFile.getContentType(), savedFilename,
-                   multipartFile.getInputStream());
+        // S3 업로드
+        uploadFile(multipartFile.getSize(), multipartFile.getContentType(), S3FileName, multipartFile.getInputStream());
 
-        return savedFilename;
+        return S3FileName;
     }
 
     /**
-     * 이미지 s3에 업로드
-     */
-    public void fileUpload(MultipartFile image) throws Exception {
-
-        if (amazonS3 != null) {
-
-            String fileName = UUID.randomUUID() + "-" + image.getOriginalFilename();
-
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentType(image.getContentType());
-            objectMetadata.setContentLength(image.getSize());
-            objectMetadata.setHeader("filename", image.getOriginalFilename());
-            amazonS3.putObject(new PutObjectRequest(bucket + "/contact/" + today, fileList.get(i),
-                                                    files.get(i).getInputStream(), objectMetadata));
-        } else {
-            throw new AppException(ErrorType.aws_credentials_fail, null);
-        }
-    }
-
-    /**
-     * 이미지 저장
+     * 이미지 저장 (from ImageUrl)
+     * DB에 저장되는 파일명(directory + path + fileName) 반환
      */
     public String saveFile(String path, String imageUrl, String originalFilename) throws IOException {
 
@@ -70,29 +54,62 @@ public class S3FileService {
         ByteArrayOutputStream byteArrayOutputStream = extractByteArrayOutputStreamFromUrl(imageUrl, extension);
 
         long size = byteArrayOutputStream.size();
-        InputStream is = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         byteArrayOutputStream.flush();
 
-        String savedFilename = UUID.randomUUID() + "-" + originalFilename + "." + extension;
+        // S3에 저장되는 파일명
+        String S3FileName = generateS3FileName(path, originalFilename + "." + extension);
 
-        uploadFile(path, size, extension, savedFilename, is);
+        // S3 업로드
+        uploadFile(size, extension, S3FileName, inputStream);
 
-        return savedFilename;
+        return S3FileName;
     }
 
     /**
-     * 이미지 S3 url 가져오기
+     * S3 파일명으로 S3 전체 경로 가져오기
+     * S3 전체 url 반환
      */
-    public String getS3Url(String imageUrl) {
-        return amazonS3.getUrl(bucket, imageUrl).toString();
+    public String getS3Url(String S3FileName) {
+        return amazonS3.getUrl(bucket, S3FileName).toString();
+    }
+
+
+    /**
+     * 이미지 파일 s3에 업로드
+     */
+    private void uploadFile(long size, String extension, String S3FileName, InputStream inputStream) {
+
+        if (amazonS3 != null) {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(extension);
+            objectMetadata.setContentLength(size);
+            amazonS3.putObject(bucket, S3FileName, inputStream, objectMetadata);
+        } else {
+            throw AwsS3ErrorException.EXCEPTION;
+        }
+    }
+
+    /**
+     * s3 file name 생성
+     */
+    private String generateS3FileName(String path, String originalFileName) {
+        StringBuilder sb = new StringBuilder();
+        return sb.append(directory)
+                .append("/")
+                .append(path)
+                .append("/")
+                .append(UUID.randomUUID())
+                .append("-")
+                .append(originalFileName).toString();
     }
 
     /**
      * 이미지 삭제하기
      */
-    public void deleteImage(String imageUrl) {
-        if (imageUrl != null) {
-            amazonS3.deleteObject(bucket, imageUrl);
+    public void deleteFile(String S3FileName) {
+        if (S3FileName != null) {
+            amazonS3.deleteObject(bucket, S3FileName);
         }
     }
 
@@ -104,13 +121,6 @@ public class S3FileService {
         ImageIO.write(image, extension, baos);
 
         return baos;
-    }
-
-    private void uploadFile(String imageUrl, long size, String extension, InputStream inputStream) {
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(size);
-        metadata.setContentType(extension);
-        amazonS3.putObject(bucket, imageUrl, inputStream, metadata);
     }
 
 }
