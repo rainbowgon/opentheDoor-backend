@@ -7,6 +7,8 @@ import com.rainbowgon.searchservice.domain.theme.model.entry.PriceEntry;
 import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.client.ReservationServiceClient;
 import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
+import com.rainbowgon.searchservice.global.client.dto.input.ReservationInDto;
+import com.rainbowgon.searchservice.global.client.dto.input.entry.TimeEntry;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.ReservationDetailOutDto;
@@ -26,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,19 +75,12 @@ public class ThemeServiceImpl implements ThemeService {
         String sortingKey = RedisKeyBuilder.buildKey("BOOKMARK", keyword);
         String reviewKey = RedisKeyBuilder.buildKey("REVIEW", keyword);
         String recommendKey = RedisKeyBuilder.buildKey("RECOMMEND", keyword);
-        String distanceKey = RedisKeyBuilder.buildKey("DISTANCE", keyword);
 
         boolean keyExists = cacheRedisThemeTemplate.hasKey(sortingKey);
         if (!keyExists) {
             // 여기서 기존의 점수가 있는지 체크하고, 없으면 0으로 초기화(기본 북마크)
             for (Theme theme : themeList) {
-                Double distanceScore = calculateDistance(theme.getLatitude(), theme.getLongitude(), latitude,
-                                                         longitude);
-                cacheRedisThemeTemplate.opsForZSet().add(distanceKey, theme, distanceScore);
-                cacheRedisThemeTemplate.expire(distanceKey, Duration.ofMinutes(20));
                 createZSET(sortingKey, reviewKey, recommendKey, theme);
-
-
             }
         }
 
@@ -135,6 +132,43 @@ public class ThemeServiceImpl implements ThemeService {
         return new PageImpl<>(content, PageRequest.of(page, size), filteredThemes.size());
     }
 
+    //Zset에 거리 정렬 기준으로 넣는 함수
+    private void createZSETforDistance(String keyword, Theme theme, Double latitude, Double longitude) {
+        String distanceKey = RedisKeyBuilder.buildKey("DISTANCE", keyword);
+
+        Double distanceScore = calculateDistance(theme.getLatitude(), theme.getLongitude(), latitude,
+                                                 longitude);
+        cacheRedisThemeTemplate.opsForZSet().add(distanceKey, theme, distanceScore);
+        cacheRedisThemeTemplate.expire(distanceKey, Duration.ofMinutes(3));
+    }
+
+    //Zset에 예약 시간 정렬 기준으로 넣는 함수
+    private void createZSETforTime(String keyword, Theme theme, List<ReservationInDto> timeSlots) {
+        String timeKey = RedisKeyBuilder.buildKey("TIME", keyword);
+
+        // 현재 시간
+        LocalDateTime now = LocalDateTime.now();
+
+        // JSON 구조 파싱 및 처리
+        for (ReservationInDto reservationInDto : timeSlots) {
+            for (TimeEntry timeEntry : reservationInDto.getTimeList()) {
+                if ("AVAILABLE".equals(timeEntry.getIsAvailable())) {
+                    LocalTime slotTime = timeEntry.getTime();
+
+                    // 현재 시간과의 차이 계산
+                    Duration duration = Duration.between(now.toLocalTime(), slotTime);
+                    long minutes = duration.toMinutes();
+
+                    // Redis ZSET에 추가
+                    cacheRedisThemeTemplate.opsForZSet().add(timeKey, theme, minutes);
+                    return;
+                }
+            }
+        }
+
+        cacheRedisThemeTemplate.expire(timeKey, Duration.ofMinutes(3));
+    }
+
     //Zset에 각 정렬 기준별로 넣는 함수
     private void createZSET(String sortingKey, String reviewKey, String recommendKey, Theme theme) {
         //검색 결과로 나온 테마의 북마크 수
@@ -154,8 +188,8 @@ public class ThemeServiceImpl implements ThemeService {
         cacheRedisThemeTemplate.expire(reviewKey, Duration.ofMinutes(20));
         cacheRedisThemeTemplate.opsForZSet().add(recommendKey, theme, finalRatingScore);
         cacheRedisThemeTemplate.expire(recommendKey, Duration.ofMinutes(20));
-
     }
+
 
     //ZSet Score 값을 get하는 함수
     @NotNull
@@ -238,20 +272,32 @@ public class ThemeServiceImpl implements ThemeService {
         int start = page * size; // 페이지 계산에 따른 시작 인덱스
         int end = (page + 1) * size - 1; // 페이지 계산에 따른 끝 인덱스
 
-        boolean keyExists = cacheRedisThemeTemplate.hasKey(redisKey);
-        if (!keyExists) {
-            // 키가 존재하지 않으면, searchThemes 메서드를 실행
-            Page<ThemeSimpleResDto> searchResult = searchThemes(keyword, latitude, longitude, headcount,
-                                                                region, page, size);
-        }
-
         Set<Theme> sortedThemeIds;
 
         // 레디스에서 정렬된 결과를 가져와서 DTO로 변환
-        if (!sortBy.equals("DISTANCE")) {
+        if (sortBy.equals("TIME")) {
+            List<Theme> themeList = search(keyword);
+            for (Theme theme : themeList) {
+                List<ReservationInDto> timeSlots = reservationServiceClient.getTimeslot(theme.getThemeId());
+                createZSETforTime(keyword, theme, timeSlots);
+            }
+            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, 0,
+                                                                               -1);
+        } else if (sortBy.equals("DISTANCE")) {
+            List<Theme> themeList = search(keyword);
+            for (Theme theme : themeList) {
+                createZSETforDistance(keyword, theme, latitude, longitude);
+            }
             sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, 0,
                                                                                -1);
         } else {
+
+            boolean keyExists = cacheRedisThemeTemplate.hasKey(redisKey);
+            if (!keyExists) {
+                // 키가 존재하지 않으면, searchThemes 메서드를 실행
+                Page<ThemeSimpleResDto> searchResult = searchThemes(keyword, latitude, longitude, headcount,
+                                                                    region, page, size);
+            }
             sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, 0, -1);
         }
 
