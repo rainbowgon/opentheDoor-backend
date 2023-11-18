@@ -350,8 +350,13 @@ public class ThemeServiceImpl implements ThemeService {
     @Transactional(readOnly = true)
     public List<ThemeSimpleResDto> getRanks() {
         String rankingKey = "RANKING";
-        // POPULAR 키로 정렬된 데이터에서 상위 10개를 불러오는 로직
+        // RANKING 키로 정렬된 데이터에서 상위 10개를 불러오는 로직
         Set<Theme> rankedThemes = cacheRedisThemeTemplate.opsForZSet().reverseRange(rankingKey, 0, 9);
+
+        if (rankedThemes == null || rankedThemes.isEmpty()) {
+            setRanks();  // setRanks 함수 호출
+            rankedThemes = cacheRedisThemeTemplate.opsForZSet().reverseRange(rankingKey, 0, 9); // 데이터를 다시 로드
+        }
 
         // Theme 객체를 ThemeSimpleResDto로 변환
         List<ThemeSimpleResDto> ranks = rankedThemes.stream()
