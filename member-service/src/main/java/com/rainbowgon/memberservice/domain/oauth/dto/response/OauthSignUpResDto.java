@@ -15,12 +15,12 @@ public class OauthSignUpResDto { // kakao, google에서 받은 정보
     private String nickname;
     private String profileImage;
 
-    public static OauthSignUpResDto fromKakao(KakaoUserInfoDto kakaoUserInfoDto) {
+    public static OauthSignUpResDto fromKakao(KakaoUserInfoDto kakaoUserInfoDto, String profileImageUrl) {
         return OauthSignUpResDto.builder()
                 .provider(Provider.KAKAO)
                 .providerId(kakaoUserInfoDto.getId())
-                .nickname(kakaoUserInfoDto.getProperties().getNickname())
-                .profileImage(kakaoUserInfoDto.getProperties().getProfileImage())
+                .nickname(kakaoUserInfoDto.getKakaoAccount().getProfile().getNickname())
+                .profileImage(profileImageUrl)
                 .build();
     }
 
