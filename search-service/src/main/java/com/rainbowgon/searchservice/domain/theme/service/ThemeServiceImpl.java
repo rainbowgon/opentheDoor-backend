@@ -354,7 +354,7 @@ public class ThemeServiceImpl implements ThemeService {
     }
 
 
-    @Scheduled(cron = "0 0 0 * * SUN") // 매주 일요일 자정에 실행
+    @Scheduled(cron = "0 0 0 * * MON") // 매주 일요일 자정에 실행
     @Override
     public void setRanks() {
         List<Theme> themeList = search("");
