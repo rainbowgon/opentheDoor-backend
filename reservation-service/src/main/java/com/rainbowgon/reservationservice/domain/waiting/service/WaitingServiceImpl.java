@@ -115,7 +115,7 @@ public class WaitingServiceImpl implements WaitingService {
 
     private String getWaitingId(WaitingReqDto waitingReqDto) {
         ThemeOriginalInfoInDto originalInfo = searchServiceClient.getOriginalInfo(waitingReqDto.getThemeId());
-        String timeLineId = RedisUtil.createTimeLineId(originalInfo.getTitle());
+        String timeLineId = RedisUtil.createTimeLineId(originalInfo.getVenue(), originalInfo.getTitle());
         return RedisUtil.createWaitingId(timeLineId,
                                          waitingReqDto.getTargetDate(),
                                          waitingReqDto.getTargetTime());
