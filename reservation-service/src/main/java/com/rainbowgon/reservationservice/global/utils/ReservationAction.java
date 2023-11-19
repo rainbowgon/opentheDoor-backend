@@ -38,7 +38,7 @@ public class ReservationAction {
         System.out.println(responseDto);
         System.out.println("\n\n\n======================================");
 
-        return responseDto.getIsSucceed();
+        return responseDto != null ? responseDto.getIsSucceed() : false;
     }
 
     @NotNull
