@@ -55,10 +55,10 @@ public class ReviewController {
      * 리뷰가 없다면 null 반환
      */
     @GetMapping("/themes/one")
-    public ResponseEntity<ResponseWrapper<ReviewDetailResDto>> selectThemeReview(
+    public ResponseEntity<ResponseWrapper<List<ReviewDetailResDto>>> selectThemeReview(
             @RequestParam("themeId") String themeId) {
 
-        ReviewDetailResDto review = reviewService.selectThemeReview(themeId);
+        List<ReviewDetailResDto> review = reviewService.selectThemeReview(themeId);
 
         return JsonResponse.ok("테마의 리뷰가 성공적으로 조회되었습니다.", review);
     }

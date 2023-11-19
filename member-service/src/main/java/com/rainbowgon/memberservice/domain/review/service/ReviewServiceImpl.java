@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -90,7 +91,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDetailResDto selectThemeReview(String themeId) {
+    public List<ReviewDetailResDto> selectThemeReview(String themeId) {
 
         // 테마 ID로 최신 리뷰 1건 조회
         Optional<Review> review = reviewRepository.findTopByThemeIdOrderByCreatedAtDesc(themeId);
@@ -103,7 +104,11 @@ public class ReviewServiceImpl implements ReviewService {
         // 리뷰 작성자 조회
         ProfileSimpleResDto profile = profileService.selectProfileByMember(review.get().getMemberId());
 
-        return ReviewDetailResDto.of(review.get(), profile);
+        // 리스트로 변환
+        List<ReviewDetailResDto> reviewList = new ArrayList<ReviewDetailResDto>();
+        reviewList.add(ReviewDetailResDto.of(review.get(), profile));
+
+        return reviewList;
     }
 
     // TODO pagination
