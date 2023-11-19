@@ -1,11 +1,11 @@
 package com.rainbowgon.memberservice.domain.oauth.controller;
 
 import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
+import com.rainbowgon.memberservice.domain.member.dto.response.LoginResDto;
 import com.rainbowgon.memberservice.domain.member.service.MemberService;
 import com.rainbowgon.memberservice.domain.oauth.dto.KakaoUserInfoDto;
 import com.rainbowgon.memberservice.domain.oauth.dto.response.OauthSignUpResDto;
 import com.rainbowgon.memberservice.domain.oauth.service.KakaoLoginService;
-import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import com.rainbowgon.memberservice.global.response.JsonResponse;
 import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +41,9 @@ public class OAuthController {
 
         // 인가코드(code)로 토큰 발급 요청
         String kakaoAccessToken = kakaoLoginService.getToken(code);
-        log.info("[OAuthController] kakaoCallback ... kakaoAccessToken = {}", kakaoAccessToken);
 
         // accessToken으로 사용자 정보 가져오기
         KakaoUserInfoDto kakaoUserInfoDto = kakaoLoginService.getProfile(kakaoAccessToken);
-        log.info("[OAuthController] kakaoCallback ... kakaoUserInfoDto.getId() = {}", kakaoUserInfoDto.getId());
 
         // 가입된 회원인지 확인
         MemberDto member = memberService.findMemberByProviderId(kakaoUserInfoDto.getId());
@@ -70,13 +68,27 @@ public class OAuthController {
      * 카카오 로그인
      */
     @PostMapping("/login/kakao")
-    public ResponseEntity<ResponseWrapper<JwtTokenDto>> kakaoLogin(
+    public ResponseEntity<ResponseWrapper<LoginResDto>> kakaoLogin(
             @RequestParam("fcmToken") String fcmToken,
             @RequestParam("profileId") Long profileId) {
 
-        JwtTokenDto jwtTokenDto = kakaoLoginService.kakaoLogin(fcmToken, profileId);
+        LoginResDto loginResDto = kakaoLoginService.kakaoLogin(fcmToken, profileId);
 
-        return JsonResponse.ok("로그인에 성공하였습니다.", jwtTokenDto);
+        return JsonResponse.ok("로그인에 성공하였습니다.", loginResDto);
     }
 
+    /**
+     * 카카오에서 가져오는 사용자 정보 확인하기
+     */
+    @GetMapping("/kakao/profile")
+    public ResponseEntity<KakaoUserInfoDto> kakaoProfile(@RequestParam("code") String code) throws Exception {
+
+        // 인가코드(code)로 토큰 발급 요청
+        String kakaoAccessToken = kakaoLoginService.getToken(code);
+
+        // accessToken으로 사용자 정보 가져오기
+        KakaoUserInfoDto kakaoUserInfoDto = kakaoLoginService.getProfile(kakaoAccessToken);
+
+        return ResponseEntity.ok(kakaoUserInfoDto);
+    }
 }

@@ -11,6 +11,8 @@ public class MemberDto {
 
     private String memberId;
     private Long profileId;
+    private String nickname;
+    private String profileImage;
 
     public static MemberDto of(Member member, Long profileId) {
         return MemberDto.builder()
@@ -23,6 +25,8 @@ public class MemberDto {
         return MemberDto.builder()
                 .memberId(String.valueOf(profile.getMember().getId()))
                 .profileId(profile.getId())
+                .nickname(profile.getNickname())
+                .profileImage(profile.getProfileImage())
                 .build();
     }
 
