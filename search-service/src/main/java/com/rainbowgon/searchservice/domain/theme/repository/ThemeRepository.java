@@ -15,41 +15,42 @@ public interface ThemeRepository extends ElasticsearchRepository<Theme, String> 
                     "            {" +
                     "                \"wildcard\": {" +
                     "                    \"venue\": {" +
-                    "                        \"value\": \"*?0*\"" +
+                    "                        \"value\": \"*?0*\".toLowerCase()" +
                     "                    }" +
                     "                }" +
                     "            }," +
                     "            {" +
                     "                \"wildcard\": {" +
                     "                    \"explanation\": {" +
-                    "                        \"value\": \"*?0*\"" +
+                    "                        \"value\": \"*?0*\".toLowerCase()" +
                     "                    }" +
                     "                }" +
                     "            }," +
                     "            {" +
                     "                \"wildcard\": {" +
                     "                    \"title\": {" +
-                    "                        \"value\": \"*?0*\"" +
+                    "                        \"value\": \"*?0*\".toLowerCase()" +
                     "                    }" +
                     "                }" +
                     "            }," +
                     "            {" +
                     "                \"wildcard\": {" +
                     "                    \"location\": {" +
-                    "                        \"value\": \"*?0*\"" +
+                    "                        \"value\": \"*?0*\".toLowerCase()" +
                     "                    }" +
                     "                }" +
                     "            }," +
                     "            {" +
                     "                \"wildcard\": {" +
                     "                    \"genre\": {" +
-                    "                        \"value\": \"*?0*\"" +
+                    "                        \"value\": \"*?0*\".toLowerCase()" +
                     "                    }" +
                     "                }" +
                     "            }" +
                     "        ]" +
                     "    }" +
-                    "}")
+                    "}"
+    )
     List<Theme> searchByKeyword(String keyword);
 
 }
