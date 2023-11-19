@@ -28,6 +28,11 @@ public class ReservationAction {
             return false;
         }
 
+        System.out.println("======================================\n\n\n");
+        System.out.println(reservingServerUrl);
+        System.out.println("\n\n\n======================================");
+
+
         String uri = getMasterkeyRequestUrl();
         HttpEntity<MasterkeyRequestDto> requestBody = createMasterkeyRequestBody(masterkeyRequestDto);
 
