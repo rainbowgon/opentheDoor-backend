@@ -87,7 +87,10 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = getProfileByMemberId(memberId);
 
         // 프로필 이미지 s3 url로 변경
-        String profileImageUrl = s3FileService.getS3Url(profile.getProfileImage());
+        String profileImageUrl = null;
+        if (profile.getProfileImage() != null) {
+            profileImageUrl = s3FileService.getS3Url(profile.getProfileImage());
+        }
 
         return ProfileSimpleResDto.from(profile, profileImageUrl);
     }
