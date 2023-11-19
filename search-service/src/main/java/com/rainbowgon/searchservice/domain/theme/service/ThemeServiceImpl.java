@@ -231,7 +231,7 @@ public class ThemeServiceImpl implements ThemeService {
         ReservationInDtoList timeslot = reservationServiceClient.getTimeslot(themeId);
 
         return ThemeDetailResDto.from(theme, bookmarkCount.intValue(), reviewCount.intValue(), ratingScore,
-                                      timeslot.getReservationInDtoList());
+                                      timeslot.getTimeSlotList());
     }
 
     @Override
@@ -279,7 +279,7 @@ public class ThemeServiceImpl implements ThemeService {
             List<Theme> themeList = search(keyword);
             for (Theme theme : themeList) {
                 ReservationInDtoList timeSlots = reservationServiceClient.getTimeslot(theme.getThemeId());
-                createZSETforTime(keyword, theme, timeSlots.getReservationInDtoList());
+                createZSETforTime(keyword, theme, timeSlots.getTimeSlotList());
             }
             sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, 0,
                                                                                -1);

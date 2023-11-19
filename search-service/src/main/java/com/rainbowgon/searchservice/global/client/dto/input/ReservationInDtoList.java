@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReservationInDtoList {
 
-    List<ReservationInDto> reservationInDtoList;
+    List<ReservationInDto> timeSlotList;
 }
