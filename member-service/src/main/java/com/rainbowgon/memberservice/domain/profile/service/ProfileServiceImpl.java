@@ -74,7 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
                         .build());
 
         return LoginResDto.of(
-                savedToken.getAccessToken(), savedToken.getRefreshToken(), profile.getNickname(), profileImageName);
+                savedToken.getAccessToken(), savedToken.getRefreshToken(), profile.getNickname(), profileImage);
     }
 
     /**
