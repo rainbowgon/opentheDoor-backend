@@ -34,6 +34,11 @@ spring:
       host: 127.0.0.1
       port: 6380
 
+  spring:
+    resevation:
+      target-url:
+      on-off: OFF
+
 management:
   endpoints:
     web:
