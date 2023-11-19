@@ -15,11 +15,11 @@ public class ProfileSimpleResDto {
     private String profileImage;
     private NotificationStatus bookmarkNotificationStatus;
 
-    public static ProfileSimpleResDto from(Profile profile) {
+    public static ProfileSimpleResDto from(Profile profile, String profileImageUrl) {
         return ProfileSimpleResDto.builder()
                 .profileId(profile.getId())
                 .nickname(profile.getNickname())
-                .profileImage(profile.getProfileImage())
+                .profileImage(profileImageUrl)
                 .bookmarkNotificationStatus(profile.getBookmarkNotificationStatus())
                 .build();
     }

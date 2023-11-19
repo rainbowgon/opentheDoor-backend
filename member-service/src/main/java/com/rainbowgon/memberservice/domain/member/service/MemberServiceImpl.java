@@ -7,6 +7,7 @@ import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.BookerInfoResDto;
+import com.rainbowgon.memberservice.domain.member.dto.response.LoginResDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.member.repository.MemberRepository;
@@ -17,7 +18,6 @@ import com.rainbowgon.memberservice.global.client.dto.output.FcmTokenOutDto;
 import com.rainbowgon.memberservice.global.error.exception.MemberBadPhoneNumberException;
 import com.rainbowgon.memberservice.global.error.exception.MemberNotFoundException;
 import com.rainbowgon.memberservice.global.error.exception.RedisErrorException;
-import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import com.rainbowgon.memberservice.global.redis.dto.Token;
 import com.rainbowgon.memberservice.global.redis.repository.TokenRedisRepository;
 import com.rainbowgon.memberservice.global.util.CoolSmsSender;
@@ -46,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public JwtTokenDto createMember(MemberCreateReqDto createReqDto) {
+    public LoginResDto createMember(MemberCreateReqDto createReqDto) {
 
         // 전화번호 중복 체크
         checkPhoneNumber(createReqDto.getPhoneNumber());
@@ -62,8 +62,8 @@ public class MemberServiceImpl implements MemberService {
                         .build());
 
         // 생성한 멤버 객체로 프로필 객체 생성 후 토큰 반환
-        return profileService.createProfile(member, createReqDto.getFcmToken(),
-                                            createReqDto.getNickname(), createReqDto.getProfileImage());
+        return profileService.createProfile(
+                member, createReqDto.getFcmToken(), createReqDto.getNickname(), createReqDto.getProfileImage());
     }
 
     @Override

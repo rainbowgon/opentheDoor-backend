@@ -1,6 +1,7 @@
 package com.rainbowgon.memberservice.domain.profile.service;
 
 import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
+import com.rainbowgon.memberservice.domain.member.dto.response.LoginResDto;
 import com.rainbowgon.memberservice.domain.member.entity.Member;
 import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
 import com.rainbowgon.memberservice.domain.profile.entity.Profile;
@@ -9,7 +10,6 @@ import com.rainbowgon.memberservice.global.entity.NotificationStatus;
 import com.rainbowgon.memberservice.global.error.exception.AwsS3ErrorException;
 import com.rainbowgon.memberservice.global.error.exception.ProfileNotFoundException;
 import com.rainbowgon.memberservice.global.error.exception.ProfileUnauthorizedException;
-import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenProvider;
 import com.rainbowgon.memberservice.global.redis.dto.Token;
 import com.rainbowgon.memberservice.global.redis.repository.TokenRedisRepository;
@@ -36,17 +36,18 @@ public class ProfileServiceImpl implements ProfileService {
 
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
     private static final String S3_PATH = "profile-image";
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    @Value("${cloud.aws.s3.directory}")
+    private String directory;
 
 
     @Transactional
     @Override
-    public JwtTokenDto createProfile(Member member, String fcmToken, String nickname, String profileImage) {
+    public LoginResDto createProfile(Member member, String fcmToken, String nickname, String profileImage) {
 
         // 프로필 이미지 url 자르기
+        String profileImageName = null;
         if (profileImage != null) {
-            profileImage = profileImage.substring(profileImage.indexOf(bucket));
+            profileImageName = profileImage.substring(profileImage.indexOf(directory));
         }
 
         // 프로필 생성
@@ -54,7 +55,7 @@ public class ProfileServiceImpl implements ProfileService {
                 Profile.builder()
                         .member(member)
                         .nickname(nickname)
-                        .profileImage(profileImage)
+                        .profileImage(profileImageName)
                         .build());
 
         // accessToken, refreshToken 생성
@@ -72,12 +73,23 @@ public class ProfileServiceImpl implements ProfileService {
                         .expiration(REFRESH_TOKEN_EXPIRE_TIME)
                         .build());
 
-        return JwtTokenDto.of(savedToken.getAccessToken(), savedToken.getRefreshToken());
+        return LoginResDto.of(
+                savedToken.getAccessToken(), savedToken.getRefreshToken(), profile.getNickname(), profileImageName);
     }
 
+    /**
+     * 다른 도메인에서 회원 ID로 프로필 데이터 조회
+     */
     @Override
     public ProfileSimpleResDto selectProfileByMember(UUID memberId) {
-        return ProfileSimpleResDto.from(getProfileByMemberId(memberId));
+
+        // 회원 ID로 프로필 객체 가져오기
+        Profile profile = getProfileByMemberId(memberId);
+
+        // 프로필 이미지 s3 url로 변경
+        String profileImageUrl = s3FileService.getS3Url(profile.getProfileImage());
+
+        return ProfileSimpleResDto.from(profile, profileImageUrl);
     }
 
     @Transactional
@@ -168,7 +180,7 @@ public class ProfileServiceImpl implements ProfileService {
      * 프로필 ID로 프로필, 멤버 객체 찾기
      */
     @Override
-    public MemberDto findProfileById(Long profileId) {
+    public MemberDto selectProfileById(Long profileId) {
         Profile profile = profileRepository.findById(profileId).orElseThrow(ProfileNotFoundException::new);
         return MemberDto.from(profile);
     }

@@ -3,9 +3,9 @@ package com.rainbowgon.memberservice.domain.member.controller;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberCreateReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberPhoneReqDto;
 import com.rainbowgon.memberservice.domain.member.dto.request.MemberUpdateReqDto;
+import com.rainbowgon.memberservice.domain.member.dto.response.LoginResDto;
 import com.rainbowgon.memberservice.domain.member.dto.response.MemberInfoResDto;
 import com.rainbowgon.memberservice.domain.member.service.MemberService;
-import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import com.rainbowgon.memberservice.global.response.JsonResponse;
 import com.rainbowgon.memberservice.global.response.ResponseWrapper;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +30,11 @@ public class MemberController {
      * 회원가입
      */
     @PostMapping("/signup")
-    public ResponseEntity<ResponseWrapper<JwtTokenDto>> createMember(@RequestBody MemberCreateReqDto createReqDto) {
+    public ResponseEntity<ResponseWrapper<LoginResDto>> createMember(@RequestBody MemberCreateReqDto createReqDto) {
 
-        JwtTokenDto jwtTokenDto = memberService.createMember(createReqDto);
+        LoginResDto loginResDto = memberService.createMember(createReqDto);
 
-        return JsonResponse.ok("회원가입에 성공하였습니다.", jwtTokenDto);
+        return JsonResponse.ok("회원가입에 성공하였습니다.", loginResDto);
     }
 
     /**

@@ -2,12 +2,12 @@ package com.rainbowgon.memberservice.domain.oauth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
+import com.rainbowgon.memberservice.domain.member.dto.response.LoginResDto;
 import com.rainbowgon.memberservice.domain.oauth.dto.KakaoTokenDto;
 import com.rainbowgon.memberservice.domain.oauth.dto.KakaoUserInfoDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.global.error.exception.AuthKakaoProfileFailureException;
 import com.rainbowgon.memberservice.global.error.exception.AuthKakaoTokenFailureException;
-import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenProvider;
 import com.rainbowgon.memberservice.global.redis.dto.Token;
 import com.rainbowgon.memberservice.global.redis.repository.TokenRedisRepository;
@@ -54,8 +54,6 @@ public class KakaoLoginService {
      */
     public String getToken(String code) throws Exception {
 
-        log.info("[KakaoLoginService] getToken ... code = {}", code);
-
         // 요청 URL
         String kakaoTokenUri = "https://kauth.kakao.com/oauth/token";
 
@@ -65,8 +63,6 @@ public class KakaoLoginService {
         body.add("client_id", kakaoClientId);
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
-
-        log.info("[KakaoLoginService] getToken ... 카카오에 토큰 요청 직전");
 
         // 카카오에 token 요청
         String token = WebClient.create()
@@ -79,8 +75,6 @@ public class KakaoLoginService {
                 .bodyToMono(String.class)
                 .timeout(Duration.ofMillis(5000000))
                 .blockOptional().orElseThrow(AuthKakaoTokenFailureException::new);
-
-        log.info("[KakaoLoginService] getToken ... 카카오에 토큰 요청 직후");
 
         // 객체로 전환
         KakaoTokenDto kakaoTokenDto = objectMapper.readValue(token, KakaoTokenDto.class);
@@ -122,10 +116,10 @@ public class KakaoLoginService {
      * 카카오로 로그인
      */
     @Transactional
-    public JwtTokenDto kakaoLogin(String fcmToken, Long profileId) {
+    public LoginResDto kakaoLogin(String fcmToken, Long profileId) {
 
         // 유효한 프로필 ID인지 확인
-        MemberDto memberDto = profileService.findProfileById(profileId);
+        MemberDto memberDto = profileService.selectProfileById(profileId);
 
         // accessToken, refreshToken 생성
         String accessToken = jwtTokenProvider.generateAccessToken(memberDto.getProfileId());
@@ -142,8 +136,11 @@ public class KakaoLoginService {
                         .expiration(REFRESH_TOKEN_EXPIRE_TIME)
                         .build());
 
-        return JwtTokenDto.of(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+        // 프로필 image s3 url 가져오기
+        String profileImageUrl = s3FileService.getS3Url(memberDto.getProfileImage());
 
+        return LoginResDto.of(
+                tokenDto.getAccessToken(), tokenDto.getRefreshToken(), memberDto.getNickname(), profileImageUrl);
     }
 
 }
