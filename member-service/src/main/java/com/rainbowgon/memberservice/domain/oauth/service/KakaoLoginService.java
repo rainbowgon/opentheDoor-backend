@@ -11,6 +11,7 @@ import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenProvider;
 import com.rainbowgon.memberservice.global.redis.dto.Token;
 import com.rainbowgon.memberservice.global.redis.repository.TokenRedisRepository;
+import com.rainbowgon.memberservice.global.s3.S3FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.Duration;
 
 
@@ -40,8 +42,10 @@ public class KakaoLoginService {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRedisRepository tokenRedisRepository;
     private final ProfileService profileService;
+    private final S3FileService s3FileService;
 
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
+    private static final String S3_PATH = "profile-image";
 
 
     /**
@@ -49,6 +53,8 @@ public class KakaoLoginService {
      * 인가 코드로 카카오 토큰 받기
      */
     public String getToken(String code) throws Exception {
+
+        log.info("[KakaoLoginService] getToken ... code = {}", code);
 
         // 요청 URL
         String kakaoTokenUri = "https://kauth.kakao.com/oauth/token";
@@ -59,6 +65,8 @@ public class KakaoLoginService {
         body.add("client_id", kakaoClientId);
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
+
+        log.info("[KakaoLoginService] getToken ... 카카오에 토큰 요청 직전");
 
         // 카카오에 token 요청
         String token = WebClient.create()
@@ -71,6 +79,8 @@ public class KakaoLoginService {
                 .bodyToMono(String.class)
                 .timeout(Duration.ofMillis(5000000))
                 .blockOptional().orElseThrow(AuthKakaoTokenFailureException::new);
+
+        log.info("[KakaoLoginService] getToken ... 카카오에 토큰 요청 직후");
 
         // 객체로 전환
         KakaoTokenDto kakaoTokenDto = objectMapper.readValue(token, KakaoTokenDto.class);
@@ -101,6 +111,14 @@ public class KakaoLoginService {
     }
 
     /**
+     * 카카오에서 가져온 프로필 이미지 url -> s3 url 변환
+     */
+    public String getProfileImageUrl(String kakaoUrl, String kakaoNickname) throws IOException {
+        String fileName = s3FileService.saveFile(S3_PATH, kakaoUrl, kakaoNickname);
+        return s3FileService.getS3Url(fileName);
+    }
+
+    /**
      * 카카오로 로그인
      */
     @Transactional
@@ -114,14 +132,15 @@ public class KakaoLoginService {
         String refreshToken = jwtTokenProvider.generateRefreshToken(memberDto.getProfileId());
 
         // token redis 업데이트
-        Token tokenDto = tokenRedisRepository.save(Token.builder()
-                                                           .profileId(memberDto.getProfileId())
-                                                           .memberId(memberDto.getMemberId())
-                                                           .accessToken(accessToken)
-                                                           .refreshToken(refreshToken)
-                                                           .fcmToken(fcmToken)
-                                                           .expiration(REFRESH_TOKEN_EXPIRE_TIME)
-                                                           .build());
+        Token tokenDto = tokenRedisRepository.save(
+                Token.builder()
+                        .profileId(memberDto.getProfileId())
+                        .memberId(memberDto.getMemberId())
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .fcmToken(fcmToken)
+                        .expiration(REFRESH_TOKEN_EXPIRE_TIME)
+                        .build());
 
         return JwtTokenDto.of(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 

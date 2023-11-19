@@ -22,6 +22,14 @@ public class OAuthController {
     private final KakaoLoginService kakaoLoginService;
     private final MemberService memberService;
 
+    /**
+     * 카카오 callback 버리기
+     */
+    @GetMapping("/kakao")
+    public ResponseEntity<?> kakao(@RequestParam("code") String code) {
+        return null;
+    }
+
 
     /**
      * 인가 코드 값으로 사용자 정보 가져오기
@@ -29,18 +37,29 @@ public class OAuthController {
     @GetMapping("/kakao/callback")
     public ResponseEntity<?> kakaoCallback(@RequestParam("code") String code) throws Exception {
 
+        log.info("[OAuthController] kakaoCallback ... code = {}", code);
+
         // 인가코드(code)로 토큰 발급 요청
         String kakaoAccessToken = kakaoLoginService.getToken(code);
+        log.info("[OAuthController] kakaoCallback ... kakaoAccessToken = {}", kakaoAccessToken);
 
         // accessToken으로 사용자 정보 가져오기
         KakaoUserInfoDto kakaoUserInfoDto = kakaoLoginService.getProfile(kakaoAccessToken);
+        log.info("[OAuthController] kakaoCallback ... kakaoUserInfoDto.getId() = {}", kakaoUserInfoDto.getId());
 
         // 가입된 회원인지 확인
         MemberDto member = memberService.findMemberByProviderId(kakaoUserInfoDto.getId());
 
         // 가입 정보가 없다면 회원가입 요청 (kakao id, profile image, nickname 반환)
         if (member == null) {
-            return JsonResponse.ok("카카오 프로필 정보를 성공적으로 가져왔습니다.", OauthSignUpResDto.fromKakao(kakaoUserInfoDto));
+
+            // kakao 프로필 이미지 url을 s3 url로 변환
+            String profileImageUrl = kakaoLoginService.getProfileImageUrl(
+                    kakaoUserInfoDto.getKakaoAccount().getProfile().getProfileImageUrl(),
+                    kakaoUserInfoDto.getKakaoAccount().getProfile().getNickname());
+
+            return JsonResponse.ok(
+                    "카카오 프로필 정보를 성공적으로 가져왔습니다.", OauthSignUpResDto.fromKakao(kakaoUserInfoDto, profileImageUrl));
         }
 
         // 가입 정보가 있다면 로그인 요청 (profileId 반환)

@@ -14,7 +14,7 @@ public class ThemeBriefInfoInDto {
     String location;
     List<String> genre;
     List<PriceVO> priceList;
-    String siteToS;
-    String venueToS;
+    String siteTos;
+    String venueTos;
 
 }

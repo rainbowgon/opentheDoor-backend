@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-public class ThemeSortingRedisConfig {
+public class SortingRedisConfig {
 
     @Value("${spring.redis.sorting.host}")
     private String host;
