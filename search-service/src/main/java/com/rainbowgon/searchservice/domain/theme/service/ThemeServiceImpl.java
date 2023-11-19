@@ -8,6 +8,7 @@ import com.rainbowgon.searchservice.domain.theme.repository.ThemeRepository;
 import com.rainbowgon.searchservice.global.client.ReservationServiceClient;
 import com.rainbowgon.searchservice.global.client.dto.input.BookmarkInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.input.ReservationInDto;
+import com.rainbowgon.searchservice.global.client.dto.input.ReservationInDtoList;
 import com.rainbowgon.searchservice.global.client.dto.input.entry.TimeEntry;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkDetailOutDto;
 import com.rainbowgon.searchservice.global.client.dto.output.BookmarkSimpleOutDto;
@@ -227,10 +228,10 @@ public class ThemeServiceImpl implements ThemeService {
         Double reviewCount = getScore(theme, "REVIEW");
         Double ratingScore = getScore(theme, "RATING");
 
-        List<ReservationInDto> timeslot = reservationServiceClient.getTimeslot(themeId);
+        ReservationInDtoList timeslot = reservationServiceClient.getTimeslot(themeId);
 
         return ThemeDetailResDto.from(theme, bookmarkCount.intValue(), reviewCount.intValue(), ratingScore,
-                                      timeslot);
+                                      timeslot.getTimeSlotList());
     }
 
     @Override
@@ -277,8 +278,8 @@ public class ThemeServiceImpl implements ThemeService {
         if (sortBy.equals("TIME")) {
             List<Theme> themeList = search(keyword);
             for (Theme theme : themeList) {
-                List<ReservationInDto> timeSlots = reservationServiceClient.getTimeslot(theme.getThemeId());
-                createZSETforTime(keyword, theme, timeSlots);
+                ReservationInDtoList timeSlots = reservationServiceClient.getTimeslot(theme.getThemeId());
+                createZSETforTime(keyword, theme, timeSlots.getTimeSlotList());
             }
             sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, 0,
                                                                                -1);
