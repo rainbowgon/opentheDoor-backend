@@ -1,10 +1,8 @@
-package com.rainbowgon.reservationservice.global.utils.dto;
+package com.rainbowgon.reservationservice.global.connection.dto;
 
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@ToString
 public class ReservingServerResponseDto {
 
     Boolean isSucceed;

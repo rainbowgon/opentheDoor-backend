@@ -16,10 +16,10 @@ import com.rainbowgon.reservationservice.global.client.dto.input.MemberBriefInfo
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeOriginalInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.output.NotificationOutDto;
+import com.rainbowgon.reservationservice.global.connection.MasterkeyReservationAction;
+import com.rainbowgon.reservationservice.global.connection.dto.ReservingServerRequestDto;
 import com.rainbowgon.reservationservice.global.error.exception.BookerInfoInvalidException;
 import com.rainbowgon.reservationservice.global.error.exception.ReservationNotFoundException;
-import com.rainbowgon.reservationservice.global.utils.ReservationAction;
-import com.rainbowgon.reservationservice.global.utils.dto.masterkey.MasterkeyRequestDto;
 import com.rainbowgon.reservationservice.global.vo.TimeSlotVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final MemberServiceClient memberServiceClient;
     private final SearchServiceClient searchServiceClient;
     private final NotificationServiceClient notificationServiceClient;
-    private final ReservationAction reservationAction;
+    private final MasterkeyReservationAction reservationAction;
 
     public ReservationBaseInfoResDto getReservationBaseInfo(String memberId, String themeId) {
         MemberBriefInfoInDto memberInfoForReservation =
@@ -159,8 +159,9 @@ public class ReservationServiceImpl implements ReservationService {
 
         ThemeOriginalInfoInDto originalInfo =
                 searchServiceClient.getOriginalInfo(reservationReqDto.getThemeId());
-        MasterkeyRequestDto masterkeyRequestDto = MasterkeyRequestDto.from(originalInfo, reservationReqDto);
-        return reservationAction.reserveMasterkey(masterkeyRequestDto);
+        ReservingServerRequestDto reservingServerRequestDto = ReservingServerRequestDto.from(originalInfo,
+                                                                                             reservationReqDto);
+        return reservationAction.reserve(reservingServerRequestDto);
     }
 
     private void validateBookerInfo(String memberId, ReservationReqDto reservationReqDto) {

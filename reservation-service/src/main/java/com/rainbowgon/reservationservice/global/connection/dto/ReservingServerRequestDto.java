@@ -1,4 +1,4 @@
-package com.rainbowgon.reservationservice.global.utils.dto.masterkey;
+package com.rainbowgon.reservationservice.global.connection.dto;
 
 import com.rainbowgon.reservationservice.domain.reservation.dto.request.ReservationReqDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeOriginalInfoInDto;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MasterkeyRequestDto {
+public class ReservingServerRequestDto {
 
     private String targetUrl;
     private String themeTitle;
@@ -20,9 +20,9 @@ public class MasterkeyRequestDto {
     private String bookerName;
     private String bookerPhoneNumber;
 
-    public static MasterkeyRequestDto from(ThemeOriginalInfoInDto originalInfoInDto,
-                                           ReservationReqDto reservationReqDto) {
-        return MasterkeyRequestDto.builder()
+    public static ReservingServerRequestDto from(ThemeOriginalInfoInDto originalInfoInDto,
+                                                 ReservationReqDto reservationReqDto) {
+        return ReservingServerRequestDto.builder()
                 .targetUrl(originalInfoInDto.getOriginalUrl())
                 .themeTitle(originalInfoInDto.getTitle())
                 .targetDate(reservationReqDto.getTargetDate().toString())
