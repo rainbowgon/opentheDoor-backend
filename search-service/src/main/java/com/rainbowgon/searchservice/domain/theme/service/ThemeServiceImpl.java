@@ -209,6 +209,7 @@ public class ThemeServiceImpl implements ThemeService {
         keyword = (keyword.equals("")) ? null : keyword;
 
         if (keyword != null) {
+            keyword = keyword.toLowerCase();
             themeList = themeRepository.searchByKeyword(keyword);
 
         } else if (keyword == null) {
