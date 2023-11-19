@@ -78,4 +78,5 @@ public class OAuthController {
 
         return JsonResponse.ok("로그인에 성공하였습니다.", jwtTokenDto);
     }
+
 }

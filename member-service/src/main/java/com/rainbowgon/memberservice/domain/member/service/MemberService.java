@@ -26,6 +26,8 @@ public interface MemberService {
 
     void deleteMember(UUID memberId);
 
+    void logout(UUID memberId);
+
     BookerInfoResDto selectBookerInfo(String memberId);
 
     FcmTokenOutDto selectMemberFcmToken(String memberId);

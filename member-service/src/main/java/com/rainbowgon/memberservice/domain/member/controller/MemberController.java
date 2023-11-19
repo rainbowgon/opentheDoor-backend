@@ -89,4 +89,15 @@ public class MemberController {
         return JsonResponse.ok("회원이 성공적으로 삭제되었습니다.");
     }
 
+    /**
+     * 로그아웃
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseWrapper<Nullable>> logout(@RequestHeader String memberId) {
+
+        memberService.logout(UUID.fromString(memberId));
+
+        return JsonResponse.ok("로그아웃에 성공하였습니다.");
+    }
+
 }
