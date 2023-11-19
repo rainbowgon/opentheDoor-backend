@@ -281,15 +281,15 @@ public class ThemeServiceImpl implements ThemeService {
                 ReservationInDtoList timeSlots = reservationServiceClient.getTimeslot(theme.getThemeId());
                 createZSETforTime(keyword, theme, timeSlots.getTimeSlotList());
             }
-            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, 0,
-                                                                               -1);
+            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, 0,
+                                                                        -1);
         } else if (sortBy.equals("DISTANCE")) {
             List<Theme> themeList = search(keyword);
             for (Theme theme : themeList) {
                 createZSETforDistance(keyword, theme, latitude, longitude);
             }
-            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, 0,
-                                                                               -1);
+            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, 0,
+                                                                        -1);
         } else {
 
             boolean keyExists = cacheRedisThemeTemplate.hasKey(redisKey);
@@ -298,7 +298,7 @@ public class ThemeServiceImpl implements ThemeService {
                 Page<ThemeSimpleResDto> searchResult = searchThemes(keyword, latitude, longitude, headcount,
                                                                     region, page, size);
             }
-            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().range(redisKey, 0, -1);
+            sortedThemeIds = cacheRedisThemeTemplate.opsForZSet().reverseRange(redisKey, 0, -1);
         }
 
         // 먼저 Set을 List로 변환합니다. 이때, 원래의 순서가 유지됩니다.
