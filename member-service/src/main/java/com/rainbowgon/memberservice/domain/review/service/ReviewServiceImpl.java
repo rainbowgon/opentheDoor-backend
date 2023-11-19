@@ -1,5 +1,7 @@
 package com.rainbowgon.memberservice.domain.review.service;
 
+import com.rainbowgon.memberservice.domain.profile.dto.response.ProfileSimpleResDto;
+import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.domain.review.dto.request.ReviewCreateReqDto;
 import com.rainbowgon.memberservice.domain.review.dto.request.ReviewUpdateReqDto;
 import com.rainbowgon.memberservice.domain.review.dto.response.ReviewDetailResDto;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ProfileService profileService;
     private final SearchServiceClient searchServiceClient;
     private final ReservationServiceClient reservationServiceClient;
 
@@ -93,18 +96,29 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<Review> review = reviewRepository.findTopByThemeIdOrderByCreatedAtDesc(themeId);
 
         // 해당 테마에 리뷰가 1건도 없으면 null 반환
-        return review.map(ReviewDetailResDto::from).orElse(null);
+        if (review.isEmpty()) {
+            return null;
+        }
+
+        // 리뷰 작성자 조회
+        ProfileSimpleResDto profile = profileService.selectProfileByMember(review.get().getMemberId());
+
+        return ReviewDetailResDto.of(review.get(), profile);
     }
 
+    // TODO pagination
     @Override
     public List<ReviewDetailResDto> selectThemeReviewList(String themeId) {
 
         // 테마 ID로 리뷰 전체 조회
         List<Review> reviewList = reviewRepository.findAllByThemeId(themeId);
 
-        // TODO pagination
-
-        return reviewList.stream().map(ReviewDetailResDto::from).collect(Collectors.toList());
+        // 리뷰 작성자 조회
+        return reviewList
+                .stream()
+                .map(review -> ReviewDetailResDto.of(
+                        review, profileService.selectProfileByMember(review.getMemberId())))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -123,7 +137,6 @@ public class ReviewServiceImpl implements ReviewService {
 //                            .build());
 //        }
 
-        // 해당 테마에 요청 회원이 작성한 리뷰가 없으면 null 반환
         return review.map(ReviewDetailResDto::from).orElse(null);
     }
 
