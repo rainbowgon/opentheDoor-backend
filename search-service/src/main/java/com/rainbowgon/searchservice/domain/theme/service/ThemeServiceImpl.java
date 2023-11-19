@@ -457,4 +457,12 @@ public class ThemeServiceImpl implements ThemeService {
 
     }
 
+    @Scheduled(fixedDelay = 45000, initialDelay = 10000)
+    public void keepConnectionAlive() {
+        try {
+            search("");
+        } catch (Exception e) {
+
+        }
+    }
 }
