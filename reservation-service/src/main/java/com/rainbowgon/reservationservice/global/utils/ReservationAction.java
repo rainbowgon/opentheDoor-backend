@@ -15,10 +15,10 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class ReservationAction {
 
-    @Value("${spring.resevation.target-url}")
+    @Value("${spring.reservation.target-url}")
     private String reservingServerUrl;
 
-    @Value("${spring.resevation.on-off}")
+    @Value("${spring.reservation.on-off}")
     private String onOff;
 
     private final RestTemplate restTemplate;
