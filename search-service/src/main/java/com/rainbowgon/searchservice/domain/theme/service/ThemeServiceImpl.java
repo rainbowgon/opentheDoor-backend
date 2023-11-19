@@ -183,6 +183,7 @@ public class ThemeServiceImpl implements ThemeService {
         Double interest = 0.4 * reviewScore + 0.3 * viewScore + 0.3 * bookmarkScore;
 
         Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2, -Math.log(interest + 1));
+        finalRatingScore = Math.round(finalRatingScore * 10) / 10.0;
         cacheRedisThemeTemplate.opsForZSet().add(sortingKey, theme, bookmarkScore);
         cacheRedisThemeTemplate.expire(sortingKey, Duration.ofMinutes(20));
         cacheRedisThemeTemplate.opsForZSet().add(reviewKey, theme, reviewScore);
@@ -196,8 +197,9 @@ public class ThemeServiceImpl implements ThemeService {
     @NotNull
     private Double getScore(Theme theme, String key) {
 
-        return Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(key, theme.getThemeId()))
-                .orElse(0.0);
+        return Math.round(Optional.ofNullable(sortingRedisStringTemplate.opsForZSet().score(key,
+                                                                                            theme.getThemeId()))
+                                  .orElse(0.0) * 10) / 10.0;
     }
 
     @Override
@@ -227,6 +229,8 @@ public class ThemeServiceImpl implements ThemeService {
         Double bookmarkCount = getScore(theme, "BOOKMARK");
         Double reviewCount = getScore(theme, "REVIEW");
         Double ratingScore = getScore(theme, "RATING");
+        ratingScore = Math.round(ratingScore * 10) / 10.0;
+
 
         ReservationInDtoList timeslot = reservationServiceClient.getTimeslot(themeId);
 
@@ -386,6 +390,7 @@ public class ThemeServiceImpl implements ThemeService {
             Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2,
                                                                                    -Math.log(interest + 1));
 
+            finalRatingScore = Math.round(finalRatingScore * 10) / 10.0;
             cacheRedisThemeTemplate.opsForZSet().add(rankingKey, theme, finalRatingScore);
         }
         cacheRedisThemeTemplate.expire(rankingKey, Duration.ofDays(7).plusHours(1));
