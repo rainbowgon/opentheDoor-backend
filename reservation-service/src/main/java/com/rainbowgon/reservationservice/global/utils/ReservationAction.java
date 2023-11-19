@@ -31,6 +31,11 @@ public class ReservationAction {
         String uri = getMasterkeyRequestUrl();
         HttpEntity<MasterkeyRequestDto> requestBody = createMasterkeyRequestBody(masterkeyRequestDto);
 
+        System.out.println("======================================\n\n\n");
+        System.out.println(uri);
+        System.out.println("\n\n\n======================================");
+
+
         ReservingServerResponseDto responseDto =
                 restTemplate.postForObject(uri, requestBody, ReservingServerResponseDto.class);
 
