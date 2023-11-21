@@ -5,6 +5,8 @@ ROOT_PATH="/home/ubuntu/app"
 CONTAINER="app_container"
 IMAGE="app_image"
 
+NETWORK="my-network"
+
 REGION="ap-northeast-2"
 GROUP="ssafy-openthedoor-log-group"
 STREAM="reservation-service-log-stream"
@@ -16,3 +18,4 @@ docker run \
     --log-opt awslogs-group="$GROUP" \
     --log-opt awslogs-stream="$STREAM" \
     -dp 80:80 --name "$CONTAINER" "$IMAGE"
+docker network connect "$NETWORK" "$CONTAINER"

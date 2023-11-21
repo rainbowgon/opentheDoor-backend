@@ -27,8 +27,8 @@ public class ReservationDetailResDto {
     private String venue;
     private String location;
     private List<String> genre;
-    private String siteToS;
-    private String venueToS;
+    private String siteTos;
+    private String venueTos;
 
     public static ReservationDetailResDto from(Reservation reservation, ThemeBriefInfoInDto themeDto) {
         return ReservationDetailResDto.builder()
@@ -40,12 +40,12 @@ public class ReservationDetailResDto {
                 .totalPrice(reservation.getTotalPrice())
                 .themeId(reservation.getThemeId())
                 .poster(themeDto.getPoster())
-                .themeId(themeDto.getTitle())
+                .title(themeDto.getTitle())
                 .venue(themeDto.getVenue())
                 .location(themeDto.getLocation())
                 .genre(themeDto.getGenre())
-                .siteToS(themeDto.getSiteToS())
-                .venueToS(themeDto.getVenueToS())
+                .siteTos(themeDto.getSiteTos())
+                .venueTos(themeDto.getVenueTos())
                 .build();
     }
 }

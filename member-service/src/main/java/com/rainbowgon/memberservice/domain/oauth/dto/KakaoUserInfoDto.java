@@ -14,6 +14,7 @@ public class KakaoUserInfoDto {
     private KakaoAccount kakaoAccount;
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Properties {
 
         private String nickname;
@@ -22,6 +23,7 @@ public class KakaoUserInfoDto {
     }
 
     @Getter
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class KakaoAccount {
 
         private Boolean profileNicknameNeedsAgreement;
@@ -29,6 +31,7 @@ public class KakaoUserInfoDto {
         private Profile profile;
 
         @Getter
+        @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
         public static class Profile {
 
             private String nickname;

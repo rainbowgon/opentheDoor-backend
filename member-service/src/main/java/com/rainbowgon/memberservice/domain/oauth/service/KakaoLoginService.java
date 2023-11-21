@@ -2,15 +2,16 @@ package com.rainbowgon.memberservice.domain.oauth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rainbowgon.memberservice.domain.member.dto.MemberDto;
+import com.rainbowgon.memberservice.domain.member.dto.response.LoginResDto;
 import com.rainbowgon.memberservice.domain.oauth.dto.KakaoTokenDto;
 import com.rainbowgon.memberservice.domain.oauth.dto.KakaoUserInfoDto;
 import com.rainbowgon.memberservice.domain.profile.service.ProfileService;
 import com.rainbowgon.memberservice.global.error.exception.AuthKakaoProfileFailureException;
 import com.rainbowgon.memberservice.global.error.exception.AuthKakaoTokenFailureException;
-import com.rainbowgon.memberservice.global.jwt.JwtTokenDto;
 import com.rainbowgon.memberservice.global.jwt.JwtTokenProvider;
 import com.rainbowgon.memberservice.global.redis.dto.Token;
 import com.rainbowgon.memberservice.global.redis.repository.TokenRedisRepository;
+import com.rainbowgon.memberservice.global.s3.S3FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.Duration;
 
 
@@ -40,8 +42,10 @@ public class KakaoLoginService {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRedisRepository tokenRedisRepository;
     private final ProfileService profileService;
+    private final S3FileService s3FileService;
 
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
+    private static final String S3_PATH = "profile-image";
 
 
     /**
@@ -101,30 +105,42 @@ public class KakaoLoginService {
     }
 
     /**
+     * 카카오에서 가져온 프로필 이미지 url -> s3 url 변환
+     */
+    public String getProfileImageUrl(String kakaoUrl, String kakaoNickname) throws IOException {
+        String fileName = s3FileService.saveFile(S3_PATH, kakaoUrl, kakaoNickname);
+        return s3FileService.getS3Url(fileName);
+    }
+
+    /**
      * 카카오로 로그인
      */
     @Transactional
-    public JwtTokenDto kakaoLogin(String fcmToken, Long profileId) {
+    public LoginResDto kakaoLogin(String fcmToken, Long profileId) {
 
         // 유효한 프로필 ID인지 확인
-        MemberDto memberDto = profileService.findProfileById(profileId);
+        MemberDto memberDto = profileService.selectProfileById(profileId);
 
         // accessToken, refreshToken 생성
         String accessToken = jwtTokenProvider.generateAccessToken(memberDto.getProfileId());
         String refreshToken = jwtTokenProvider.generateRefreshToken(memberDto.getProfileId());
 
         // token redis 업데이트
-        Token tokenDto = tokenRedisRepository.save(Token.builder()
-                                                           .profileId(memberDto.getProfileId())
-                                                           .memberId(memberDto.getMemberId())
-                                                           .accessToken(accessToken)
-                                                           .refreshToken(refreshToken)
-                                                           .fcmToken(fcmToken)
-                                                           .expiration(REFRESH_TOKEN_EXPIRE_TIME)
-                                                           .build());
+        Token tokenDto = tokenRedisRepository.save(
+                Token.builder()
+                        .profileId(memberDto.getProfileId())
+                        .memberId(memberDto.getMemberId())
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .fcmToken(fcmToken)
+                        .expiration(REFRESH_TOKEN_EXPIRE_TIME)
+                        .build());
 
-        return JwtTokenDto.of(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+        // 프로필 image s3 url 가져오기
+        String profileImageUrl = s3FileService.getS3Url(memberDto.getProfileImage());
 
+        return LoginResDto.of(
+                tokenDto.getAccessToken(), tokenDto.getRefreshToken(), memberDto.getNickname(), profileImageUrl);
     }
 
 }

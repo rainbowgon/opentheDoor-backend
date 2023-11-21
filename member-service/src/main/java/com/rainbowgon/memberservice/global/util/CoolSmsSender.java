@@ -34,12 +34,12 @@ public class CoolSmsSender {
     /**
      * cool sms 를 통해 단일 메시지 발송
      */
-    public String sendOne(String phoneNumber) {
+    public Integer sendOne(String phoneNumber) {
 
         Message message = new Message();
 
         // 인증번호 생성
-        String authenticationNumber = MessageFactory.generateAuthenticationNumber();
+        Integer authenticationNumber = MessageFactory.generateAuthenticationNumber();
 
         // 메시지 생성
         message.setFrom(senderNumber);
