@@ -18,7 +18,7 @@ public interface MemberService {
 
     LoginResDto createMember(MemberCreateReqDto createRequestDto);
 
-    String sendMessage(MemberPhoneReqDto memberPhoneReqDto);
+    Integer sendMessage(MemberPhoneReqDto memberPhoneReqDto);
 
     MemberInfoResDto selectMemberInfo(UUID memberId);
 

@@ -67,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String sendMessage(MemberPhoneReqDto memberPhoneReqDto) {
+    public Integer sendMessage(MemberPhoneReqDto memberPhoneReqDto) {
 
         String phoneNumber = memberPhoneReqDto.getPhoneNumber();
 

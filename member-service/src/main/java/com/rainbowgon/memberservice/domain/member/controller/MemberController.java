@@ -41,11 +41,11 @@ public class MemberController {
      * 전화번호 본인 인증
      */
     @PostMapping("/phone")
-    public ResponseEntity<ResponseWrapper<String>> sendMessage(@RequestBody MemberPhoneReqDto memberPhoneReqDto) {
+    public ResponseEntity<ResponseWrapper<Integer>> sendMessage(@RequestBody MemberPhoneReqDto memberPhoneReqDto) {
 
-        String checkNumber = memberService.sendMessage(memberPhoneReqDto);
+        Integer checkNumber = memberService.sendMessage(memberPhoneReqDto);
 
-        return JsonResponse.ok("인증번호를 발송했습니다.", "인증번호 = " + checkNumber);
+        return JsonResponse.ok("인증번호를 발송했습니다.", checkNumber);
     }
 
     /**
