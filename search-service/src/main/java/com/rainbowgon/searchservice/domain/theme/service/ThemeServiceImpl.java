@@ -388,7 +388,7 @@ public class ThemeServiceImpl implements ThemeService {
 
             Double interest = 0.4 * reviewScore + 0.3 * currentViewScore + 0.3 * bookmarkScore;
 
-            Double finalRatingScore = ratingScore - (ratingScore - 0.5) * Math.pow(2,
+            Double finalRatingScore = ratingScore - (ratingScore - 3.0) * Math.pow(2,
                                                                                    -Math.log(interest + 1));
 
             finalRatingScore = Math.round(finalRatingScore * 10) / 10.0;
