@@ -16,6 +16,9 @@ public class ConnectionConfig {
     @Value("${spring.reservation.on-off}")
     private String onOff;
 
+    @Value("${spring.reservation.off-return-value}")
+    private String offReturnValue;
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
