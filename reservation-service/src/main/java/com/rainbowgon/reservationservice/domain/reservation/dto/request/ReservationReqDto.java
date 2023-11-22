@@ -3,8 +3,10 @@ package com.rainbowgon.reservationservice.domain.reservation.dto.request;
 import com.rainbowgon.reservationservice.domain.reservation.entity.MemberVerifiedStatus;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class ReservationReqDto {
 
     private String targetDate;

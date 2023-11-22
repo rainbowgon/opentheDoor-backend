@@ -36,6 +36,10 @@ public class ReservationAuthController {
     public ResponseEntity<ResponseWrapper<ReservationResultResDto>> makeReservation(
             @RequestHeader String memberId, @RequestBody ReservationReqDto reservationReqDto) {
 
+        System.out.println("=======================================================");
+        System.out.println("reservationReqDto = " + reservationReqDto);
+        System.out.println("=======================================================");
+
         validateDateTime(reservationReqDto);
 
         ReservationResultResDto reservationResultResDto =
