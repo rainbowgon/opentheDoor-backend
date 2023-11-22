@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -154,10 +154,15 @@ public class ThemeServiceImpl implements ThemeService {
         for (ReservationInDto reservationInDto : timeSlots) {
             for (TimeEntry timeEntry : reservationInDto.getTimeList()) {
                 if ("AVAILABLE".equals(timeEntry.getIsAvailable())) {
-                    LocalTime slotTime = timeEntry.getTime();
+                    String slotTime = timeEntry.getTime();
 
+                    LocalDateTime formatLocalDateTimeNow =
+                            LocalDateTime.parse(slotTime, DateTimeFormatter.ofPattern("HH:mm"));
+
+                    System.out.println(formatLocalDateTimeNow);
                     // 현재 시간과의 차이 계산
-                    Duration duration = Duration.between(now.toLocalTime(), slotTime);
+                    Duration duration = Duration.between(now.toLocalTime(),
+                                                         formatLocalDateTimeNow.toLocalTime());
                     long minutes = duration.toMinutes();
 
                     // Redis ZSET에 추가
