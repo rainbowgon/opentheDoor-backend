@@ -6,6 +6,7 @@ import com.rainbowgon.reservationservice.domain.reservation.service.ReservationS
 import com.rainbowgon.reservationservice.domain.waiting.service.WaitingService;
 import com.rainbowgon.reservationservice.global.response.JsonResponse;
 import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
+import com.rainbowgon.reservationservice.global.utils.DateTimeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,8 @@ public class ReservationAuthController {
     public ResponseEntity<ResponseWrapper<ReservationResultResDto>> makeReservation(
             @RequestHeader String memberId, @RequestBody ReservationReqDto reservationReqDto) {
 
+        validateDateTime(reservationReqDto);
+
         ReservationResultResDto reservationResultResDto =
                 reservationService.makeReservation(memberId, reservationReqDto);
 
@@ -62,6 +65,12 @@ public class ReservationAuthController {
                 reservationService.getReservationDetail(memberId, reservationId);
 
         return JsonResponse.ok("회원의 예약 상세 정보를 가져왔습니다.", reservationDetailResDto);
+    }
+
+    private void validateDateTime(ReservationReqDto reservationReqDto) {
+
+        DateTimeValidator.validateDate(reservationReqDto.getTargetDate());
+        DateTimeValidator.validateTime(reservationReqDto.getTargetTime());
     }
 
 }

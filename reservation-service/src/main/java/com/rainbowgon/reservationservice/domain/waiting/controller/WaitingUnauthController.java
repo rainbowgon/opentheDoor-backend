@@ -4,6 +4,7 @@ import com.rainbowgon.reservationservice.domain.waiting.dto.request.EmptyTimeSlo
 import com.rainbowgon.reservationservice.domain.waiting.service.WaitingService;
 import com.rainbowgon.reservationservice.global.response.JsonResponse;
 import com.rainbowgon.reservationservice.global.response.ResponseWrapper;
+import com.rainbowgon.reservationservice.global.utils.DateTimeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -23,8 +24,16 @@ public class WaitingUnauthController {
     public ResponseEntity<ResponseWrapper<Nullable>> alertEmptyTimeSlot(
             @RequestBody EmptyTimeSlotReqDto emptyTimeSlotReqDto) {
 
+        validateDateTime(emptyTimeSlotReqDto);
+
         waitingService.notifyEmptyTimeSlot(emptyTimeSlotReqDto);
 
         return JsonResponse.ok("예약 대기한 사용자에게 빈 자리 알림을 보냈습니다.");
+    }
+
+    private void validateDateTime(EmptyTimeSlotReqDto emptyTimeSlotReqDto) {
+
+        DateTimeValidator.validateDate(emptyTimeSlotReqDto.getTargetDate());
+        DateTimeValidator.validateTime(emptyTimeSlotReqDto.getTargetTime());
     }
 }

@@ -1,12 +1,8 @@
 package com.rainbowgon.reservationservice.domain.reservation.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
 import lombok.*;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,10 +12,8 @@ public class ReservationBriefResDto {
 
     private Long reservationId;
     private Long reservationNumber;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate targetDate;
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime targetTime;
+    private String targetDate;
+    private String targetTime;
     private Integer headcount;
     private Integer totalPrice;
     private String themeId;

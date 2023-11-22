@@ -1,20 +1,14 @@
 package com.rainbowgon.reservationservice.domain.reservation.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rainbowgon.reservationservice.domain.reservation.entity.MemberVerifiedStatus;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import lombok.Getter;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 @Getter
 public class ReservationReqDto {
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate targetDate;
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime targetTime;
+    private String targetDate;
+    private String targetTime;
     private Integer headcount;
     private String bookerName;
     private String bookerPhoneNumber;
