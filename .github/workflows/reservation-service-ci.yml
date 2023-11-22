@@ -7,6 +7,12 @@ on:
       - develop
     paths:
       - "reservation-service/**"
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - "reservation-service/**"
 
 env:
   S3_BUCKET_NAME: ssafy-otd-codedeploy
