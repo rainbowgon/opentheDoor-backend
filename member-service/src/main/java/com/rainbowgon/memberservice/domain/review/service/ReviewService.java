@@ -15,7 +15,7 @@ public interface ReviewService {
 
     ReviewDetailResDto updateReview(UUID memberId, ReviewUpdateReqDto reviewUpdateReqDto);
 
-    ReviewDetailResDto selectThemeReview(String themeId);
+    List<ReviewDetailResDto> selectThemeReview(String themeId);
 
     List<ReviewDetailResDto> selectThemeReviewList(String themeId);
 

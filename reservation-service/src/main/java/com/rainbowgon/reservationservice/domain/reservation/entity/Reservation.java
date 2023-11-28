@@ -5,11 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @Entity
@@ -24,11 +21,9 @@ public class Reservation extends BaseEntity {
     @Column(columnDefinition = "INT UNSIGNED")
     private Long reservationNumber; // 예약 번호
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate targetDate;
+    private String targetDate;
 
-    @DateTimeFormat(pattern = "hh:mm")
-    private LocalTime targetTime;
+    private String targetTime;
 
     @Column(columnDefinition = "MEDIUMINT UNSIGNED")
     private Integer headcount;
@@ -52,7 +47,7 @@ public class Reservation extends BaseEntity {
     private String memberId; // 멤버 ID / 비회원인 경우, null
 
     @Builder
-    public Reservation(Long reservationNumber, LocalDate targetDate, LocalTime targetTime,
+    public Reservation(Long reservationNumber, String targetDate, String targetTime,
                        Integer headcount, Integer totalPrice, MemberVerifiedStatus isMemberVerified,
                        String bookerName, String bookerPhoneNumber, String themeId, String memberId) {
         this.reservationNumber = reservationNumber;

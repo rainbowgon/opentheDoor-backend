@@ -2,6 +2,7 @@ package com.rainbowgon.searchservice.domain.theme.dto.response;
 
 import com.rainbowgon.searchservice.domain.theme.model.Theme;
 import com.rainbowgon.searchservice.domain.theme.model.entry.PriceEntry;
+import com.rainbowgon.searchservice.global.client.dto.input.ReservationInDto;
 import lombok.*;
 
 import java.util.List;
@@ -35,12 +36,10 @@ public class ThemeDetailResDto {
     private Double ratingScore; // 테마 평균 별점
     private Integer reviewCount; // 테마 리뷰 수
     private Integer bookmarkCount; // 북마크 리뷰 수
-//    private List<ReservationInDto> timeslot;
+    private List<ReservationInDto> timeSlotList;
 
-    //    public static ThemeDetailResDto from(Theme theme, Integer bookmarkCount, Integer reviewCount,
-//                                         Double ratingScore, List<ReservationInDto> timeslot) {
     public static ThemeDetailResDto from(Theme theme, Integer bookmarkCount, Integer reviewCount,
-                                         Double ratingScore) {
+                                         Double ratingScore, List<ReservationInDto> timeSlotList) {
         return ThemeDetailResDto.builder()
                 .themeId(theme.getThemeId())
                 .venue(theme.getVenue())
@@ -64,7 +63,7 @@ public class ThemeDetailResDto {
                 .bookmarkCount(bookmarkCount)
                 .reviewCount(reviewCount)
                 .ratingScore(ratingScore)
-//                .timeslot(timeslot)
+                .timeSlotList(timeSlotList)
                 .build();
     }
 }

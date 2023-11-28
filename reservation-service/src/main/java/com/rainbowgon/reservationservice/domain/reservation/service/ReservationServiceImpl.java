@@ -8,14 +8,19 @@ import com.rainbowgon.reservationservice.domain.reservation.dto.response.Reserva
 import com.rainbowgon.reservationservice.domain.reservation.dto.response.ReservationResultResDto;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import com.rainbowgon.reservationservice.domain.reservation.repository.ReservationRepository;
+import com.rainbowgon.reservationservice.domain.timeline.service.TimeLineService;
 import com.rainbowgon.reservationservice.global.client.MemberServiceClient;
 import com.rainbowgon.reservationservice.global.client.NotificationServiceClient;
 import com.rainbowgon.reservationservice.global.client.SearchServiceClient;
 import com.rainbowgon.reservationservice.global.client.dto.input.MemberBriefInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
+import com.rainbowgon.reservationservice.global.client.dto.input.ThemeOriginalInfoInDto;
 import com.rainbowgon.reservationservice.global.client.dto.output.NotificationOutDto;
+import com.rainbowgon.reservationservice.global.connection.MasterkeyReservationAction;
+import com.rainbowgon.reservationservice.global.connection.dto.ReservingServerRequestDto;
 import com.rainbowgon.reservationservice.global.error.exception.BookerInfoInvalidException;
 import com.rainbowgon.reservationservice.global.error.exception.ReservationNotFoundException;
+import com.rainbowgon.reservationservice.global.vo.TimeSlotVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +33,11 @@ import java.util.stream.Collectors;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final TimeLineService timeLineService;
     private final MemberServiceClient memberServiceClient;
     private final SearchServiceClient searchServiceClient;
     private final NotificationServiceClient notificationServiceClient;
+    private final MasterkeyReservationAction reservationAction;
 
     public ReservationBaseInfoResDto getReservationBaseInfo(String memberId, String themeId) {
         MemberBriefInfoInDto memberInfoForReservation =
@@ -38,9 +45,10 @@ public class ReservationServiceImpl implements ReservationService {
         ThemeBriefInfoInDto themeInfoForReservation =
                 searchServiceClient.getThemeBriefInfo(themeId);
 
-        // TODO TimeSlotList 정보 가져오기
+        List<TimeSlotVO> timeLine = timeLineService.getThemeTimeLine(themeId);
 
-        return ReservationBaseInfoResDto.from(themeId, memberInfoForReservation, themeInfoForReservation);
+        return ReservationBaseInfoResDto.from(themeId, timeLine, memberInfoForReservation,
+                                              themeInfoForReservation);
     }
 
     @Override
@@ -48,9 +56,9 @@ public class ReservationServiceImpl implements ReservationService {
         ThemeBriefInfoInDto themeInfoForReservation =
                 searchServiceClient.getThemeBriefInfo(themeId);
 
-        // TODO TimeSlotList 정보 가져오기
+        List<TimeSlotVO> timeLine = timeLineService.getThemeTimeLine(themeId);
 
-        return ReservationBaseInfoResDto.from(themeId, themeInfoForReservation);
+        return ReservationBaseInfoResDto.from(themeId, timeLine, themeInfoForReservation);
     }
 
     /**
@@ -65,9 +73,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         validateBookerInfo(memberId, reservationReqDto);
 
-        // TODO 예약 기능 동작
-        boolean isSucceed = actReservation(reservationReqDto);
-
+        boolean isSucceed = this.reserveMasterkey(reservationReqDto);
         if (!isSucceed) {
             return ReservationResultResDto.fail();
         }
@@ -89,8 +95,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public ReservationResultResDto makeReservation(ReservationReqDto reservationReqDto) {
 
-        boolean isSucceed = actReservation(reservationReqDto);
-
+        boolean isSucceed = this.reserveMasterkey(reservationReqDto);
         if (!isSucceed) {
             return ReservationResultResDto.fail();
         }
@@ -150,10 +155,13 @@ public class ReservationServiceImpl implements ReservationService {
         notificationServiceClient.notifyReservationSuccess(notificationOutDto);
     }
 
-    // TODO 예약 기능 동작
-    private boolean actReservation(ReservationReqDto reservationReqDto) {
+    private boolean reserveMasterkey(ReservationReqDto reservationReqDto) {
 
-        return true;
+        ThemeOriginalInfoInDto originalInfo =
+                searchServiceClient.getOriginalInfo(reservationReqDto.getThemeId());
+        ReservingServerRequestDto reservingServerRequestDto = ReservingServerRequestDto.from(originalInfo,
+                                                                                             reservationReqDto);
+        return reservationAction.reserve(reservingServerRequestDto);
     }
 
     private void validateBookerInfo(String memberId, ReservationReqDto reservationReqDto) {

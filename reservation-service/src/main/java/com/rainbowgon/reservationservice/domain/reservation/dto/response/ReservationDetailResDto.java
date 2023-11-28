@@ -1,6 +1,5 @@
 package com.rainbowgon.reservationservice.domain.reservation.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
 import lombok.AllArgsConstructor;
@@ -8,8 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -20,10 +17,8 @@ public class ReservationDetailResDto {
 
     private String bookerName;
     private String bookerPhoneNumber;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate targetDate;
-    @JsonFormat(pattern = "hh:mm")
-    private LocalTime targetTime;
+    private String targetDate;
+    private String targetTime;
     private Integer headcount;
     private Integer totalPrice;
     private String themeId;
@@ -32,8 +27,8 @@ public class ReservationDetailResDto {
     private String venue;
     private String location;
     private List<String> genre;
-    private String siteToS;
-    private String venueToS;
+    private String siteTos;
+    private String venueTos;
 
     public static ReservationDetailResDto from(Reservation reservation, ThemeBriefInfoInDto themeDto) {
         return ReservationDetailResDto.builder()
@@ -45,12 +40,12 @@ public class ReservationDetailResDto {
                 .totalPrice(reservation.getTotalPrice())
                 .themeId(reservation.getThemeId())
                 .poster(themeDto.getPoster())
-                .themeId(themeDto.getTitle())
+                .title(themeDto.getTitle())
                 .venue(themeDto.getVenue())
                 .location(themeDto.getLocation())
                 .genre(themeDto.getGenre())
-                .siteToS(themeDto.getSiteToS())
-                .venueToS(themeDto.getVenueToS())
+                .siteTos(themeDto.getSiteTos())
+                .venueTos(themeDto.getVenueTos())
                 .build();
     }
 }

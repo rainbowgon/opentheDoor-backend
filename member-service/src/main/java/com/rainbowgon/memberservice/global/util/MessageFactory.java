@@ -7,7 +7,7 @@ public class MessageFactory {
     /**
      * 인증번호 생성, 6자리 숫자
      */
-    public static String generateAuthenticationNumber() {
+    public static Integer generateAuthenticationNumber() {
 
         Random rand = new Random();
         StringBuilder sb = new StringBuilder();
@@ -15,13 +15,13 @@ public class MessageFactory {
             sb.append(Integer.toString(rand.nextInt(10)));
         }
 
-        return sb.toString();
+        return Integer.valueOf(sb.toString());
     }
 
     /**
      * 발송 메시지 내용 생성
      */
-    public static String generateMessageText(String authenticationNumber) {
+    public static String generateMessageText(Integer authenticationNumber) {
         return new StringBuilder("[오픈더도어] 인증번호 [ ")
                 .append(authenticationNumber)
                 .append(" ]를 입력해 주세요.\n")

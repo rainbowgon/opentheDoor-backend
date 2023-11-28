@@ -42,6 +42,7 @@ public enum GlobalErrorCode implements BaseErrorCode {
 
     /* Redis */
     REDIS_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL-500-2", "Redis에서 오류가 발생했습니다."),
+    AWS_S3_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL-500-3", "AWS S3에서 오류가 발생했습니다."),
 
     CUSTOM_INTERNAL_SERVER_ERROR(INTERNAL_SERVER_ERROR, "GLOBAL-500-1", "서버 오류. 관리자에게 문의 부탁드립니다.");
 

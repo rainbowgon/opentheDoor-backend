@@ -1,11 +1,7 @@
 package com.rainbowgon.reservationservice.global.client.dto.output;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rainbowgon.reservationservice.domain.reservation.entity.Reservation;
 import lombok.*;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,10 +13,8 @@ public class NotificationOutDto {
     private String fcmToken;
     private String themeId;
     private String title;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate targetDate;
-    @JsonFormat(pattern = "hh:mm")
-    private LocalTime targetTime;
+    private String targetDate;
+    private String targetTime;
     private NotificationType reservationType;
 
     public static NotificationOutDto success(String memberId, String fcmToken, String title,

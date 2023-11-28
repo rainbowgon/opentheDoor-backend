@@ -24,16 +24,16 @@ public class ReservationBaseInfoResDto {
     private String location;
     private List<String> genre;
     private List<PriceVO> priceList;
-    private String siteToS;
-    private String venueToS;
+    private String siteTos;
+    private String venueTos;
 
-    // TODO timeSlotList 넣기
-    public static ReservationBaseInfoResDto from(String themeId, MemberBriefInfoInDto memberDto,
+    public static ReservationBaseInfoResDto from(String themeId, List<TimeSlotVO> timeLine,
+                                                 MemberBriefInfoInDto memberDto,
                                                  ThemeBriefInfoInDto themeDto) {
         return ReservationBaseInfoResDto.builder()
                 .bookerName(memberDto.getBookerName())
                 .bookerPhoneNumber(memberDto.getBookerPhoneNumber())
-                .timeSlotList(null)
+                .timeSlotList(timeLine)
                 .themeId(themeId)
                 .poster(themeDto.getPoster())
                 .title(themeDto.getTitle())
@@ -41,19 +41,19 @@ public class ReservationBaseInfoResDto {
                 .location(themeDto.getLocation())
                 .genre(themeDto.getGenre())
                 .priceList(themeDto.getPriceList())
-                .siteToS(themeDto.getSiteToS())
-                .venueToS(themeDto.getVenueToS())
+                .siteTos(themeDto.getSiteTos())
+                .venueTos(themeDto.getVenueTos())
                 .build();
 
     }
 
-    // TODO timeSlotList 넣기
     public static ReservationBaseInfoResDto from(String themeId,
+                                                 List<TimeSlotVO> timeLine,
                                                  ThemeBriefInfoInDto themeDto) {
         return ReservationBaseInfoResDto.builder()
                 .bookerName(null)
                 .bookerPhoneNumber(null)
-                .timeSlotList(null)
+                .timeSlotList(timeLine)
                 .themeId(themeId)
                 .poster(themeDto.getPoster())
                 .title(themeDto.getTitle())
@@ -61,8 +61,8 @@ public class ReservationBaseInfoResDto {
                 .location(themeDto.getLocation())
                 .genre(themeDto.getGenre())
                 .priceList(themeDto.getPriceList())
-                .siteToS(themeDto.getSiteToS())
-                .venueToS(themeDto.getVenueToS())
+                .siteTos(themeDto.getSiteTos())
+                .venueTos(themeDto.getVenueTos())
                 .build();
 
     }

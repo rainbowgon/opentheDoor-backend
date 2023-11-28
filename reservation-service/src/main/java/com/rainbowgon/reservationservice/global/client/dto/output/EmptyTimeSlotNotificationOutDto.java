@@ -1,13 +1,9 @@
 package com.rainbowgon.reservationservice.global.client.dto.output;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rainbowgon.reservationservice.domain.waiting.entity.Waiting;
 import com.rainbowgon.reservationservice.global.client.dto.input.FcmTokenInDto;
 import com.rainbowgon.reservationservice.global.client.dto.input.ThemeBriefInfoInDto;
 import lombok.*;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,10 +15,8 @@ public class EmptyTimeSlotNotificationOutDto {
     private String fcmToken;
     private String themeId;
     private String title;
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate targetDate;
-    @JsonFormat(pattern = "hh:mm")
-    private LocalTime targetTime;
+    private String targetDate;
+    private String targetTime;
 
     public static EmptyTimeSlotNotificationOutDto from(FcmTokenInDto fcmTokenDto,
                                                        ThemeBriefInfoInDto themeDto,
