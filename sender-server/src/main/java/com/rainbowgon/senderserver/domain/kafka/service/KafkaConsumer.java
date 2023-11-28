@@ -22,8 +22,8 @@ public class KafkaConsumer {
 
     @KafkaListener(
             topics = "notification",
-            groupId = "${spring.kafka.consumer.group-id}")
-//            concurrency = "${spring.kafka.listener.concurrency}")
+            groupId = "${spring.kafka.consumer.group-id}",
+            concurrency = "${spring.kafka.listener.concurrency}")
     public void getMessage(String message) throws IOException {
 
         log.info("consumed message : {}", message);
