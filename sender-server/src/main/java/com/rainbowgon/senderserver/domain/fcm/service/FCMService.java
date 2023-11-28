@@ -22,8 +22,6 @@ public class FCMService {
                 .build();
         FirebaseMessaging.getInstance().sendAsync(message);
 
-        // 메세지가 제대로 간다면
         return true;
     }
-
 }
